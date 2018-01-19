@@ -1,0 +1,1 @@
+{'edges': set([(1.0, 'Precursor', 'A'), (4.0, 'Precursor', 'C'), (1.0, 'A', 'B')]), 'vertices': ['Precursor', 'A', 'B', 'C', 4]}
