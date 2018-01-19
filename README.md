@@ -1,4 +1,4 @@
-# targetclone
+# TargetClone
 TargetClone: A multi-sample approach for reconstructing subclonal evolution of tumors
 
 ## TargetClone
