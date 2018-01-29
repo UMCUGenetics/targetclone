@@ -29,7 +29,7 @@ In the Examples folder, two examples are provided to test the output of TargetCl
 
 To run any example (i.e. example 1), navigate to the directory containing main.py and enter:
 ```
-python testTargetClone.py ../Examples/Example1/Example1.txt ../Examples/Example1/Output/../Examples/Example1
+python testTargetClone.py ../Examples/Example1/Example1.txt ../Examples/Example1/Output/ ../Examples/Example1
 ```
 The output files will be written to the ../Examples/Example1/Output/ folder. Example1.txt contains the AF and SNV measurements. The third argument should point to the location containing the real output data, to which the output will be compared to test the error rates.
 
