@@ -645,7 +645,7 @@ class Simulator:
 		#currentNoiseLevel = self.noiseLevels[0]
 		
 		#currentNoiseLevel = 0
-		currentNoiseLevel = 0.02
+		currentNoiseLevel = simulationSettings.general['noiseLevel']
 		#For each position that we can add a measurement to
 		#Check how many chromosome names are there, add this many measurements (later we add random noise at this step)
 		#print "arms: ", self.possibleArms
