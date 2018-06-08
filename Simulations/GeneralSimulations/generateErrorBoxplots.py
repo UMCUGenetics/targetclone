@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '../TargetClone/')
+sys.path.insert(0, '../../TargetClone/')
 
 import os
 import re
