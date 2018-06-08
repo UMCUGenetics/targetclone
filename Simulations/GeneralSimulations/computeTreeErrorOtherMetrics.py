@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '../TargetClone/')
+sys.path.insert(0, '../../TargetClone/')
 
 import os
 import re
@@ -14,9 +14,8 @@ import simulationSettings
 from segmentations import Segmentation
 from alleles import Alleles
 from distance import SomaticVariantDistance
-from dummyCMu import DummyCMu
 from c import C
-from simulations_permutations import SimulationProbabilities
+from simulation_generic import SimulationProbabilities
 
 from simulationErrors import SimulationErrorHandler
 from scipy.spatial import distance
