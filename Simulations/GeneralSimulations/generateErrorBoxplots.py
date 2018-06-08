@@ -198,7 +198,7 @@ def computeRandomCaseError(dataFolder):
 	
 	#F1. Read the data from the data folder
 	#Make dummy noise levels to read the right folder
-	noiseLevels = ['0_random']
+	noiseLevels = ['randomLAF_SNVs']
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors] = readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
 	#make a plot to see how the errors are distributed
@@ -694,25 +694,25 @@ noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
 ambiguities = []
 ambiguityScores = []
 groupedAmbiguities = dict()
-# 
-# for noiseLevel in noiseLevels:
-# 	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
-# 	print "noise level: ", noiseLevel
-# 	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
-# 	groupedAmbiguities[noiseLevel] = allAmbiguityScores
-# 	ambiguities.append(averageAmbiguities)
-# 	ambiguityScores.append(averageAmbiguityScore)
-# 	
-# #Also compute the ambiguity scores in the permuted data
-# 
-# permutationFolder = '../Results/noise0_random/'
-# 
-# [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
-# groupedAmbiguitiesRandom = dict()
-# groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
-# generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
-# 
-# exit()
+
+for noiseLevel in noiseLevels:
+	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
+	print "noise level: ", noiseLevel
+	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
+	groupedAmbiguities[noiseLevel] = allAmbiguityScores
+	ambiguities.append(averageAmbiguities)
+	ambiguityScores.append(averageAmbiguityScore)
+	
+#Also compute the ambiguity scores in the permuted data
+
+permutationFolder = '../Results/randomLAF_SNVs/'
+
+[averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
+groupedAmbiguitiesRandom = dict()
+groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
+generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+
+exit()
 
 #Make the random restarts figure
 
