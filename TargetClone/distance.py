@@ -202,6 +202,7 @@ class SomaticVariantDistance:
 			
 			#Extract the right measurements around this somatic variant (immediately adjacent, may not be enough evidence)
 			noOfSomVarBefore = somVarInd+1
+			#print "som var ind: ", somVarInd
 			prevInd = (somVarIndices[somVarInd]-noOfSomVarBefore)-1
 			nextInd = prevInd+1
 			if prevInd+1 > len(sample1.measurements.measurements)-1:
@@ -209,11 +210,11 @@ class SomaticVariantDistance:
 			if prevInd == -1:
 				prevInd = 0
 				
-			print sample1
-			print sample1.name
-			print len(sample1.bestCMu)
-			print prevInd
-			print nextInd
+			# print sample1
+			# print sample1.name
+			# print len(sample1.bestCMu)
+			# print prevInd
+			# print nextInd
 
 			cMuPrev1 = sample1.bestCMu[prevInd] 
 			cMuNext1 = sample1.bestCMu[nextInd] #current ind

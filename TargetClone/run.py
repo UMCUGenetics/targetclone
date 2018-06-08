@@ -170,6 +170,9 @@ class TargetClone:
 			graphList.append(currentGraph)
 			currentGraph = newGraph
 			
+			
+			print "found tree: ", currentGraph.edgeList
+			
 			#Store the graph of each iteration
 			iterationGraphs[iteration] = currentGraph
 			
@@ -407,6 +410,13 @@ class TargetClone:
 	
 	#Infer the best combination of C for the first two measurement positions given this current mu. 
 	def getBestFullCombination(self, samples, sampleInd, muIndex, i, fitness, bestCombinationScore):
+		
+		# print "CMu lengths: "
+		# for sample in samples:
+		# 	print sample.name
+		# 	print len(sample.originalCMu)
+		
+		
 		laf = samples[sampleInd].measurements
 		bestCombinations = [None]*4
 		for combination in self.cCombinations.combinations:
@@ -417,8 +427,13 @@ class TargetClone:
 			cMuCombination2 = self.combinationMatrix[muIndex][(combination[1]-1)]
 			
 			#Sample 2 (parent)
+			
+		
+			
 			cMuCombination3 = samples[sampleInd].parent.originalCMu[i]
 			cMuCombination4 = samples[sampleInd].parent.originalCMu[i+1]
+			
+			
 			
 			sampleComb = str(cMuCombination1.c.c[1]) + str(cMuCombination2.c.c[1])
 			parentComb = str(cMuCombination3.c.c[1]) + str(cMuCombination4.c.c[1])
@@ -497,11 +512,13 @@ class TargetClone:
 		for sample in range(0, len(samples)):
 			
 			samples[sample].originalCMu = samples[sample].bestCMu
+			
 			if samples[sample].bestCMu is None:
 				measurementLength = len(samples[0].measurements.measurements)
 				samples[sample].Mu = Mu(0) #assume 100% tumor
 				#Set a default bestCMu in this case, we don't know the solution.
 				samples[sample].bestCMu = [CMuCombination(C([2,2]), Mu(0), self.eventDistances)]*measurementLength
+				samples[sample].originalCMu = samples[sample].bestCMu
 			else:
 				if samples[sample].bestCMu[0] is not None: #Update the C and mu combination in the actual sample
 					samples[sample].Mu = samples[sample].bestCMu[0].mu

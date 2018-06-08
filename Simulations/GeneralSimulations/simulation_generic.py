@@ -356,6 +356,19 @@ class Simulator:
 		realTree = Graph(vertices, set(edgeList), edgeList)
 		
 		
+		if simulationSettings.runType['randomMeasurements'] == True: #assign random SNV measurements to the samples
+			varCount = len(samples[0].somaticVariants)
+			
+			for sample in samples:
+				
+				#Make an array with random SNVs
+				randomSNVs = []
+				for newVar in range(0, varCount):
+					randomValue = randint(0,1)
+					randomSNVs.append(randomValue)
+				sample.somaticVariants = randomSNVs
+		
+		
 		#For each of the clones, we need to start making samples.
 		#A sample has:  - a name (this is random apart from for the precursor, pre-gcnis and gcnis)
 		#				- afMeasurements
@@ -633,69 +646,91 @@ class Simulator:
 		return LAF(measurements, self.chromosomes, self.positions, self.positions)
 		
 	def generateMeasurements(self, sample, randomMuT):
-		#The LAF is easily computed for every position from the A matrix
-		randomMuT = randomMuT / float(100)
-		#The values here need to be weighed with a random mu, let's generate a random one here and see how it works out.
-		#we also need to add the correct number of alleles for healthy cells to generate the correct AFs
 		
-		#Generate the measurement values from a normal distribution with added noise (first do this without noise)
+		if simulationSettings.runType['randomMeasurements'] == True: #in this case sample random LAF
 		
-		AF = []
-		LAF = []
-		#currentNoiseLevel = self.noiseLevels[0]
-		
-		#currentNoiseLevel = 0
-		currentNoiseLevel = simulationSettings.general['noiseLevel']
-		#For each position that we can add a measurement to
-		#Check how many chromosome names are there, add this many measurements (later we add random noise at this step)
-		#print "arms: ", self.possibleArms
-		
-		measurementPosition = 0
-		#print "carms: ", len(self.chromosomeArms)
-		#print "number of measurements: ", len(sample.A)
-		for alleles in sample.A:
-			#print measurementPosition
-			#What is the number of measurements on this chromosome arm?
-			#Add the same number of measurements.
-
-			currentArm = self.allChromosomeArms[measurementPosition] #at this point sample does not know where the measurements are as this is part of the measurement object
-			armIndices = [i for i, x in enumerate(self.allChromosomeArms) if x == currentArm]
-			numberOfMeasurements = len(armIndices)
-
-			aCountT = alleles.ACount * randomMuT
-			bCountT = alleles.BCount * randomMuT
+			#Generate random LAF and AF measurements
 			
-			aCountN = 1 * (1 - randomMuT)
-			bCountN = 1 * (1 - randomMuT)
+			AF = []
+			LAF = []
 			
-			totalACount = aCountT + aCountN
-			totalBCount = bCountT + bCountN
-			#the LAF is the minimum of the a and b count / the sum of both
-			countSum = totalACount + totalBCount
-			minCount = min([totalACount] + [totalBCount])
-			if countSum == 0:
-				newAf = 0
-			else:
-				#Add noise to the measurements
-				newAf = totalBCount / float(countSum) #we assume that the b count is the one that is the variant allele. We do not know!
-			
-			#take a sample from a normal distribution where the mu is the AF position (or should we sample from the LAF?)
-			#noisedAf = np.random.normal(newAf, currentNoiseLevel, 1)[0]
-			lower, upper = 0, 1 #AF truncated ones
-			mu, sigma = newAf, currentNoiseLevel
-			X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
-			noisedAf = X.rvs(1)[0] #take a sample
-			#noisedAf = newAf
-			AF.append(noisedAf)
-			if noisedAf > 0.5:
-				LAF.append(1-noisedAf)
-			else:
-				LAF.append(noisedAf)
+			for alleles in sample.A:
+				randomAF = randint(0,1000)
+				randomAF = randomAF / float(1000)
 				
-			#for measurementNum in range(0, numberOfMeasurements): #here we should later add noise. 
-			#LAF.append(minCount / float(countSum))
+				randomLAF = randomAF
+				if randomAF > 0.5:
+					randomLAF = round(1 - randomAF, 3)
+				AF.append(randomAF)
+				LAF.append(randomLAF)
+
+		else:
 			
-			measurementPosition += 1
+			#The LAF is easily computed for every position from the A matrix
+			randomMuT = randomMuT / float(100)
+			#The values here need to be weighed with a random mu, let's generate a random one here and see how it works out.
+			#we also need to add the correct number of alleles for healthy cells to generate the correct AFs
+			
+			#Generate the measurement values from a normal distribution with added noise (first do this without noise)
+			
+			AF = []
+			LAF = []
+			#currentNoiseLevel = self.noiseLevels[0]
+			
+			#currentNoiseLevel = 0
+			currentNoiseLevel = simulationSettings.general['noiseLevel']
+			#For each position that we can add a measurement to
+			#Check how many chromosome names are there, add this many measurements (later we add random noise at this step)
+			#print "arms: ", self.possibleArms
+			
+			measurementPosition = 0
+			#print "carms: ", len(self.chromosomeArms)
+			#print "number of measurements: ", len(sample.A)
+			for alleles in sample.A:
+				#print measurementPosition
+				#What is the number of measurements on this chromosome arm?
+				#Add the same number of measurements.
+	
+				currentArm = self.allChromosomeArms[measurementPosition] #at this point sample does not know where the measurements are as this is part of the measurement object
+				armIndices = [i for i, x in enumerate(self.allChromosomeArms) if x == currentArm]
+				numberOfMeasurements = len(armIndices)
+	
+				aCountT = alleles.ACount * randomMuT
+				bCountT = alleles.BCount * randomMuT
+				
+				aCountN = 1 * (1 - randomMuT)
+				bCountN = 1 * (1 - randomMuT)
+				
+				totalACount = aCountT + aCountN
+				totalBCount = bCountT + bCountN
+				#the LAF is the minimum of the a and b count / the sum of both
+				countSum = totalACount + totalBCount
+				minCount = min([totalACount] + [totalBCount])
+				if countSum == 0:
+					newAf = 0
+				else:
+					#Add noise to the measurements
+					newAf = totalBCount / float(countSum) #we assume that the b count is the one that is the variant allele. We do not know!
+				
+				#take a sample from a normal distribution where the mu is the AF position (or should we sample from the LAF?)
+				#noisedAf = np.random.normal(newAf, currentNoiseLevel, 1)[0]
+				lower, upper = 0, 1 #AF truncated ones
+				mu, sigma = newAf, currentNoiseLevel
+				X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+				noisedAf = X.rvs(1)[0] #take a sample
+				#noisedAf = newAf
+				AF.append(noisedAf)
+				if noisedAf > 0.5:
+					LAF.append(1-noisedAf)
+				else:
+					LAF.append(noisedAf)
+					
+				#for measurementNum in range(0, numberOfMeasurements): #here we should later add noise. 
+				#LAF.append(minCount / float(countSum))
+				
+				measurementPosition += 1
+		
+		
 		return [AF, self.generateLAFObject(LAF)]
 		
 		
