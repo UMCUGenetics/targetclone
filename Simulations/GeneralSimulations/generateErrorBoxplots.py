@@ -229,7 +229,7 @@ def computeRandomCaseError(dataFolder):
 	return [averagedCErrors[0], averagedAErrors[0], averagedMuErrors[0], averagedTreeErrors[0], randomCStd, randomAStd, randomMuStd, randomTreeStd]
 
 #2. Calculate statistics for the completely random case
-dataFolder = '../Results'
+dataFolder = 'Results'
 [randomCError, randomAError, randomMuError, randomTreeError, randomCStd, randomAStd, randomMuStd, randomTreeStd] = computeRandomCaseError(dataFolder)
 
 
