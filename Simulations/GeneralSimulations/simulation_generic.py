@@ -231,18 +231,259 @@ class Simulator:
 	
 		
 	def subclonalExpansion(self):
-		
-		
+
 		pkl_file = open(simulationSettings.files['targetCloneInstance'], 'rb')
 		targetClone = pickle.load(pkl_file)
 		pkl_file.close()
 		
 		targetClone.segmentation = self.segmentation
+		iteration = 1 #dummy, remove later
+		#To do the horizontal shuffling, the same UUID must be provided for each run. So an sh script should run these scripts providing the UUIDs from the existing run. 
+		#In case we wish to do horizontal permutations, check here if we need to generate the clones.
+		#If not, skip this intial part and load the simulation data from the pkl file, shuffle the measurements, and then run TC.
+		#Write the results to a different folder but with the same UUIDs
+		if simulationSettings.runType['horizontalShuffle'] == True:
+			newDir = simulationSettings.files['outputDir'] + self.uniqueID + '_horizontalShuffle'
+		else:
+			newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		
-		now = datetime.datetime.now()
-		newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		os.makedirs(newDir)
+		
+		if simulationSettings.runType['horizontalShuffle'] == False:		
+			[samples, finalClones, realTree, savedMu] = self.generateSamples()
+		
+			#obtain the C for every clone and merge it into a matrix
 			
+			cMatrix = np.empty([self.snpNum, len(finalClones)], dtype=float)
+			for cloneInd in range(0, len(finalClones)):
+				#make the C from the individual Cs
+				cloneC = finalClones[cloneInd].C
+				for cInd in range(0, len(cloneC)):
+					cMatrix[cInd][cloneInd] = cloneC[cInd].c[1]
+			
+			#Also print A
+					
+			aMatrix = np.empty([self.snpNum, len(finalClones)], dtype=object)
+			for cloneInd in range(0, len(finalClones)):
+				cloneA = finalClones[cloneInd].A
+				for aInd in range(0, len(cloneA)):
+			
+					aMatrix[aInd][cloneInd] = cloneA[aInd]
+			
+			#Check the somatic variants
+			somVarMatrix = np.empty([len(finalClones[0].somaticVariants), len(finalClones)], dtype=float)
+			for cloneInd in range(0, len(finalClones)):
+				somVar = finalClones[cloneInd].somaticVariants
+				for variant in range(0, len(somVar)):
+					if somVar[variant].value == 1:
+						somVarMatrix[variant][cloneInd] = 1
+					else:
+						somVarMatrix[variant][cloneInd] = 0
+						
+			
+		
+			
+			
+			
+			simulationDataHandler = SimulationDataHandler()
+			simulationDataHandler.setSimulationData(cMatrix, aMatrix, samples, measurementsMatrix, lafMeasurementsMatrix, somVarMatrix, realTree, self.chromosomes, self.positions)
+			
+			with open(newDir + '/simulationData.pkl', 'wb') as handle:
+				pickle.dump(simulationDataHandler, handle, protocol=pickle.HIGHEST_PROTOCOL)
+		else:
+			
+			#Load the data from the pkl file
+			[simulationData, savedMu] = self.parseSimulationData(self.uniqueID)
+			
+			cMatrix = simulationData.cMatrix
+			aMatrix = simulationData.aMatrix
+			realTree = simulationData.realTree
+			samples = simulationData.samples
+			measurementsMatrix = simulationData.afMatrix
+			lafMeasurementsMatrix = simulationData.lafMatrix
+			
+			#The AF need to be shuffled randomly within each sample
+			
+			for sample in samples:
+				
+				afMeasurements = sample.afMeasurements
+				lafMeasurements = sample.measurements.measurements
+				
+				#Determine the random positions that the new measurements will have
+				newOrder = random.sample(range(0, len(afMeasurements)), len(afMeasurements))
+				
+				shuffledAFMeasurements = []
+				shuffledLAFMeasurements = []
+				for measurementInd in newOrder:
+					
+					shuffledAFMeasurements.append(afMeasurements[measurementInd])
+					shuffledLAFMeasurements.append(lafMeasurements[measurementInd])
+			
+				sample.afMeasurements = shuffledAFMeasurements
+				sample.measurements = self.generateLAFObject(lafMeasurements)
+			
+			somVarMatrix = simulationData.snvMatrix
+		
+		#Keep the measurements to write to a file later
+		measurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
+		for cloneInd in range(0, len(samples)):
+			measurements = samples[cloneInd].afMeasurements
+			measurementsMatrix[:,cloneInd] = measurements
+			
+		lafMeasurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
+		for cloneInd in range(0, len(samples)):
+			measurements = samples[cloneInd].measurements.measurements
+			lafMeasurementsMatrix[:,cloneInd] = measurements
+		
+			
+		#Run TC	
+		[eCMatrix, eAMatrix, eSamples, trees, iterationMu, iterationMessages] = targetClone.run(samples)
+		
+		
+		#1. Implement different scoring for the output
+		simulationErrorHandler = SimulationErrorHandler()
+		
+		allCScores = []
+		allAScores = []
+		allMuScores = []
+		allTreeScores = []
+		allAmbiguityScores = []
+		allAmbiguityCorrectedScores = []
+		
+		
+		eCMatrixFloat = eCMatrix.astype(float)
+		cMatrixFloat = cMatrix.astype(float)
+		#cScore = self.computeCRMSE(cMatrixFloat, eCMatrixFloat)
+		cScore = simulationErrorHandler.computeCError(cMatrixFloat, eCMatrixFloat)
+		
+		allCScores.append(cScore / cMatrixFloat.size)
+		
+		#aScore = self.computeARMSE(aMatrix, eAMatrix)
+		aData = simulationErrorHandler.computeAError(aMatrix, eAMatrix)
+		aScore = aData[0] / float(aMatrix.size)
+		
+		allAScores.append(aScore)
+		eAStringMatrix = aData[2]
+		aStringMatrix = aData[1]
+		
+		muData = simulationErrorHandler.computeMuError(eSamples, savedMu)
+		muScore = muData[0]
+		allMuScores.append(muScore)
+		allRealMuT = muData[1]
+		allEMuT = muData[2]
+		
+		treeScore = simulationErrorHandler.computeTreeError(trees, realTree)
+		allTreeScores.append(treeScore)
+		bestTree = trees[len(trees)-1]
+		#for each iteration we can save the individual scores. We use these later to make some plots of the current performance.
+		
+		#Also save the simulated data to files, we can then look back at these later if we need to have more information.
+	
+		#Somatic variants matrix
+		np.savetxt(newDir + '/SomVar_' + str(iteration) + '.txt', somVarMatrix, fmt='%i', delimiter='\t')
+					
+
+		#Save measurements
+		np.savetxt(newDir + '/AFMeasurements_' + str(iteration) + '.txt', measurementsMatrix, fmt='%f', delimiter='\t')
+		np.savetxt(newDir + '/LAFMeasurements_' + str(iteration) + '.txt', lafMeasurementsMatrix, fmt='%f', delimiter='\t')
+		
+		#Save C
+		np.savetxt(newDir + '/RealC_' + str(iteration) + '.txt', cMatrix.astype(int), fmt='%i', delimiter='\t')
+		np.savetxt(newDir + '/EstimatedC_' + str(iteration) + '.txt', eCMatrix.astype(int), fmt='%i', delimiter='\t')
+		
+		#Save A
+		np.savetxt(newDir + '/RealA_' + str(iteration) + '.txt', aStringMatrix, fmt='%s', delimiter='\t')
+		np.savetxt(newDir + '/EstimatedA_' + str(iteration) + '.txt', eAStringMatrix, fmt='%s', delimiter='\t')
+		
+		#Save Mu
+		np.savetxt(newDir + '/RealMu_' + str(iteration) + '.txt', allRealMuT, fmt='%f', delimiter='\t')
+		np.savetxt(newDir + '/EstimatedMu_' + str(iteration) + '.txt', allEMuT, fmt='%f', delimiter='\t')
+		
+		#Save the trees
+		f = open(newDir + '/RealTrees_' + str(iteration) + '.txt', 'w')
+		f.write(str(realTree.getGraph()))  # python will convert \n to os.linesep
+		f.close()
+		f = open(newDir + '/EstimatedTrees_' + str(iteration) + '.txt', 'w')
+		f.write(str(bestTree.getGraph()))  # python will convert \n to os.linesep
+		f.close()
+	
+	
+		[ambiguityScore, totalScore] = self.computeAmbiguityScore(aMatrix, eAMatrix, allRealMuT, allEMuT)
+		allAmbiguityScores.append(ambiguityScore)
+		allAmbiguityCorrectedScores.append(totalScore)
+		print "ambiguity error: ", ambiguityScore
+		
+		
+		
+		print "all C errors: ", allCScores
+		
+		
+		print "all A errors: ", allAScores
+		
+		
+		print "all mu errors: ", allMuScores
+		
+		
+		print "all Tree errors: ", allTreeScores
+		
+		f = open(newDir + '/cError.txt', 'w')
+		
+		f.write(str(allCScores[0]))  # python will convert \n to os.linesep
+		f.close()
+		f = open(newDir + '/aError.txt', 'w')
+		f.write(str(allAScores[0]))  # python will convert \n to os.linesep
+		f.close()
+		f = open(newDir + '/muError.txt', 'w')
+		f.write(str(allMuScores[0]))  # python will convert \n to os.linesep
+		f.close()
+		f = open(newDir + '/treeError.txt', 'w')
+		f.write(str(allTreeScores[0])) # python will convert \n to os.linesep
+		f.close()
+		f = open(newDir + '/ambiguityError.txt', 'w')
+		f.write(str(allAmbiguityScores[0])) # python will convert \n to os.linesep
+		f.close()
+		f = open(newDir + '/ambiguityCorrectedError.txt', 'w')
+		f.write(str(allAmbiguityCorrectedScores[0])) # python will convert \n to os.linesep
+		f.close()
+		
+	def readDataFromFile(self, file):
+		text_file = open(file, "r")
+		lines = text_file.read()
+		floatLines = []
+		
+		for line in lines.split("\n"):
+			if line != "":
+				floatLines.append(float(line))
+		
+		text_file.close()
+		
+		return floatLines
+	
+	def parseSimulationData(self, uniqueIdentifier):
+		#Load the file by unique identifier, and store the object
+		#Get the actual location from the settings file!
+		pkl_file = open(simulationSettings.files['outputDir'] + uniqueIdentifier + '/simulationData.pkl', 'rb')
+		simulationData = pickle.load(pkl_file)
+		pkl_file.close()
+		
+		
+		#We will have to obtain the real mu from the file.
+		muFile = simulationSettings.files['outputDir'] + uniqueIdentifier + '/RealMu_1.txt'
+		muData = self.readDataFromFile(muFile)
+		
+		
+		savedMu = []
+		for muInd in range(0, len(muData)):
+			mu = muData[muInd]
+			
+			muObject = Mu(1 - float(mu)) #the mu in the file is the tumor mu, we need to provide the normal cell mu here!
+			savedMu.append(muObject)
+		
+		
+		return [simulationData, savedMu]
+		
+	def generateSamples(self):
+		
 		#Starting from a healthy cell, start making subclones	
 			
 		healthySubclone = Subclone()
@@ -368,172 +609,7 @@ class Simulator:
 					randomSNVs.append(randomValue)
 				sample.somaticVariants = randomSNVs
 		
-		
-		#For each of the clones, we need to start making samples.
-		#A sample has:  - a name (this is random apart from for the precursor, pre-gcnis and gcnis)
-		#				- afMeasurements
-		#				- somatic variants
-		#				- pre-defined mu
-		#We could write the data to files, but for multiple iterations this may take a bit long.
-	
-		
-		#obtain the C for every clone and merge it into a matrix
-		
-		cMatrix = np.empty([self.snpNum, len(finalClones)], dtype=float)
-		for cloneInd in range(0, len(finalClones)):
-			#make the C from the individual Cs
-			cloneC = finalClones[cloneInd].C
-			for cInd in range(0, len(cloneC)):
-				cMatrix[cInd][cloneInd] = cloneC[cInd].c[1]
-		
-		#Also print A
-				
-		aMatrix = np.empty([self.snpNum, len(finalClones)], dtype=object)
-		for cloneInd in range(0, len(finalClones)):
-			cloneA = finalClones[cloneInd].A
-			for aInd in range(0, len(cloneA)):
-		
-				aMatrix[aInd][cloneInd] = cloneA[aInd]
-		
-		#Check the somatic variants
-		somVarMatrix = np.empty([len(finalClones[0].somaticVariants), len(finalClones)], dtype=float)
-		for cloneInd in range(0, len(finalClones)):
-			somVar = finalClones[cloneInd].somaticVariants
-			for variant in range(0, len(somVar)):
-				if somVar[variant].value == 1:
-					somVarMatrix[variant][cloneInd] = 1
-				else:
-					somVarMatrix[variant][cloneInd] = 0
-					
-		measurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
-		for cloneInd in range(0, len(samples)):
-			measurements = samples[cloneInd].afMeasurements
-			measurementsMatrix[:,cloneInd] = measurements
-			
-		lafMeasurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
-		for cloneInd in range(0, len(samples)):
-			measurements = samples[cloneInd].measurements.measurements
-			lafMeasurementsMatrix[:,cloneInd] = measurements
-		
-		iteration = 1 #dummy, remove later
-		
-		#Somatic variants matrix
-		np.savetxt(newDir + '/SomVar_' + str(iteration) + '.txt', somVarMatrix, fmt='%i', delimiter='\t')
-		
-		simulationDataHandler = SimulationDataHandler()
-		simulationDataHandler.setSimulationData(cMatrix, aMatrix, samples, measurementsMatrix, somVarMatrix, realTree, self.chromosomes, self.positions)
-		
-		with open(newDir + '/simulationData.pkl', 'wb') as handle:
-			pickle.dump(simulationDataHandler, handle, protocol=pickle.HIGHEST_PROTOCOL)
-		
-		
-		[eCMatrix, eAMatrix, eSamples, trees, iterationMu, iterationMessages] = targetClone.run(samples)
-		
-		
-		#1. Implement different scoring for the output
-		simulationErrorHandler = SimulationErrorHandler()
-		
-		allCScores = []
-		allAScores = []
-		allMuScores = []
-		allTreeScores = []
-		allAmbiguityScores = []
-		allAmbiguityCorrectedScores = []
-		
-		
-		eCMatrixFloat = eCMatrix.astype(float)
-		cMatrixFloat = cMatrix.astype(float)
-		#cScore = self.computeCRMSE(cMatrixFloat, eCMatrixFloat)
-		cScore = simulationErrorHandler.computeCError(cMatrixFloat, eCMatrixFloat)
-		
-		allCScores.append(cScore / cMatrixFloat.size)
-		
-		#aScore = self.computeARMSE(aMatrix, eAMatrix)
-		aData = simulationErrorHandler.computeAError(aMatrix, eAMatrix)
-		aScore = aData[0] / float(aMatrix.size)
-		
-		allAScores.append(aScore)
-		eAStringMatrix = aData[2]
-		aStringMatrix = aData[1]
-		
-		muData = simulationErrorHandler.computeMuError(eSamples, savedMu)
-		muScore = muData[0]
-		allMuScores.append(muScore)
-		allRealMuT = muData[1]
-		allEMuT = muData[2]
-		
-		treeScore = simulationErrorHandler.computeTreeError(trees, realTree)
-		allTreeScores.append(treeScore)
-		bestTree = trees[len(trees)-1]
-		#for each iteration we can save the individual scores. We use these later to make some plots of the current performance.
-		
-		#Also save the simulated data to files, we can then look back at these later if we need to have more information.
-		
-		
-		
-		#Save measurements
-		np.savetxt(newDir + '/AFMeasurements_' + str(iteration) + '.txt', measurementsMatrix, fmt='%f', delimiter='\t')
-		np.savetxt(newDir + '/LAFMeasurements_' + str(iteration) + '.txt', lafMeasurementsMatrix, fmt='%f', delimiter='\t')
-		
-		#Save C
-		np.savetxt(newDir + '/RealC_' + str(iteration) + '.txt', cMatrix.astype(int), fmt='%i', delimiter='\t')
-		np.savetxt(newDir + '/EstimatedC_' + str(iteration) + '.txt', eCMatrix.astype(int), fmt='%i', delimiter='\t')
-		
-		#Save A
-		np.savetxt(newDir + '/RealA_' + str(iteration) + '.txt', aStringMatrix, fmt='%s', delimiter='\t')
-		np.savetxt(newDir + '/EstimatedA_' + str(iteration) + '.txt', eAStringMatrix, fmt='%s', delimiter='\t')
-		
-		#Save Mu
-		np.savetxt(newDir + '/RealMu_' + str(iteration) + '.txt', allRealMuT, fmt='%f', delimiter='\t')
-		np.savetxt(newDir + '/EstimatedMu_' + str(iteration) + '.txt', allEMuT, fmt='%f', delimiter='\t')
-		
-		#Save the trees
-		f = open(newDir + '/RealTrees_' + str(iteration) + '.txt', 'w')
-		f.write(str(realTree.getGraph()))  # python will convert \n to os.linesep
-		f.close()
-		f = open(newDir + '/EstimatedTrees_' + str(iteration) + '.txt', 'w')
-		f.write(str(bestTree.getGraph()))  # python will convert \n to os.linesep
-		f.close()
-	
-	
-		[ambiguityScore, totalScore] = self.computeAmbiguityScore(aMatrix, eAMatrix, allRealMuT, allEMuT)
-		allAmbiguityScores.append(ambiguityScore)
-		allAmbiguityCorrectedScores.append(totalScore)
-		print "ambiguity error: ", ambiguityScore
-		
-		
-		
-		print "all C errors: ", allCScores
-		
-		
-		print "all A errors: ", allAScores
-		
-		
-		print "all mu errors: ", allMuScores
-		
-		
-		print "all Tree errors: ", allTreeScores
-		
-		f = open(newDir + '/cError.txt', 'w')
-		
-		f.write(str(allCScores[0]))  # python will convert \n to os.linesep
-		f.close()
-		f = open(newDir + '/aError.txt', 'w')
-		f.write(str(allAScores[0]))  # python will convert \n to os.linesep
-		f.close()
-		f = open(newDir + '/muError.txt', 'w')
-		f.write(str(allMuScores[0]))  # python will convert \n to os.linesep
-		f.close()
-		f = open(newDir + '/treeError.txt', 'w')
-		f.write(str(allTreeScores[0])) # python will convert \n to os.linesep
-		f.close()
-		f = open(newDir + '/ambiguityError.txt', 'w')
-		f.write(str(allAmbiguityScores[0])) # python will convert \n to os.linesep
-		f.close()
-		f = open(newDir + '/ambiguityCorrectedError.txt', 'w')
-		f.write(str(allAmbiguityCorrectedScores[0])) # python will convert \n to os.linesep
-		f.close()
-		
+		return samples, finalClones, realTree, savedMu
 	
 	def computeAmbiguityScore(self, aMatrix, eAMatrix, realMuT, eMuT):
 		#define some random matrices to test
@@ -729,7 +805,6 @@ class Simulator:
 				#LAF.append(minCount / float(countSum))
 				
 				measurementPosition += 1
-		
 		
 		return [AF, self.generateLAFObject(LAF)]
 		
