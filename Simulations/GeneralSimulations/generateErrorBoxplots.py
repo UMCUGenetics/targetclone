@@ -198,7 +198,7 @@ def computeRandomCaseError(dataFolder):
 	
 	#F1. Read the data from the data folder
 	#Make dummy noise levels to read the right folder
-	noiseLevels = ['randomLAF_SNVs']
+	noiseLevels = ['0_randomLAF_SNVs']
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors] = readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
 	#make a plot to see how the errors are distributed
