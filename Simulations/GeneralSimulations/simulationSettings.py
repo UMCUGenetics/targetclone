@@ -22,7 +22,7 @@ general = dict(
 
 runType = dict(
 	randomMeasurements = False, #Do we want random LAF and random SNVs to be assigned to each sample? 
-	horizontalShuffle = False #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
+	horizontalShuffle = True #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
 	
 	
 )
