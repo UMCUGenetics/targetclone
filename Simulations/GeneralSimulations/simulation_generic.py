@@ -119,32 +119,38 @@ class Simulator:
 		snpDivision = np.round(dividedSizes * self.snpNum)
 		
 		self.allChromosomeArms = []
+		emptyIndices = []
 		for armInd in range(0, len(self.chromosomeArms)):
 			arm = self.chromosomeArms[armInd]
-			
-			
+		
 			self.allChromosomeArms += [arm]*int(snpDivision[armInd])
+			#Sometimes not all chromosomes get SNPs because these are too small. Then we should ignore these chromosome arms
+			if int(snpDivision[armInd]) < 1:
+				emptyIndices.append(armInd)
 		
+		#Sometimes due to rounding not all SNPs are distributed. There should not be many so I append these to the last chromosome arm. 
 		
+		if len(self.allChromosomeArms) < self.snpNum:
+			
+			difference = self.snpNum - len(self.allChromosomeArms)
+			
+			#use the last arm which remains in memory
+			self.allChromosomeArms += [self.chromosomeArms[armInd]]*difference
 		
-		#Each arm should get an equal number of snps (intially. Later it should be based on the length of the chromosome)
-		# 
-		# armNum = len(self.chromosomeArms)
-		# snpsPerArm = int(round(self.snpNum / float(armNum)))
-		# 
-		# 
-		# 
-		# self.allChromosomeArms = []
-		# 
-		# for arm in self.chromosomeArms:
-		# 
-		# 	self.allChromosomeArms += [arm]*snpsPerArm
-		# 
-		# #if not full yet, add SNPs to the last chromosome for now
-		# if len(self.allChromosomeArms) + snpsPerArm < self.snpNum: #fill the last ones to 500 (for now)
-		# 	toAdd = 500 - len(self.allChromosomeArms)
-		# 	self.allChromosomeArms += [arm]*toAdd
-	
+		#Remove the arms that do not have SNPs from the list of chromosome arms with SNPs. 
+		tmpArms = np.array(self.chromosomeArms)
+		self.chromosomeArms = list(np.delete(tmpArms, emptyIndices))
+		
+		#Also remove the arms without SNPs from the probabilities so tat these will not be chosen later in the simulations
+		tmpArms = np.array(self.simulationProbabilities.armProbabilities)
+		tmpArmsDeleted = np.delete(tmpArms, emptyIndices, axis=0)
+		
+		tupleFormattedArmProbabilities = []
+		for arm in tmpArmsDeleted:
+			tupleFormattedArmProbabilities.append(tuple(arm))
+			
+		self.simulationProbabilities.armProbabilities = tupleFormattedArmProbabilities	
+		
 		for arm in self.allChromosomeArms:
 			
 			
@@ -181,6 +187,16 @@ class Simulator:
 		
 		#1. Read the hg19 coordinates
 		hg19CoordinateArray = self.getHg19Coordinates()
+		
+		#Make sure to remove arms that do not have any SNPs because otherwise we cannot link SNVs to chromosome arm loss/gains.
+		hg19CoordinateArrayFiltered = []
+		for arm in hg19CoordinateArray:
+			
+			if arm[0] in self.chromosomeArms:
+				hg19CoordinateArrayFiltered.append(arm)
+			
+		hg19CoordinateArray = np.array(hg19CoordinateArrayFiltered)
+		
 		
 		#Randomly choose positions for these SNVs.
 		snvs = []
@@ -281,7 +297,16 @@ class Simulator:
 						somVarMatrix[variant][cloneInd] = 0
 						
 			
-		
+			#Keep the measurements to write to a file later
+			measurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
+			for cloneInd in range(0, len(samples)):
+				measurements = samples[cloneInd].afMeasurements
+				measurementsMatrix[:,cloneInd] = measurements
+				
+			lafMeasurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
+			for cloneInd in range(0, len(samples)):
+				measurements = samples[cloneInd].measurements.measurements
+				lafMeasurementsMatrix[:,cloneInd] = measurements
 			
 			
 			
@@ -323,17 +348,18 @@ class Simulator:
 				sample.measurements = self.generateLAFObject(lafMeasurements)
 			
 			somVarMatrix = simulationData.snvMatrix
-		
-		#Keep the measurements to write to a file later
-		measurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
-		for cloneInd in range(0, len(samples)):
-			measurements = samples[cloneInd].afMeasurements
-			measurementsMatrix[:,cloneInd] = measurements
 			
-		lafMeasurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
-		for cloneInd in range(0, len(samples)):
-			measurements = samples[cloneInd].measurements.measurements
-			lafMeasurementsMatrix[:,cloneInd] = measurements
+			measurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
+			for cloneInd in range(0, len(samples)):
+				measurements = samples[cloneInd].afMeasurements
+				measurementsMatrix[:,cloneInd] = measurements
+				
+			lafMeasurementsMatrix = np.empty([self.snpNum, len(samples)], dtype=float)
+			for cloneInd in range(0, len(samples)):
+				measurements = samples[cloneInd].measurements.measurements
+				lafMeasurementsMatrix[:,cloneInd] = measurements
+		
+		
 		
 			
 		#Run TC	
