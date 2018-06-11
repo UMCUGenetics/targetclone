@@ -59,32 +59,33 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 		pAmbiguityCorrectedErrors = []
 		
 		for subdir, dirs, files in os.walk(simulationFolder):
-			print subdir
+			
 			
 			if subdir == simulationFolder: #we are not interested in the root folder
 				continue
-			for file in files:
-				if re.match('cError', file): #read the file and obtain the error
-					cErrors += collectErrorsFromFile(file, subdir)
-				if re.match('aError', file): #read the file and obtain the error
-					aErrors += collectErrorsFromFile(file, subdir)
-				if re.match('muError', file): #read the file and obtain the error
-					muErrors += collectErrorsFromFile(file, subdir)
-				if re.match('treeError', file): #read the file and obtain the error
-					treeErrors += collectErrorsFromFile(file, subdir)
-
-					
-					
-				#Repeat for the permutation errors
-				if re.match('pCError', file): #read the file and obtain the error
-					pCErrors += collectErrorsFromFile(file, subdir)
-				if re.match('pAError', file): #read the file and obtain the error
-					pAErrors += collectErrorsFromFile(file, subdir)
-				if re.match('pMuError', file): #read the file and obtain the error
-					pMuErrors += collectErrorsFromFile(file, subdir)
-				if re.match('pTreeError', file): #read the file and obtain the error
-					pTreeErrors += collectErrorsFromFile(file, subdir)
 			
+			if re.match('horizontalShuffle', subdir):
+				
+				for file in files:
+					if re.match('cError', file): #read the file and obtain the error
+						pCErrors += collectErrorsFromFile(file, subdir)
+					if re.match('aError', file): #read the file and obtain the error
+						pAErrors += collectErrorsFromFile(file, subdir)
+					if re.match('muError', file): #read the file and obtain the error
+						pMuErrors += collectErrorsFromFile(file, subdir)
+					if re.match('treeError', file): #read the file and obtain the error
+						pTreeErrors += collectErrorsFromFile(file, subdir)
+			else:
+				for file in files:
+					if re.match('cError', file): #read the file and obtain the error
+						cErrors += collectErrorsFromFile(file, subdir)
+					if re.match('aError', file): #read the file and obtain the error
+						aErrors += collectErrorsFromFile(file, subdir)
+					if re.match('muError', file): #read the file and obtain the error
+						muErrors += collectErrorsFromFile(file, subdir)
+					if re.match('treeError', file): #read the file and obtain the error
+						treeErrors += collectErrorsFromFile(file, subdir)
+						
 			
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
@@ -97,14 +98,51 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 		groupedPMuErrors[noiseLevel] = pMuErrors
 		groupedPTreeErrors[noiseLevel] = pTreeErrors
 		groupedPAmbiguityErrors[noiseLevel] = pAmbiguityCorrectedErrors
-		groupedEuclideanErrors[noiseLevel] = euclideanErrors
 		
 		#Move this to a function to make it better
 		#Also compute the Euclidean distance trees for each noise levels, add this as an additional error
 	#Return the grouped data
 	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors]
 
-readDataIncludingPermutations(motherFolder, snpNums)
+def averageData(dictionary, type):
+	
+	#Average the values per key in the dictionary
+	#Make sure that the order matches
+	averagedData = []
+	noiseLevels = []
+	for key in dictionary.keys():
+		
+		if len(dictionary[key]) < 1:
+			return [] #sometimes we do not read certain data, skip it 
+		
+		noiseLevels.append(key)
+		values = dictionary[key]
+		newValues = values
+		if type is not 'T':
+			
+			newValues = []
+			for value in values:
+				if value < 1: #somehow this happens for the permutations? Does it represent a float version of NA? We can ignore it, we have 10 permutations per. 
+					newValues.append(value)
+		
+		average = sum(newValues)/float(len(newValues))
+		averagedData.append(average)
+		
+	
+	#Sort the averagedData
+	sortedNoiseLevels, sortedAveragedData = (list(t) for t in zip(*sorted(zip(noiseLevels, averagedData))))
+	
+	return sortedAveragedData
+
+
+#Get the raw errors for the horizontal shuffle and the normal case
+[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors] = readDataIncludingPermutations(motherFolder, snpNums)
+
+#Compute an average of the errors
+print averageData(groupedCErrors)
+
+#Compute the standard deviation of the error (add later)
+
 
 #3. Make a plot with the error on the y axis, and the number of SNPs on the x axis. (4 plots per data type that we infer)
 
