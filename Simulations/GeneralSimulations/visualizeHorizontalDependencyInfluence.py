@@ -4,10 +4,11 @@
 	
 """
 import sys
-
+import os
+import re
 
 #1. Define the folders containing the data that we want to visualize
-snpNums = [100, 500, 10000]
+snpNums = [100]
 motherFolder = sys.argv[1]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
