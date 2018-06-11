@@ -19,7 +19,7 @@ general = dict(
 	minimumSNVFrequency = 0.1, #We filter out every SNV below this frequency, as we assume that it comes from the minor clone and is thus contaminating. (Find optimal value for this frequency). This only works for the scripts that use the realVAF!
 	randomTree = False
 )
-
+#
 runType = dict(
 	randomMeasurements = False, #Do we want random LAF and random SNVs to be assigned to each sample? 
 	horizontalShuffle = True #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
