@@ -139,7 +139,18 @@ def averageData(dictionary, type):
 [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors] = readDataIncludingPermutations(motherFolder, snpNums)
 
 #Compute an average of the errors
+print "C"
 print averageData(groupedCErrors, 'C')
+print averageData(groupedPCErrors, 'C')
+print "A"
+print averageData(groupedAErrors, 'C')
+print averageData(groupedPAErrors, 'C')
+print "Mu"
+print averageData(groupedMuErrors, 'C')
+print averageData(groupedPMuErrors, 'C')
+print "T"
+print averageData(groupedTreeErrors, 'T')
+print averageData(groupedPTreeErrors, 'T')
 
 #Compute the standard deviation of the error (add later)
 
