@@ -4,7 +4,7 @@
 #$ -cwd
 #$ -m as
 #$ -M m.m.nieboer@umcutrecht.nl
-#$ -l h_vmem=12G
+#$ -l h_vmem=20G
 #$ -l h_rt=2:00:00
 #$ -e noise0.03Mu90_err
 #$ -o noise0.03Mu90_out
