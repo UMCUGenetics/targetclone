@@ -96,7 +96,8 @@ class Simulator:
 	def distributeSnpMeasurementsAcrossChromosomeArms(self):
 		
 		
-		#We do the distribution of SNP measurements when the number of desired SNPs is larger than the allowed boundary. 
+		#We do the distribution of SNP measurements when the number of desired SNPs is lower than the allowed boundary.
+		#Otherwise, we will need to do a segmentation after that. Each chromosome arm will then have one SNP max. 
 		
 		#Distribute the SNPs across the genome based on the size of the chromosome. 
 		#depending on the size of this chromosome. So Chromosome 1 has more than 22.
@@ -283,7 +284,7 @@ class Simulator:
 		else:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		
-	#	os.makedirs(newDir)
+		os.makedirs(newDir)
 		
 		if simulationSettings.runType['horizontalShuffle'] == False:		
 			[samples, finalClones, realTree, savedMu] = self.generateSamples()
