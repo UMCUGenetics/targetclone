@@ -284,7 +284,7 @@ class Simulator:
 		else:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		
-		os.makedirs(newDir)
+		#os.makedirs(newDir)
 		
 		if simulationSettings.runType['horizontalShuffle'] == False:		
 			[samples, finalClones, realTree, savedMu] = self.generateSamples()
@@ -350,13 +350,15 @@ class Simulator:
 			
 			#The AF need to be shuffled randomly within each sample
 			
-			for sample in samples:
+			for sampleInd in range(0, len(samples)):
+				sample = samples[sampleInd]
 				
 				afMeasurements = sample.afMeasurements
 				lafMeasurements = sample.measurements.measurements
 				
 				#Determine the random positions that the new measurements will have
 				newOrder = random.sample(range(0, len(afMeasurements)), len(afMeasurements))
+				
 				
 				shuffledAFMeasurements = []
 				shuffledLAFMeasurements = []
@@ -365,8 +367,9 @@ class Simulator:
 					shuffledAFMeasurements.append(afMeasurements[measurementInd])
 					shuffledLAFMeasurements.append(lafMeasurements[measurementInd])
 			
-				sample.afMeasurements = shuffledAFMeasurements
-				sample.measurements = self.generateLAFObject(lafMeasurements)
+				
+				samples[sampleInd].afMeasurements = shuffledAFMeasurements
+				samples[sampleInd].measurements = self.generateLAFObject(shuffledLAFMeasurements)
 			
 			somVarMatrix = simulationData.snvMatrix
 			
@@ -379,7 +382,6 @@ class Simulator:
 			for cloneInd in range(0, len(samples)):
 				measurements = samples[cloneInd].measurements.measurements
 				lafMeasurementsMatrix[:,cloneInd] = measurements
-		
 		
 		
 			
