@@ -64,7 +64,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 			if subdir == simulationFolder: #we are not interested in the root folder
 				continue
 			
-			if re.match('horizontalShuffle', subdir):
+			if re.search('horizontalShuffle', subdir) is not None:
 				print subdir
 				for file in files:
 					if re.match('cError', file): #read the file and obtain the error
