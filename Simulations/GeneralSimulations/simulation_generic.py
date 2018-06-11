@@ -95,6 +95,9 @@ class Simulator:
 		
 	def distributeSnpMeasurementsAcrossChromosomeArms(self):
 		
+		
+		#We do the distribution of SNP measurements when the number of desired SNPs is larger than the allowed boundary. 
+		
 		#Distribute the SNPs across the genome based on the size of the chromosome. 
 		#depending on the size of this chromosome. So Chromosome 1 has more than 22.
 		
@@ -122,11 +125,23 @@ class Simulator:
 		emptyIndices = []
 		for armInd in range(0, len(self.chromosomeArms)):
 			arm = self.chromosomeArms[armInd]
+			
+			#Sometimes the addition of SNPs is more than we should add due to rounding
 		
-			self.allChromosomeArms += [arm]*int(snpDivision[armInd])
+		#	print "previous length: ", len(self.allChromosomeArms)
+			if len(self.allChromosomeArms) + int(snpDivision[armInd]) > self.snpNum:
+				#print "new length: ", len(self.allChromosomeArms) + int(snpDivision[armInd])
+				maxAddition = self.snpNum - len(self.allChromosomeArms)
+				#print "max to add: ", maxAddition
+				self.allChromosomeArms += [arm]*maxAddition
+			else:
+				self.allChromosomeArms += [arm]*int(snpDivision[armInd])
+			
 			#Sometimes not all chromosomes get SNPs because these are too small. Then we should ignore these chromosome arms
 			if int(snpDivision[armInd]) < 1:
 				emptyIndices.append(armInd)
+		
+	#	print len(self.allChromosomeArms)
 		
 		#Sometimes due to rounding not all SNPs are distributed. There should not be many so I append these to the last chromosome arm. 
 		
@@ -136,6 +151,9 @@ class Simulator:
 			
 			#use the last arm which remains in memory
 			self.allChromosomeArms += [self.chromosomeArms[armInd]]*difference
+		
+		
+		
 		
 		#Remove the arms that do not have SNPs from the list of chromosome arms with SNPs. 
 		tmpArms = np.array(self.chromosomeArms)
@@ -150,6 +168,8 @@ class Simulator:
 			tupleFormattedArmProbabilities.append(tuple(arm))
 			
 		self.simulationProbabilities.armProbabilities = tupleFormattedArmProbabilities	
+		
+		
 		
 		for arm in self.allChromosomeArms:
 			
@@ -263,7 +283,7 @@ class Simulator:
 		else:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		
-		os.makedirs(newDir)
+	#	os.makedirs(newDir)
 		
 		if simulationSettings.runType['horizontalShuffle'] == False:		
 			[samples, finalClones, realTree, savedMu] = self.generateSamples()

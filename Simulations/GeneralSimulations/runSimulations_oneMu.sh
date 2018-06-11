@@ -6,8 +6,8 @@
 #$ -M m.m.nieboer@umcutrecht.nl
 #$ -l h_vmem=20G
 #$ -l h_rt=2:00:00
-#$ -e noise0.03Mu90
-#$ -o noise0.03Mu90
+#$ -e noise0.03Mu90_10000
+#$ -o noise0.03Mu90_10000
 
 #Run a simulation with horizontal dependency removed permutation. We do this 100 times for 1 mu and 1 noise level. 
 

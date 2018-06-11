@@ -185,6 +185,11 @@ class TargetClone:
 			iterationMu[iteration] = allMu
 			iterationMessages[iteration] = message
 			iteration += 1
+				
+			import os
+			import psutil
+			process = psutil.Process(os.getpid())
+			print(process.memory_info().rss)
 			
 		#reset the node names from numbers to the actual sample names
 		iterationGraphs = self.updateTreeNodeNames(iterationGraphs, vertexNames)
@@ -416,6 +421,7 @@ class TargetClone:
 		# 	print sample.name
 		# 	print len(sample.originalCMu)
 		
+		#print(process.get_memory_info()[0])
 		
 		laf = samples[sampleInd].measurements
 		bestCombinations = [None]*4
