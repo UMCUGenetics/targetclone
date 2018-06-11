@@ -8,7 +8,7 @@ import os
 import re
 
 #1. Define the folders containing the data that we want to visualize
-snpNums = ['500_1']
+snpNums = ['100_1', '500_1']
 motherFolder = sys.argv[1]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
