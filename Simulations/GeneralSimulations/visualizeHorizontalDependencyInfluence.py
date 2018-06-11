@@ -77,7 +77,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 					if re.match('treeError', file): #read the file and obtain the error
 						pTreeErrors += collectErrorsFromFile(file, subdir)
 			else:
-				print "non shuffle: ", horizontalShuffle
+				print "non shuffle: ", subdir
 				for file in files:
 					if re.match('cError', file): #read the file and obtain the error
 						cErrors += collectErrorsFromFile(file, subdir)
