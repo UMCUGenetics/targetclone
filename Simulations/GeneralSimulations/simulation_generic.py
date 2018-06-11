@@ -284,7 +284,7 @@ class Simulator:
 		else:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		
-		#os.makedirs(newDir)
+		os.makedirs(newDir)
 		
 		if simulationSettings.runType['horizontalShuffle'] == False:		
 			[samples, finalClones, realTree, savedMu] = self.generateSamples()
