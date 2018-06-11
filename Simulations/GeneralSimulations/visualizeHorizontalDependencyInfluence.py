@@ -69,6 +69,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 				for file in files:
 					if re.match('cError', file): #read the file and obtain the error
 						pCErrors += collectErrorsFromFile(file, subdir)
+						print "read: ", pCErrors
 					if re.match('aError', file): #read the file and obtain the error
 						pAErrors += collectErrorsFromFile(file, subdir)
 					if re.match('muError', file): #read the file and obtain the error
