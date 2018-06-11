@@ -8,7 +8,7 @@ import os
 import re
 
 #1. Define the folders containing the data that we want to visualize
-snpNums = [100]
+snpNums = [10000]
 motherFolder = sys.argv[1]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
@@ -65,7 +65,6 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 				continue
 			
 			if re.search('horizontalShuffle', subdir) is not None:
-				print subdir
 				for file in files:
 					if re.match('cError', file): #read the file and obtain the error
 						pCErrors += collectErrorsFromFile(file, subdir)
@@ -77,7 +76,6 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 					if re.match('treeError', file): #read the file and obtain the error
 						pTreeErrors += collectErrorsFromFile(file, subdir)
 			else:
-				print "non shuffle: ", subdir
 				for file in files:
 					if re.match('cError', file): #read the file and obtain the error
 						cErrors += collectErrorsFromFile(file, subdir)
