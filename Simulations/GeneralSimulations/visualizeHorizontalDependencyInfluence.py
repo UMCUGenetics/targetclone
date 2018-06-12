@@ -169,6 +169,8 @@ averagedPMuErrors = averageData(groupedPMuErrors, 'C')
 print "T"
 averagedTreeErrors = averageData(groupedTreeErrors, 'T')
 averagedPTreeErrors = averageData(groupedPTreeErrors, 'T')
+print averagedTreeErrors
+print averagedPTreeErrors
 
 #Compute the standard deviation of the error (add later)
 [groupedAboveStdC, groupedBelowStdC] = obtainStandardDeviations(groupedCErrors, averagedCErrors)
