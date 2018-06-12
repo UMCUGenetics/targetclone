@@ -653,11 +653,28 @@ class TargetClone:
 	#associated to them. We rank the trees, and report the best one (ISA and lowest overall distance).
 	#This should help ensure that we always at least find a tree for which the ISA is resolved, in cases where we now end up in a local minimum. 
 	def updateTree(self, fullGraph, allSomaticVariants, samples, dists):
+		
+
 		#Copy the full graph, we iteratively update the full graph, but if there is no solution we can get back the original full graph and somatic variants (in case of the addition of precursor information)
 		originalGraph = deepcopy(fullGraph) 
 		originalSomaticVariants = deepcopy(allSomaticVariants)
 		newSomaticVariants = deepcopy(allSomaticVariants)
 		vertexNames = fullGraph.vertices
+		
+		if settings.trees['snvsEnabled'] == False: #If we wish to have a tree without using SNVs, do the following
+			newEdges = SpanningArborescence().computeMinimumSpanningArborescence(fullGraph, newSomaticVariants) #First infer the MST
+			#Create the graph object
+			newVertices = deepcopy(vertexNames)
+			newVertices.append(len(samples)) #add a new precursor state
+			newGraph = Graph(newVertices, None, None)
+			newGraph.setEdges(newEdges)
+			
+			newGraph.edgeAnnotations = fullGraph.edgeAnnotations
+			
+			#Return this tree without further updating.
+			message = ''
+			return [newGraph, message]
+		
 		
 		#Number of iterations to make in which we each time select a random branch to remove
 		randIterations = settings.general['treeUpdatingIterations']

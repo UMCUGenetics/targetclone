@@ -1,6 +1,6 @@
 files = dict(
 
-	outputDir = 'Results/test/',
+	outputDir = 'Results/snps_100_noSNVs/',
 	segmentationFile = '../../TargetClone/InternalData/pq_segmentation.txt',
 	simulationProbabilityFile = "../../TargetClone/InternalData/lossGainProbabilityFile.txt",
 	targetCloneInstance = '../../TargetClone/InternalData/targetClone.pkl'
