@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #1. Define the folders containing the data that we want to visualize
-snpNums = ['500_noSNVs']
+snpNums = ['500_noSNVs', '1000_noSNVs']
 motherFolder = sys.argv[1]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
