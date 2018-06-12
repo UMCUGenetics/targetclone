@@ -6,9 +6,11 @@
 import sys
 import os
 import re
+import numpy as np
+import matplotlib.pyplot as plt
 
 #1. Define the folders containing the data that we want to visualize
-snpNums = ['100_1', '500_1']
+snpNums = ['100_1', '500_1', '10000_1']
 motherFolder = sys.argv[1]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
@@ -133,28 +135,137 @@ def averageData(dictionary, type):
 	
 	return sortedAveragedData
 
+def obtainStandardDeviations(groupedErrors, averagedError):
+	
+	#Compute standard deviations, see if it is better
+	groupedAboveStd = []
+	groupedBelowStd = []
+	
+	#It is more interesting to show the quantiles rather than the standard deviation
+	for noiseLevelInd in range(0, len(groupedErrors.keys())):
+		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
+		q1 = np.std(noiseValues)
+		q3 = np.std(noiseValues)
+		groupedAboveStd.append(q3)
+		groupedBelowStd.append(q1)
+		
+	sortedKeys, sortedBelow = zip(*sorted(zip(groupedErrors.keys(), groupedBelowStd)))
+	sortedKeys, sortedAbove = zip(*sorted(zip(groupedErrors.keys(), groupedAboveStd)))
+	return [sortedAbove, sortedBelow]
 
 #Get the raw errors for the horizontal shuffle and the normal case
 [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors] = readDataIncludingPermutations(motherFolder, snpNums)
 
 #Compute an average of the errors
 print "C"
-print averageData(groupedCErrors, 'C')
-print averageData(groupedPCErrors, 'C')
+averagedCErrors = averageData(groupedCErrors, 'C')
+averagedPCErrors = averageData(groupedPCErrors, 'C')
 print "A"
-print averageData(groupedAErrors, 'C')
-print averageData(groupedPAErrors, 'C')
+averagedAErrors = averageData(groupedAErrors, 'C')
+averagedPAErrors = averageData(groupedPAErrors, 'C')
 print "Mu"
-print averageData(groupedMuErrors, 'C')
-print averageData(groupedPMuErrors, 'C')
+averagedMuErrors = averageData(groupedMuErrors, 'C')
+averagedPMuErrors = averageData(groupedPMuErrors, 'C')
 print "T"
-print averageData(groupedTreeErrors, 'T')
-print averageData(groupedPTreeErrors, 'T')
+averagedTreeErrors = averageData(groupedTreeErrors, 'T')
+averagedPTreeErrors = averageData(groupedPTreeErrors, 'T')
 
 #Compute the standard deviation of the error (add later)
+[groupedAboveStdC, groupedBelowStdC] = obtainStandardDeviations(groupedCErrors, averagedCErrors)
+[groupedAboveStdA, groupedBelowStdA] = obtainStandardDeviations(groupedAErrors, averagedAErrors)
+[groupedAboveStdMu, groupedBelowStdMu] = obtainStandardDeviations(groupedMuErrors, averagedMuErrors)
+[groupedAboveStdT, groupedBelowStdT] = obtainStandardDeviations(groupedTreeErrors, averagedTreeErrors)
+
+#Standard deviations for the permutation run
+[groupedAboveStdCP, groupedBelowStdCP] = obtainStandardDeviations(groupedPCErrors, averagedPCErrors)
+[groupedAboveStdAP, groupedBelowStdAP] = obtainStandardDeviations(groupedPAErrors, averagedPAErrors)
+[groupedAboveStdMuP, groupedBelowStdMuP] = obtainStandardDeviations(groupedPMuErrors, averagedPMuErrors)
+[groupedAboveStdTP, groupedBelowStdTP] = obtainStandardDeviations(groupedPTreeErrors, averagedPTreeErrors)
 
 
 #3. Make a plot with the error on the y axis, and the number of SNPs on the x axis. (4 plots per data type that we infer)
+
+def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, aboveStdP, belowStdP, snpNums, plotType, title, colInd):
+	
+	#Take the average and standard deviations as input
+	
+	#Make a plot with error on the y axis
+	#Number of SNPs on the x axis.
+	#For each run (with and without) we have 2 points
+	colors = ['#1f77b4', '#ff7f0e', '#d62728', '#9467bd', '#2ca02c', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+	plt.figure()
+	ax = plt.gca()
+	
+	legendLines = []
+	
+	correctedBelowStd = []
+	for std in range(0, len(belowStd)):
+		newStd = belowStd[std]
+		if (errors[std]-newStd) < 0:
+			newStd = abs(0-errors[std])
+		correctedBelowStd.append(newStd)
+	correctedAboveStd = []
+	for std in range(0, len(aboveStd)):
+		newStd = aboveStd[std]
+		if errors[std]+newStd > 1 and plotType != 'Trees':
+			newStd = abs(1-errors[std])
+		correctedAboveStd.append(newStd)
+	
+		
+	print correctedBelowStd
+	print correctedAboveStd
+	#Plot the error for the simulations
+	xPositions = range(0, len(snpNums))
+	p = ax.errorbar(xPositions, errors, yerr=[correctedBelowStd, correctedAboveStd], label='Normal', color=colors[colInd], linewidth=2)
+	legendLines.append(p[0])
+	
+	#Repeat for the permutation run
+	
+	correctedBelowStdP = []
+	for std in range(0, len(belowStdP)):
+		newStd = belowStdP[std]
+		if (errors[std]-newStd) < 0:
+			newStd = abs(0-errors[std])
+		correctedBelowStdP.append(newStd)
+	correctedAboveStdP = []
+	for std in range(0, len(aboveStdP)):
+		newStd = aboveStd[std]
+		if errors[std]+newStd > 1 and plotType != 'Trees':
+			newStd = abs(1-errors[std])
+		correctedAboveStdP.append(newStd)
+
+	#Plot the error for the simulations
+	xPositions = range(0, len(snpNums))
+	print xPositions
+	p = ax.errorbar(xPositions, pErrors, yerr=[correctedBelowStdP, correctedAboveStdP], label='Shuffled LAF', color=colors[colInd+1], linewidth=2)
+	legendLines.append(p[0])
+	
+	
+	#ax.set_ylim(lim[0],lim[1])
+	ax.set_xlabel('Number of SNPs')
+ 	ax.set_ylabel('Error')
+	#ax.set_xlim(-0.005,0.105)
+	#extraticks = [0.005, 0.01, 0.015, 0.025, 0.03] #these are the ticks that are usually ignored
+	#lim = ax.get_xlim()
+	#print sorted(list(ax.get_xticks()) + extraticks)
+	#ax.set_xticks(sorted(list(ax.get_xticks()) + extraticks))
+	ax.set_xticks(xPositions)
+	ax.set_xticklabels(snpNums, rotation=90)
+	#ax.set_xlim(lim)
+	plt.tight_layout()
+	plt.legend()
+	#plt.show()
+	plt.savefig(title + '.svg')
+	
+	
+	return 0
+
+snpNums = [100, 500, 10000] #use this for now because the folder names were changed to non-numbers
+plotHorizontalDependencyInfluence(averagedCErrors, averagedPCErrors, groupedAboveStdC, groupedBelowStdC, groupedAboveStdCP, groupedBelowStdCP, snpNums, 'Copy numbers', 'Copy_numbers_hp', 0)
+plotHorizontalDependencyInfluence(averagedAErrors, averagedPAErrors, groupedAboveStdA, groupedBelowStdA, groupedAboveStdAP, groupedBelowStdAP, snpNums, 'Alleles', 'Alleles_hp', 2)
+plotHorizontalDependencyInfluence(averagedMuErrors, averagedPMuErrors, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdMuP, groupedBelowStdMuP, snpNums, 'Mu', 'Mu_hp', 4)
+plotHorizontalDependencyInfluence(averagedTreeErrors, averagedPTreeErrors, groupedAboveStdT, groupedBelowStdT, groupedAboveStdTP, groupedBelowStdTP, snpNums, 'Trees', 'Trees_hp', 6)
+	
 
 
 #4. Another plot that we can make is show how much performance is gained with the horizontal dependency on the y axis, and the average distance between SNPs on the x axis (all in 1 plot is possible)
