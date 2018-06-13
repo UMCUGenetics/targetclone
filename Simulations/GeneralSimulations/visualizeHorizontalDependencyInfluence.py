@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #1. Define the folders containing the data that we want to visualize
-snpNums = ['100_noSNVsReRun', '500_noSNVs', '1000_noSNVs']
+snpNums = ['snps_100_noSNVsReRun', 'snps_500_noSNVs', 'snps_1000_noSNVs']
 motherFolder = sys.argv[1]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
@@ -256,8 +256,8 @@ def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, above
 	#ax.set_xlim(lim)
 	plt.tight_layout()
 	plt.legend()
-	#plt.show()
-	plt.savefig(title + '.svg')
+	plt.show()
+	#plt.savefig(title + '.svg')
 	
 	
 	return 0
