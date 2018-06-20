@@ -50,7 +50,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 	groupedAncestrySwapErrorsPresentInInferred = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = dataFolder + '/noise' + str(noiseLevel) + addition
+		simulationFolder = dataFolder + str(noiseLevel) + addition
 		
 		#Read all the errors into one list for this noise level
 		cErrors = []
@@ -224,7 +224,7 @@ def computeRandomCaseError(dataFolder):
 	
 	#F1. Read the data from the data folder
 	#Make dummy noise levels to read the right folder
-	noiseLevels = ['0_randomLAF_SNVs']
+	noiseLevels = ['ploidy2_randomLAFSNV']
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent] = \
 	readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
@@ -265,7 +265,7 @@ def computeRandomCaseError(dataFolder):
 	return [averagedCErrors[0], averagedAErrors[0], averagedMuErrors[0], averagedTreeErrors[0], averagedSwapErrorsAbsent[0], averagedSwapErrorsPresent[0], randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd]
 
 #2. Calculate statistics for the completely random case
-dataFolder = 'Results'
+dataFolder = 'Results/'
 [randomCError, randomAError, randomMuError, randomTreeError, randomSwapErrorAbsent, randomSwapErrorPresent, randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd] = computeRandomCaseError(dataFolder)
 
 
