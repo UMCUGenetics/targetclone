@@ -701,13 +701,13 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
 	# 
-	# print groupedCErrors
+	print groupedCErrors
 	# print np.percentile(groupedCErrors[0.01], 0)
 	# print np.percentile(groupedCErrors[0.01], 25)
 	# print np.percentile(groupedCErrors[0.01], 50)
 	# print np.percentile(groupedCErrors[0.01], 75)
 	# print np.percentile(groupedCErrors[0.01], 100)
-	# exit()
+	exit()
 	
 	
 	
