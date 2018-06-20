@@ -1228,11 +1228,19 @@ class Simulator:
 				
 				#take a sample from a normal distribution where the mu is the AF position (or should we sample from the LAF?)
 				#noisedAf = np.random.normal(newAf, currentNoiseLevel, 1)[0]
-				lower, upper = 0, 1 #AF truncated ones
-				mu, sigma = newAf, currentNoiseLevel
-				X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
-				noisedAf = X.rvs(1)[0] #take a sample
-				#noisedAf = newAf
+				
+				if currentNoiseLevel > 0:
+					
+					lower, upper = 0, 1 #AF truncated ones
+					mu, sigma = newAf, currentNoiseLevel
+					X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+					noisedAf = X.rvs(1)[0] #take a sample
+					#noisedAf = newAf
+					#AF.append(noisedAf)
+					
+				else:
+					noisedAf = newAf
+					
 				AF.append(noisedAf)
 				if noisedAf > 0.5:
 					LAF.append(1-noisedAf)
