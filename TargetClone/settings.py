@@ -5,9 +5,9 @@ general = dict(
 	muMax = 100, #This is the maximum value of mu (percentages)
 	maximumIterations = 10, #The maximum number of iterations the model is allowed to make
 	snvLowerBound = 0.04, #If an SNV has an AF below this frequency, we will consider it noise and not take it into account (considering it not-present). 
-	precursorPloidy = 4, #The ploidy of the precursor in tree T1
-	precursorAlleleACount = 2, #The distribution of parental (A and B) alleles in this precursor in T1
-	precursorAlleleBCount = 2,
+	precursorPloidy = 2, #The ploidy of the precursor in tree T1
+	precursorAlleleACount = 1, #The distribution of parental (A and B) alleles in this precursor in T1
+	precursorAlleleBCount = 1,
 	mmSigma = 0.02, #This sigma was estimated from the noise in the reference samples of TGCC, and is used in the Gaussian Mixture Models to represent sequencing noise.
 	treeUpdatingIterations = 50 #The number of times we start from the MSA and then randomly remove the 'worst' branches for which the same number of SNVs violate the ISA. 
 )
@@ -34,6 +34,6 @@ fst = dict(
 
 trees = dict(
 	precursor = False, #Should the method attempt to add one precursor ('unsampled subclone') to the tree? This feature is in beta, use with caution!
-	snvsEnabled = False #Inferring the trees using SNVs. If desired, this can be set to False and the algorithm will not update the tree but only report the MST. 
+	snvsEnabled = True #Inferring the trees using SNVs. If desired, this can be set to False and the algorithm will not update the tree but only report the MST. 
 )
 
