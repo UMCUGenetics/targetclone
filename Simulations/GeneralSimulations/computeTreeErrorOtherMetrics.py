@@ -32,6 +32,122 @@ def collectErrorsFromFile(file, subdir): #subdir
 	text_file.close()
 	return floatLines
 
+
+#Provide a child to start the search from
+#Then go up the tree, there should be only one path, until we reach the root of the tree.
+def isParentChildRelation(edgeList, parent, child):
+	
+	print "looking for parent: ", parent
+	print "looking for child: ", child 
+	
+	#First obtain the parent of the child in the tree to initiate the search
+	
+	#Keep searching starting from a new edge until we have found the parent that we are looking for or until we reach the root		
+	parentFound = False
+	root = False
+	newChild = child
+	while parentFound == False and root == False:
+		
+		if len(edgeList) < 1:
+			root = True
+		childPresent = False
+		for edge in edgeList:
+			
+			if newChild == "Healthy":
+				root = True #we can't continue after this
+			
+			if edge[1] == parent and edge[2] == newChild:
+				#print "found parent: ", edge[1]
+				parentFound = True
+
+
+			#print "edge child: ", edge[2]
+			#print "new child: ", newChild
+			if edge[2] == newChild:
+				childPresent = True
+				newChild = edge[1] #Start from the parent of this child
+				
+				#print "setting new child to: ", newChild
+		
+		if childPresent == False: #Make sure to also quit when trees are truncated and the child that we are looking for is not there in the tree
+			root = True
+				
+					
+	
+	print parentFound
+	
+	return parentFound
+		
+#Ancestry swap error
+def computeAncestrySwapError(realTree, inferredTree):
+	"""
+		The purpose of this function is to check how often pairs of parents and children are swapped compared to the real ground truth tree. 
+	"""
+	
+	print "edges: ", realTree.edgeList
+	print "edges: ", inferredTree.edgeList
+	
+	allSamples = realTree.vertices
+	
+	samplePairs = []
+	for sampleInd in range(0, len(allSamples)):
+		for sampleInd2 in range(sampleInd+1, len(allSamples)):
+			
+			samplePairs.append([allSamples[sampleInd], allSamples[sampleInd2]])
+			samplePairs.append([allSamples[sampleInd2], allSamples[sampleInd]]) #Also keep the reverse
+
+	
+	#Go through the edges in the real tree, and decide for each pair which sample is the parent and which is the child. If these are in different branches, we should not count these.
+	
+	
+	parentChildRelationStatusRealTree = []
+	parentChildRelationStatusInferredTree = []
+	for samplePairInd in range(0, len(samplePairs)):
+		
+		samplePair = samplePairs[samplePairInd]
+		print samplePair
+		
+		#Look through the edges of the real tree.
+		#Search for the child of the pair.
+		#Then continue up the branch recursively until the root is found. If we do not find the parent, skip it.
+		#If we do find it as a parent, then we have found a parent-child relation.
+		#Repeat this for each combination of sample pairs.
+		#Afterwards, we repeat these steps for the inferred tree, and compare how often a parent-child relation is now swapped (we can see this by the order of the sample pairs)
+		
+		relationshipStatus = isParentChildRelation(realTree.edgeList, samplePair[0], samplePair[1]) #check if the first sample is the parent of the second in the tree. 
+		parentChildRelationStatusRealTree.append(relationshipStatus)
+		
+		#Repeat for the inferred tree
+		relationshipStatus = isParentChildRelation(inferredTree.edgeList, samplePair[0], samplePair[1]) #check if the first sample is the parent of the second in the tree. 
+		parentChildRelationStatusInferredTree.append(relationshipStatus)
+	
+	#For every 2 indices, if the first is 1 for the real tree, but the second is 1 for the inferred tree, relationships are swapped.
+	
+	print "real tree statuses: ", parentChildRelationStatusRealTree
+	print "inferred tree statuses: ", parentChildRelationStatusInferredTree
+	
+	ancestrySwapCountAbsentInInferred = 0
+	ancestrySwapCountPresentInInferred = 0
+	
+	
+	for samplePairInd in range(0, len(parentChildRelationStatusRealTree)):
+		
+		if parentChildRelationStatusRealTree[samplePairInd] == True and parentChildRelationStatusInferredTree[samplePairInd] == False:
+			
+			ancestrySwapCountAbsentInInferred += 1 #This is a relation that is present in the real tree, but not in the inferred tree.
+		
+		if parentChildRelationStatusRealTree[samplePairInd] == False and parentChildRelationStatusInferredTree[samplePairInd] == True:
+			ancestrySwapCountPresentInInferred += 1 #This relation is not in the real tree, but newly added in the inferred tree. 
+			
+	
+	print "absent in inferred error: ", ancestrySwapCountAbsentInInferred
+	print "present in inferred error: ", ancestrySwapCountPresentInInferred
+	
+	print "done computing swap errors"	
+	
+	return [ancestrySwapCountAbsentInInferred, ancestrySwapCountPresentInInferred]
+
+
 def computeEuclideanDistanceBetweenSamples(sample1Laf, sample2Laf, sample1Snvs, sample2Snvs):
 	
 	#compute the distance row-wise
