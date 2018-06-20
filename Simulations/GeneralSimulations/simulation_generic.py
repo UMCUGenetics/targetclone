@@ -95,81 +95,94 @@ class Simulator:
 		
 	def distributeSnpMeasurementsAcrossChromosomeArms(self):
 		
-		
 		#We do the distribution of SNP measurements when the number of desired SNPs is lower than the allowed boundary.
 		#Otherwise, we will need to do a segmentation after that. Each chromosome arm will then have one SNP max. 
-		
+			
 		#Distribute the SNPs across the genome based on the size of the chromosome. 
 		#depending on the size of this chromosome. So Chromosome 1 has more than 22.
-		
+			
 		#1. Get the chromosome sizes
 		hg19CoordinateArray = self.getHg19Coordinates()
-		
-		sizes = []
-		for arm in range(0, hg19CoordinateArray.shape[0]):
 			
-			size = hg19CoordinateArray[arm, 2] - hg19CoordinateArray[arm, 1]
-			sizes.append(size)
-		
-		sizes = np.array(sizes)
-		#2. Divide the size by the number of arms. Then multiply by the number of SNPs.
-		#If this number is not an integer, round to the nearest integer
-		 
 		
 		
-		dividedSizes = sizes / float(np.sum(sizes))
-		
-		#Divide the SNPs across the chromosome arms based on their sizes (this should equal to the number of SNPs)
-		snpDivision = np.round(dividedSizes * self.snpNum)
-		
-		self.allChromosomeArms = []
-		emptyIndices = []
-		for armInd in range(0, len(self.chromosomeArms)):
-			arm = self.chromosomeArms[armInd]
+		#If the number of SNP measurements is too large, we recommend doing a segmentation. So that would mean that we have one measurement per chromosome arm,
+		#assuming that the segmentation is perfect. Thus, we should distribute the measurements as such and update the snpNum value, as the rest of the code depends on that.
+		#It should equal the number of chromosome arms.
+		if simulationSettings.runType['segmentation'] == True:
+			self.allChromosomeArms = []
+			for armInd in range(0, len(self.chromosomeArms)):
+				self.allChromosomeArms.append(self.chromosomeArms[armInd])
+				
+			self.snpNum = len(self.allChromosomeArms)
+		else:
 			
-			#Sometimes the addition of SNPs is more than we should add due to rounding
-		
-		#	print "previous length: ", len(self.allChromosomeArms)
-			if len(self.allChromosomeArms) + int(snpDivision[armInd]) > self.snpNum:
-				#print "new length: ", len(self.allChromosomeArms) + int(snpDivision[armInd])
-				maxAddition = self.snpNum - len(self.allChromosomeArms)
-				#print "max to add: ", maxAddition
-				self.allChromosomeArms += [arm]*maxAddition
-			else:
-				self.allChromosomeArms += [arm]*int(snpDivision[armInd])
 			
-			#Sometimes not all chromosomes get SNPs because these are too small. Then we should ignore these chromosome arms
-			if int(snpDivision[armInd]) < 1:
-				emptyIndices.append(armInd)
-		
-	#	print len(self.allChromosomeArms)
-		
-		#Sometimes due to rounding not all SNPs are distributed. There should not be many so I append these to the last chromosome arm. 
-		
-		if len(self.allChromosomeArms) < self.snpNum:
+			sizes = []
+			for arm in range(0, hg19CoordinateArray.shape[0]):
+				
+				size = hg19CoordinateArray[arm, 2] - hg19CoordinateArray[arm, 1]
+				sizes.append(size)
 			
-			difference = self.snpNum - len(self.allChromosomeArms)
+			sizes = np.array(sizes)
+			#2. Divide the size by the number of arms. Then multiply by the number of SNPs.
+			#If this number is not an integer, round to the nearest integer
+			 
 			
-			#use the last arm which remains in memory
-			self.allChromosomeArms += [self.chromosomeArms[armInd]]*difference
-		
-		
-		
-		
-		#Remove the arms that do not have SNPs from the list of chromosome arms with SNPs. 
-		tmpArms = np.array(self.chromosomeArms)
-		self.chromosomeArms = list(np.delete(tmpArms, emptyIndices))
-		
-		#Also remove the arms without SNPs from the probabilities so tat these will not be chosen later in the simulations
-		tmpArms = np.array(self.simulationProbabilities.armProbabilities)
-		tmpArmsDeleted = np.delete(tmpArms, emptyIndices, axis=0)
-		
-		tupleFormattedArmProbabilities = []
-		for arm in tmpArmsDeleted:
-			tupleFormattedArmProbabilities.append(tuple(arm))
 			
-		self.simulationProbabilities.armProbabilities = tupleFormattedArmProbabilities	
-		
+			dividedSizes = sizes / float(np.sum(sizes))
+			
+			#Divide the SNPs across the chromosome arms based on their sizes (this should equal to the number of SNPs)
+			snpDivision = np.round(dividedSizes * self.snpNum)
+			
+			self.allChromosomeArms = []
+			emptyIndices = []
+			for armInd in range(0, len(self.chromosomeArms)):
+				arm = self.chromosomeArms[armInd]
+				
+				#Sometimes the addition of SNPs is more than we should add due to rounding
+			
+			#	print "previous length: ", len(self.allChromosomeArms)
+				if len(self.allChromosomeArms) + int(snpDivision[armInd]) > self.snpNum:
+					#print "new length: ", len(self.allChromosomeArms) + int(snpDivision[armInd])
+					maxAddition = self.snpNum - len(self.allChromosomeArms)
+					#print "max to add: ", maxAddition
+					self.allChromosomeArms += [arm]*maxAddition
+				else:
+					self.allChromosomeArms += [arm]*int(snpDivision[armInd])
+				
+				#Sometimes not all chromosomes get SNPs because these are too small. Then we should ignore these chromosome arms
+				if int(snpDivision[armInd]) < 1:
+					emptyIndices.append(armInd)
+			
+		#	print len(self.allChromosomeArms)
+			
+			#Sometimes due to rounding not all SNPs are distributed. There should not be many so I append these to the last chromosome arm. 
+			
+			if len(self.allChromosomeArms) < self.snpNum:
+				
+				difference = self.snpNum - len(self.allChromosomeArms)
+				
+				#use the last arm which remains in memory
+				self.allChromosomeArms += [self.chromosomeArms[armInd]]*difference
+			
+			
+			
+			
+			#Remove the arms that do not have SNPs from the list of chromosome arms with SNPs. 
+			tmpArms = np.array(self.chromosomeArms)
+			self.chromosomeArms = list(np.delete(tmpArms, emptyIndices))
+			
+			#Also remove the arms without SNPs from the probabilities so tat these will not be chosen later in the simulations
+			tmpArms = np.array(self.simulationProbabilities.armProbabilities)
+			tmpArmsDeleted = np.delete(tmpArms, emptyIndices, axis=0)
+			
+			tupleFormattedArmProbabilities = []
+			for arm in tmpArmsDeleted:
+				tupleFormattedArmProbabilities.append(tuple(arm))
+				
+			self.simulationProbabilities.armProbabilities = tupleFormattedArmProbabilities	
+			
 		
 		
 		for arm in self.allChromosomeArms:
