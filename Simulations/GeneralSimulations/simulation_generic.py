@@ -40,6 +40,7 @@ from tree import Graph
 from subclone import Subclone
 from simulationDataParser import SimulationDataHandler
 from simulationErrors import SimulationErrorHandler
+from randomVectors import randvec
 import settings
 import simulationSettings
 
@@ -249,6 +250,10 @@ class Simulator:
 		return snvs
 	
 	def obtainSomaticVariantIndices(self):
+		
+		print "number of positions: ", len(self.positions)
+		print "arms: ", len(self.allChromosomeArms)
+		
 				
 		offset = 0
 		variantIndices = []
@@ -257,25 +262,39 @@ class Simulator:
 			position = variant.position
 			chromosome = variant.chromosome
 
+			#print "variant position: ", position
+
 			for measurementPosition in range(0, len(self.positions)-1):
 				
+			#	print "measurement position: ", measurementPosition
+			#	print "measurement position: ", self.positions[measurementPosition]
+				
+				
 				if str(chromosome) == str(self.allChromosomeArms[measurementPosition]): #the chromosome needs to be the same
-					
+					print "match on chromosome", str(chromosome), str(self.allChromosomeArms[measurementPosition])
 					#for all the variants within the SNP range		
 					if int(position) > int(self.positions[measurementPosition]) and int(position) < int(self.positions[measurementPosition + 1]):
 						variantIndex = measurementPosition + offset
 						variantIndices.append(variantIndex)
+					#	print "adding offset", offset
 						offset += 1
 					#Situation where the somatic variant comes before the SNP measurements
 					if str(chromosome) != str(self.allChromosomeArms[measurementPosition-1]) and int(position) <= int(self.positions[measurementPosition]):
 						variantIndex = measurementPosition + offset
 						variantIndices.append(variantIndex)
+					#	print "adding offset 2", offset
 						offset += 1
 					#Situation where the somatic variant comes after the SNP measurements
 					if str(chromosome) != str(self.allChromosomeArms[measurementPosition+1]) and int(position) >= int(self.positions[measurementPosition]):
 						variantIndex = measurementPosition + offset
 						variantIndices.append(variantIndex)
+					#	print "adding offset 3", offset
 						offset += 1
+						
+					#print "variant index: ", variantIndex
+		
+		print variantIndices
+		#exit()
 		
 		return variantIndices
 	
@@ -299,9 +318,13 @@ class Simulator:
 		
 		os.makedirs(newDir)
 		
-		if simulationSettings.runType['horizontalShuffle'] == False:		
-			[samples, finalClones, realTree, savedMu] = self.generateSamples()
-		
+		if simulationSettings.runType['horizontalShuffle'] == False:
+			
+			if simulationSettings.runType['mixedSamples'] == False:
+				[samples, finalClones, realTree, savedMu] = self.generateSamples()
+			else:
+				[samples, finalClones, realTree, savedMu] = self.generateMixedSamples() #mixign subclones in a sample
+				
 			#obtain the C for every clone and merge it into a matrix
 			
 			cMatrix = np.empty([self.snpNum, len(finalClones)], dtype=float)
@@ -673,6 +696,359 @@ class Simulator:
 		
 		return samples, finalClones, realTree, savedMu
 	
+	#Function to generate samples but then when multiple subclones are mixed within a sample. 
+	def generateMixedSamples(self):
+		#Starting from a healthy cell, start making subclones	
+			
+		healthySubclone = Subclone()
+		healthySubclone.C = []
+		
+		for snpInd in range(0, self.snpNum):
+			healthySubclone.C.append(C([2,2]))
+		
+
+		healthySubclone.name = 'Healthy'
+		
+		healthyAlleleObjects = []
+		prevArm = self.allChromosomeArms[0]
+		alleleA = 'A' + str(uuid.uuid4())
+		alleleB = 'B' + str(uuid.uuid4())
+		
+		for newAlleleInd in range(0, self.snpNum):
+			
+			if self.allChromosomeArms[newAlleleInd] != prevArm:
+				alleleA = 'A' + str(uuid.uuid4())
+				alleleB = 'B' + str(uuid.uuid4())
+				
+			newAlleles = Alleles(1,1)
+			newAlleles.alleleIdentifiers = [alleleA, alleleB] #we add alleles A and B
+			healthyAlleleObjects.append(newAlleles)
+			prevArm = self.allChromosomeArms[newAlleleInd]
+		
+		healthySubclone.A = healthyAlleleObjects
+		
+		healthySubclone.somaticVariants = self.snvs
+		
+		#Make a sample object for this subclone
+		healthySample = Sample(None, None)
+		healthySample.C = healthySubclone.C
+		healthySample.A = healthySubclone.A
+		healthySample.Mu = Mu(100)
+		#obtain the chromosome, start and end information from the other samples
+		measurements = self.generateMeasurements(healthySubclone, 0) #the mu of the tumor is here 0 because we have a healthy sample
+		healthySample.afMeasurements = measurements[0]
+		healthySample.measurements = measurements[1]
+
+		healthySample.somaticVariants = [0]*self.snvNum #Why is this not the same as the object-based way?
+		healthySample.somaticVariantsInd = self.snvPositions
+		healthySample.setParent(None)
+		healthySample.name = healthySubclone.name
+		
+		#Do we still need these values? Add them anyway for now
+		eventDistances = EventDistances(self.kmin, self.kmax)
+		bestCMuHealthy = CMuCombination(C([2,2]), Mu(100), eventDistances)
+		
+		healthySample.bestCMu = [bestCMuHealthy]*len(measurements[1].measurements)
+		healthySample.originalCMu = healthySample.bestCMu
+
+	
+		#Then do the subclonal expansion starting from this healthy subclone
+		clones = self.evolve(healthySubclone, 1, 1, self.simulationProbabilities, [])
+		finalClones = [healthySubclone]
+		cloneInd = 0
+		savedMu = [healthySample.Mu]
+		edgeList = []
+		samples = [healthySample]
+		sampleNames = []
+		
+		numberOfMixedClones = simulationSettings.general['numberOfMixedClones'] #Number of subclones to mix within a sample
+		maximumMinorCloneFrequency = simulationSettings.general['maximumMinorCloneFrequency']
+		minimumMinorCloneFrequency = simulationSettings.general['minimumMinorCloneFrequency']
+		
+		print "total number of clones: ", len(clones)
+		
+		for sample in range(0, len(clones)):
+			
+			#Obtain the main clone information
+			clone = clones[sample]
+			print "processing clone: ", clone.name
+			finalClones.append(clone)
+			
+			
+			possibleSamplesToMix = range(0,sample) + range(sample+1,len(clones)) #the samples to select can never be the sample itself
+			print "can mix with: ", possibleSamplesToMix
+			print "number of mixed clones: ", numberOfMixedClones
+			
+			#If our tree does not contain enough subclones to mix with, we mix with the maximum allowed.
+			numberOfClonesToMix = numberOfMixedClones
+			if numberOfClonesToMix >= len(clones):
+				numberOfClonesToMix = len(clones)-1
+			
+			subclonesToMix = random.sample(possibleSamplesToMix, numberOfClonesToMix) #Select x other samples to mix the current sample with
+			
+			print "mixing with: ", subclonesToMix
+			
+			selectedClones = [clone] #make sure that we use this sample as major clone
+			for subcloneInd in subclonesToMix:
+				selectedClones.append(clones[subcloneInd])
+			
+			
+			#We wish to have a maximum value of 10 for the minor subclones. This function below makes vectors with a sum of 10. Thus, we can sample 1 more value than we need
+			#and then randomly select n-1 from this vector to get two values between 1 and 10. Make sure that this value that we sample is not 0!
+			
+			print maximumMinorCloneFrequency,numberOfMixedClones+1,maximumMinorCloneFrequency
+			
+			#Keep sampling if the value is smaller than the minimum clone fraction (maybe a bad solution but I don't have a better one right now)
+			totalMinorFraction = 0
+			
+			while totalMinorFraction < minimumMinorCloneFrequency:
+			
+				#sum to equal, N to sample, maxval, minval
+				minorCloneFractionsFull = randvec(maximumMinorCloneFrequency,numberOfMixedClones+1,maximumMinorCloneFrequency,1) #Sample the minor clone fractions
+				
+				print "minor fractions: ", minorCloneFractionsFull
+				minorCloneFractions = random.sample(minorCloneFractionsFull, numberOfMixedClones)
+				
+				totalMinorFraction = sum(minorCloneFractions)
+				print "minor fractions filtered: ", minorCloneFractions
+				print "total minor fraction: ", totalMinorFraction
+				
+			
+			#Do +1 to make sure that the major clone fraction is also not the same as the minor clone fraction
+			
+			normalFraction = 10 #test to see influence of the normal fraction
+			
+			majorFraction = [100 - normalFraction - totalMinorFraction]
+			print "major fraction: ", majorFraction
+			print "minor fraction: ", totalMinorFraction
+			print minorCloneFractions
+			#Combine the minor fractions with the major fractions
+			mixingFractions = majorFraction + minorCloneFractions
+			
+			print "mixing fractions: ", mixingFractions
+			
+			tumorFraction = sum(mixingFractions)
+			normalFraction = 100 - tumorFraction
+			print "total tumor fraction: ", tumorFraction
+			print "normal fraction: ", normalFraction
+			
+			allMixingFractions = dict()
+			allMixingFractions[sample] = mixingFractions
+			
+			#Generate AF measurements and somatic SNV measurements
+			
+			sampleAFMeasurements = self.generateMixedSampleAFMeasurements(selectedClones, mixingFractions)
+			sampleSNVMeasurements = self.generateMixedSampleSNVMeasurements(selectedClones, mixingFractions)
+			#Do not mix SNVs, now use only the SNVs of the original clone
+			# cloneSnvMeasurements= selectedClones[0].somaticVariants
+			# sampleSNVMeasurements = []
+			# for snv in cloneSnvMeasurements:
+			# 	sampleSNVMeasurements.append(snv.value)
+			# #sampleSNVMeasurements = selectedClones[0].somaticVariants
+			# print sampleSNVMeasurements
+			
+			#Generate LAF measurements from AF measurements
+			sampleLAFMeasurements = self.generateLAFObject(sampleAFMeasurements)
+			
+			
+			#Create a sample object
+			newSample = Sample(None, None)
+			#We cannot set C, A and mu because we do not know it yet
+	
+			newSample.somaticVariants = sampleSNVMeasurements
+			newSample.somaticVariantsInd = self.snvPositions
+			
+			newSampleMu = Mu(100 - sum(mixingFractions)) #Set the fraction of the normal component
+			
+			savedMu.append(newSampleMu)
+			#Calculate these measurements from the counts
+			newSample.afMeasurements = sampleAFMeasurements
+			newSample.measurements = sampleLAFMeasurements
+			
+			
+			
+			#The relations between the samples are no longer the same, since clones have been mixed. 
+			newSample.name = clone.name
+		
+			parentName = clone.parent.name
+			newEdge = (0,parentName,newSample.name) #use a weight of 0 by default, this is alright for comparison, we do not know the actual weight
+			edgeList.append(newEdge)
+			
+			samples.append(newSample)
+			sampleNames.append(newSample.name)
+
+	
+		vertices = []
+		for edge in edgeList:
+			parent = edge[1]
+			child = edge[2]
+			if parent not in vertices:
+				vertices.append(parent)
+			if child not in vertices:
+				vertices.append(child)
+		
+		realTree = Graph(vertices, set(edgeList), edgeList)
+		
+		return samples, finalClones, realTree, savedMu
+
+	
+	def generateMixedSampleSNVMeasurements(self, clones, mixingFractions):
+
+		#We should compute the VAF that the SNV would have.
+		
+		#I think that the positions that we use are before/after. This is thus only an estimate!
+		
+		#Per clone, we count the total A and B fraction for that SNV.
+		#A fraction is the total number of alleles at that locus - the number of alleles with an SNV
+		#B fraction is the number of alleles with an SNV
+		#This should be multiplied with the mixing fraction of the clone
+		#Normal cells have an A and B fraction of 0.
+		
+		snvMeasurements = []
+		#Obtain the A and B count at each position in the AF measurements
+		
+		#For position, for clone:
+		#Obtain A and B Count
+		#Multiply with the right mixing fraction
+		#store as AF measurments
+		
+		variants = len(clones[0].somaticVariants)
+		
+		for variant in range(0, variants):
+			totalRefFraction = 0
+			totalVarFraction = 0
+			
+			#Also mix in the normal component (will always be 0)
+			normalRefCount = 2 
+			normalVarCount = 0
+			normalFraction = 100 - sum(mixingFractions)
+			
+			totalRefFraction += normalRefCount * normalFraction
+			totalVarFraction += normalVarCount * normalFraction
+			
+			for cloneInd in range(0, len(clones)):
+				clone = clones[cloneInd]
+				
+				
+				
+				#The allele is the same across the chromosome arm, so just look anywhere at that chromosome arm
+				somVarChromosome = clone.somaticVariants[variant].chromosome
+				
+				chromosomeIndex = self.allChromosomeArms.index(somVarChromosome) #get the first index of a snp position on this chromosome
+				
+				#Obtain the allele as a string to count how many are A and B (is probably just the first and second entry of array, could be easier than this)
+				allele = clone.A[chromosomeIndex].getAllelesAsString()
+				#print "alleles of clone: ", allele
+				#Obtain how many A and B alleles are present
+				AOccurrences = [m.start() for m in re.finditer('A', allele)]
+				ACount = len(AOccurrences)
+				
+				BOccurrences = [m.start() for m in re.finditer('B', allele)]
+				BCount = len(BOccurrences)
+				
+				#Compute the total alleles
+				totalAlleles = ACount + BCount
+				
+				#Obtain the number of alleles the SNV is present on
+				snvAlleles = len(clone.somaticVariants[variant].alleles)
+				
+				# print "current clone: ", cloneInd
+				# print "mixing fractions: ", mixingFractions
+				# print "total alleles: ", totalAlleles
+				# print "snv alleles: ", snvAlleles
+				
+				refAlleles = totalAlleles - snvAlleles
+				
+				#Mix the allele counts with mixing fractions to compute the fraction of A and B alleles in this sample given the mixing fractions
+				refFraction = refAlleles * mixingFractions[cloneInd]
+				varFraction = snvAlleles * mixingFractions[cloneInd]
+				
+				#Sum the fractions to eventually divide the fraction of the B allele (or A) by the total.
+				totalRefFraction += refFraction
+				totalVarFraction += varFraction
+			
+			totalAlleleCount = totalRefFraction + totalVarFraction
+
+			#Compute the VAF
+			vaf = totalVarFraction / float(totalAlleleCount)
+			
+			#Do a filter based on the settings to filter out SNVs from contamination. 0.04 may not be enough!
+			#Then print to file and see how the SNV patterns look. Does it improve tree reconstruction?
+			if vaf < simulationSettings.general['minimumSNVFrequency']:
+				#print "true"
+				vaf = 0 #we consider these SNVs as not present when their frequency is too low. 
+			else:
+				vaf = 1
+			snvMeasurements.append(vaf)
+	
+		return snvMeasurements
+		
+	def generateMixedSampleAFMeasurements(self, clones, mixingFractions):
+		afMeasurements = []
+		#Obtain the A and B count at each position in the AF measurements
+		
+		#For position, for clone:
+		#Obtain A and B Count
+		#Multiply with the right mixing fraction
+		#store as AF measurments
+		
+		positions = len(clones[0].A)
+		
+		for position in range(0, positions):
+			totalAFraction = 0
+			totalBFraction = 0
+			#totalAlleleCount = 0
+			
+			#Also mix in the normal component
+			normalACount = 1
+			normalBCount = 1
+			normalFraction = 100 - sum(mixingFractions)
+			
+			totalAFraction += normalACount * normalFraction
+			totalBFraction += normalBCount * normalFraction
+			
+			for cloneInd in range(0, len(clones)):
+				clone = clones[cloneInd]
+				#Obtain the allele as a string to count how many are A and B (is probably just the first and second entry of array, could be easier than this)
+				allele = clone.A[position].getAllelesAsString()
+				#print allele
+				#Obtain how many A and B alleles are present
+				AOccurrences = [m.start() for m in re.finditer('A', allele)]
+				ACount = len(AOccurrences)
+				
+				BOccurrences = [m.start() for m in re.finditer('B', allele)]
+				BCount = len(BOccurrences)
+				
+				#Mix the allele counts with mixing fractions to compute the fraction of A and B alleles in this sample given the mixing fractions
+				aFraction = ACount * mixingFractions[cloneInd]
+				bFraction = BCount * mixingFractions[cloneInd]
+				
+				#Sum the fractions to eventually divide the fraction of the B allele (or A) by the total.
+				totalAFraction += aFraction
+				totalBFraction += bFraction
+			
+			totalAlleleCount = totalAFraction + totalBFraction
+
+			#Compute the AF
+			af = totalBFraction / float(totalAlleleCount)
+			#Add noise to the AF
+			lower, upper = 0, 1 #AF truncated ones
+			mu, sigma = af, simulationSettings.general['noiseLevel']
+			noisedAf = af
+			if simulationSettings.general['noiseLevel'] > 0:
+				X = stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma)
+				noisedAf = X.rvs(1)[0] #take a sample
+			
+			
+				
+			
+			afMeasurements.append(noisedAf)
+	
+		return afMeasurements
+	
+	
+
+
 	def computeAmbiguityScore(self, aMatrix, eAMatrix, realMuT, eMuT):
 		#define some random matrices to test
 		ambiguityError = 0
