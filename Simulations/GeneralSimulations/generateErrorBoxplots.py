@@ -745,8 +745,8 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 #1. Make figure one panels A-D
 #For figure one, we average the errors across the noise levels and plot all values together in one tree.
 #For every simulation run, we also generate euclidean trees and compute the error. 
-simulationFolder = 'Results/noise'
-dataFolder = 'Results/'
+simulationFolder = 'Results/ploidy2_noise'
+dataFolder = 'Results/ploidy2_noise'
 #noiseLevels = [0, 0.005, 0.01]
 noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
 #noiseLevels = [0]
