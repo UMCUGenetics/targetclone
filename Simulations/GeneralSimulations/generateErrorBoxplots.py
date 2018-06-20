@@ -287,7 +287,7 @@ def readData(dataFolder, noiseLevels, addition):
 	groupedAncestryPresentErrors = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = dataFolder + '/noise' + str(noiseLevel) + addition
+		simulationFolder = dataFolder + 'noise' + str(noiseLevel) + addition
 		
 		#Read all the errors into one list for this noise level
 		cErrors = []
