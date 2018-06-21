@@ -1,6 +1,6 @@
 files = dict(
 
-	outputDir = 'Results/horizontal_snps50000/',
+	outputDir = 'Results/snvs50/',
 	segmentationFile = '../../TargetClone/InternalData/pq_segmentation.txt',
 	simulationProbabilityFile = "../../TargetClone/InternalData/lossGainProbabilityFile.txt",
 	targetCloneInstance = '../../TargetClone/InternalData/targetClone.pkl'
@@ -8,7 +8,7 @@ files = dict(
 
 general = dict(
 	numberOfSNVs = 50,
-	numberOfSNPs = 50000,
+	numberOfSNPs = 500,
 	kmin = 1,
 	kmax = 6,
 	cellCycles = 5,
@@ -22,7 +22,7 @@ general = dict(
 #
 runType = dict(
 	randomMeasurements = False, #Do we want random LAF and random SNVs to be assigned to each sample? 
-	horizontalShuffle = True, #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
-	segmentation = True, #do we wish to run with segmentation on the SNP measurements? 
+	horizontalShuffle = False, #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
+	segmentation = False, #do we wish to run with segmentation on the SNP measurements? 
 	mixedSamples = False
 )
