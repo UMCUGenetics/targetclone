@@ -206,10 +206,10 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 
 snvNum = [10, 50, 100, 500, 1000, 5000, 10000, 50000]
 
-plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snpNums, 'Copy numbers', 'Copy_numbers_hp', 0)
-plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snpNums, 'Alleles', 'Alleles_hp', 2)
-plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snpNums, 'Mu', 'Mu_hp', 4)
-plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snpNums, 'Trees', 'Trees_hp', 6)
+plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_hp', 0)
+plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_hp', 2)
+plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_hp', 4)
+plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_hp', 6)
 	
 
 
