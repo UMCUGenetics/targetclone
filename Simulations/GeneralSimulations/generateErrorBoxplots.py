@@ -50,7 +50,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 	groupedAncestrySwapErrorsPresentInInferred = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = dataFolder + str(noiseLevel) + addition
+		simulationFolder = dataFolder 
 		
 		#Read all the errors into one list for this noise level
 		cErrors = []
@@ -224,7 +224,7 @@ def computeRandomCaseError(dataFolder):
 	
 	#F1. Read the data from the data folder
 	#Make dummy noise levels to read the right folder
-	noiseLevels = ['ploidy2_randomLAFSNV']
+	noiseLevels = ['cellCycleTest_0.02_random']
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent] = \
 	readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
@@ -745,10 +745,11 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 #1. Make figure one panels A-D
 #For figure one, we average the errors across the noise levels and plot all values together in one tree.
 #For every simulation run, we also generate euclidean trees and compute the error. 
-simulationFolder = 'Results/ploidy2_noise'
-dataFolder = 'Results/ploidy2_'
+simulationFolder = 'Results/cellCycleTest_0.02'
+dataFolder = 'Results/cellCycleTest_0.02'
 #noiseLevels = [0, 0.005, 0.01]
 noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
+noiseLevels == [0.02]
 #noiseLevels = [0]
 #Put this here so that we can easily re-use it for other figures
 ambiguities = []
@@ -765,7 +766,7 @@ for noiseLevel in noiseLevels:
 	
 #Also compute the ambiguity scores in the permuted data
 
-permutationFolder = 'Results/noise0_randomLAF_SNVs/'
+permutationFolder = 'Results/cellCycleTest_0.02_random/'
 
 [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
 groupedAmbiguitiesRandom = dict()
