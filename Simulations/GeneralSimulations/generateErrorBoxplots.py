@@ -50,7 +50,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 	groupedAncestrySwapErrorsPresentInInferred = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = dataFolder 
+		simulationFolder = dataFolder + noiseLevels
 		
 		#Read all the errors into one list for this noise level
 		cErrors = []
@@ -287,7 +287,7 @@ def readData(dataFolder, noiseLevels, addition):
 	groupedAncestryPresentErrors = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = dataFolder + 'noise' + str(noiseLevel) + addition
+		simulationFolder = dataFolder + str(noiseLevel) + addition
 		
 		#Read all the errors into one list for this noise level
 		cErrors = []
