@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 
 #1. Define the folders containing the data that we want to visualize
 motherFolder = sys.argv[1]
+snvNum = [10, 50, 100, 500, 1000, 5000, 10000, 50000]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
 
@@ -127,7 +128,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 	return [sortedAbove, sortedBelow]
 
 #Get the raw errors for the horizontal shuffle and the normal case
-[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors] = readDataIncludingPermutations(motherFolder, snpNums)
+[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors] = readDataIncludingPermutations(motherFolder, snvNum)
 
 #Compute an average of the errors
 print "C"
@@ -204,7 +205,7 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 	return 0
 
 
-snvNum = [10, 50, 100, 500, 1000, 5000, 10000, 50000]
+
 
 plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_hp', 0)
 plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_hp', 2)
