@@ -1,17 +1,17 @@
 files = dict(
 
-	outputDir = 'Results/snvs50000/',
+	outputDir = 'Results/cellCycleTest_0.02/',
 	segmentationFile = '../../TargetClone/InternalData/pq_segmentation.txt',
 	simulationProbabilityFile = "../../TargetClone/InternalData/lossGainProbabilityFile.txt",
 	targetCloneInstance = '../../TargetClone/InternalData/targetClone.pkl'
 )
 
 general = dict(
-	numberOfSNVs = 50000,
+	numberOfSNVs = 50,
 	numberOfSNPs = 500,
 	kmin = 1,
 	kmax = 6,
-	cellCycles = 5,
+	cellCycles = 4,
 	noiseLevel = 0.02, #was 0.03
 	numberOfMixedClones = 4, #This is the number of subclones that we mix in on top of the major clone! The name of this setting needs to be better. 
 	maximumMinorCloneFrequency = 50, #This value should change between simulations to see the effects
