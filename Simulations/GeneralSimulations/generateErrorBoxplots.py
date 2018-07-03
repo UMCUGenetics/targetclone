@@ -707,7 +707,7 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 	# print np.percentile(groupedCErrors[0.01], 50)
 	# print np.percentile(groupedCErrors[0.01], 75)
 	# print np.percentile(groupedCErrors[0.01], 100)
-	exit()
+	
 	
 	
 	
