@@ -272,7 +272,7 @@ def generatePolyclonalityFigure(simulationFolder, noiseLevels, contaminationLeve
 
 #Make Figure 4A and S10
 
-contaminationLevels = ['1_10', '11_20']
+contaminationLevels = ['1_10', '11_20', '21_30', '31_40', '41_50']
 
 simulationFolder = 'Results/mixedSubclones_' #Folder to look in for the results
 #Noise levels can in this case be interpreted as the number of subclones in a sample
