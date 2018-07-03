@@ -265,9 +265,7 @@ def generatePolyclonalityFigure(simulationFolder, noiseLevels, contaminationLeve
 	#F3. Plot the error per noise level in one figure
 	#plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors,
 	#			  groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT)
-	print allCErrors
-	print allTreeErrors
-	exit()
+
 	plotFigureOne(allCErrors, allAErrors, allMuErrors, allTreeErrors, allCStdAbove, allAStdAbove, allMuStdAbove, allTreeStdAbove, allCStdBelow, allAStdBelow, allMuStdBelow, allTreeStdBelow)
 	
 	return 0
