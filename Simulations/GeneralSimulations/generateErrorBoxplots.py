@@ -224,7 +224,7 @@ def computeRandomCaseError(dataFolder):
 	
 	#F1. Read the data from the data folder
 	#Make dummy noise levels to read the right folder
-	noiseLevels = ['cellCycleTest_0.02_random']
+	noiseLevels = ['generic_random']
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent] = \
 	readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
@@ -745,8 +745,8 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 #1. Make figure one panels A-D
 #For figure one, we average the errors across the noise levels and plot all values together in one tree.
 #For every simulation run, we also generate euclidean trees and compute the error. 
-simulationFolder = 'Results/cellCycleTest_0.02'
-dataFolder = 'Results/cellCycleTest_0.02'
+simulationFolder = 'Results/generic_noise'
+dataFolder = 'Results/generic_noise'
 #noiseLevels = [0, 0.005, 0.01]
 noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
 noiseLevels == [0.02]
@@ -766,7 +766,7 @@ for noiseLevel in noiseLevels:
 	
 #Also compute the ambiguity scores in the permuted data
 
-permutationFolder = 'Results/cellCycleTest_0.02_random/'
+permutationFolder = 'Results/generic_random/'
 
 [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
 groupedAmbiguitiesRandom = dict()
