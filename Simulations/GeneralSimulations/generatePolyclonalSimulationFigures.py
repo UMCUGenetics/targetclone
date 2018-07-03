@@ -209,10 +209,10 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, labels, colorInd, lim, tit
 
 def plotFigureOne(allCErrors, allAErrors, allMuErrors, allTreeErrors, allCStdAbove, allAStdAbove, allMuStdAbove, allTreeStdAbove, allCStdBelow, allAStdBelow, allMuStdBelow, allTreeStdBelow):
 	
-	plotData(noiseLevels, allCErrors, allCStdAbove, allCStdBelow, ['Copy numbers'], 0, [0,1], '../Output/Polyclonality/polyclonal_C_all.svg')
-	plotData(noiseLevels, allAErrors, allAStdAbove, allAStdBelow, ['Alleles'], 1, [0,1], '../Output/Polyclonality/polyclonal_A_all.svg')
-	plotData(noiseLevels, allMuErrors, allMuStdAbove, allMuStdBelow, ['Tumor fraction'], 3, [0,0.6], '../Output/Polyclonality/polyclonal_Mu_all.svg')
-	plotData(noiseLevels, allTreeErrors, allTreeStdAbove, allTreeStdBelow, ['Trees'], 4, [-1,17], '../Output/Polyclonality/polyclonal_T_all.svg')
+	plotData(noiseLevels, allCErrors, allCStdAbove, allCStdBelow, ['Copy numbers'], 0, [0,1], 'Output/Polyclonality/polyclonal_C_all.svg')
+	plotData(noiseLevels, allAErrors, allAStdAbove, allAStdBelow, ['Alleles'], 1, [0,1], 'Output/Polyclonality/polyclonal_A_all.svg')
+	plotData(noiseLevels, allMuErrors, allMuStdAbove, allMuStdBelow, ['Tumor fraction'], 3, [0,0.6], 'Output/Polyclonality/polyclonal_Mu_all.svg')
+	plotData(noiseLevels, allTreeErrors, allTreeStdAbove, allTreeStdBelow, ['Trees'], 4, [-1,17], 'Output/Polyclonality/polyclonal_T_all.svg')
 
 
 def generatePolyclonalityFigure(simulationFolder, noiseLevels, contaminationLevels):
