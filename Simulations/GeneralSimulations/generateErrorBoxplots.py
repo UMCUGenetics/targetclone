@@ -117,7 +117,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred)
 		
 		print "tree sizes:"
-		print treeSizes
+		print sum(treeSizes) / float(len(treeSizes))
 		exit()
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
