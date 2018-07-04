@@ -34,6 +34,6 @@ fst = dict(
 
 trees = dict(
 	precursor = False, #Should the method attempt to add one precursor ('unsampled subclone') to the tree? This feature is in beta, use with caution!
-	snvsEnabled = True #Inferring the trees using SNVs. If desired, this can be set to False and the algorithm will not update the tree but only report the MST. 
+	snvsEnabled = False #Inferring the trees using SNVs. If desired, this can be set to False and the algorithm will not update the tree but only report the MST. 
 )
 
