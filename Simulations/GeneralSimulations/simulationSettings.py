@@ -1,13 +1,13 @@
 files = dict(
 
-	outputDir = 'Results/snvs_100/',
+	outputDir = 'Results/snvs_50/',
 	segmentationFile = '../../TargetClone/InternalData/pq_segmentation.txt',
 	simulationProbabilityFile = "../../TargetClone/InternalData/lossGainProbabilityFile.txt",
 	targetCloneInstance = '../../TargetClone/InternalData/targetClone.pkl'
 )
 
 general = dict(
-	numberOfSNVs = 100,
+	numberOfSNVs = 50,
 	numberOfSNPs = 500,
 	kmin = 1,
 	kmax = 6,
