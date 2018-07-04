@@ -72,7 +72,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 		
 		realTree = None
 		inferredTree = None
-		
+		treeSizes = []
 		
 		for subdir, dirs, files in os.walk(simulationFolder):
 			if subdir == simulationFolder: #we are not interested in the root folder
@@ -102,6 +102,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
 					tree = eval(stringDict)
 					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+					treeSizes.append(len(realTree.edgeList))
 				
 				if re.match('EstimatedTrees', file): #read the file and obtain the error
 					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
@@ -116,7 +117,8 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred)
 		
 		
-		
+		print treeSizes
+		exit()
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
 		groupedAErrors[noiseLevel] = aErrors
