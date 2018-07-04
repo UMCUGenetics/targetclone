@@ -262,7 +262,6 @@ def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, above
 	return 0
 
 snpNums = [100, 500, 1000, 5000, 10000, 50000] #use this for now because the folder names were changed to non-numbers
-snvNum = [10, 50, 100, 500, 1000, 5000, 10000, 50000]
 
 plotHorizontalDependencyInfluence(averagedCErrors, averagedPCErrors, groupedAboveStdC, groupedBelowStdC, groupedAboveStdCP, groupedBelowStdCP, snpNums, 'Copy numbers', 'Copy_numbers_hp', 0)
 plotHorizontalDependencyInfluence(averagedAErrors, averagedPAErrors, groupedAboveStdA, groupedBelowStdA, groupedAboveStdAP, groupedBelowStdAP, snpNums, 'Alleles', 'Alleles_hp', 2)
