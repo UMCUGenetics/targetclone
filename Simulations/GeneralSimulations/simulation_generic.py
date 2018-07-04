@@ -66,6 +66,7 @@ class Simulator:
 	chromosomes = [] #All chromosomes of the SNP measurements (would have been better if this was an object too)
 	positions = []
 	
+	allCMuCombinations = dict()
 	
 	def initializeGenericSimulation(self, muN, uniqueID): #allow for more parameters, then have switches for the different run types
 		self.muN = muN
@@ -89,6 +90,7 @@ class Simulator:
 		self.segmentation = Segmentation()
 		self.segmentation.setSegmentationFromFile(simulationSettings.files['segmentationFile'])
 		
+		self.setPossibleCMuCombinations()
 		
 		#2. Subclonal expansion
 		
@@ -661,6 +663,13 @@ class Simulator:
 			#newSample.setParent(healthySample) #we do not know the parent, this will first be the healthy sample for everyone
 			#Do not update the sample information just yet, as we wish to still define the real underlying tree first
 			newSample.name = clone.name
+			
+			if simulationSettings.general['randomTree'] == True:
+				randomCMu = self.sampleRandomCMu(len(measurements[1].measurements))
+				newSample.bestCMu = randomCMu
+				newSample.originalCMu = randomCMu
+				#We also need random A
+				newSample.A = self.sampleRandomA(randomCMu)
 
 			parentName = clone.parent.name
 			newEdge = (0,parentName,newSample.name) #use a weight of 0 by default, this is alright for comparison, we do not know the actual weight
@@ -696,6 +705,27 @@ class Simulator:
 		
 		return samples, finalClones, realTree, savedMu
 	
+	def setPossibleCMuCombinations(self):
+		eventDistances = EventDistances(simulationSettings.general['kmin'], simulationSettings.general['kmax'])
+		#Loop through kmin to kmax and generate the CMuCombinations
+		for k in range(simulationSettings.general['kmin'], simulationSettings.general['kmax']+1):
+			possibleCMu = CMuCombination(C([2,k]), Mu(self.muN), eventDistances)
+			self.allCMuCombinations[k] = possibleCMu
+
+	def sampleRandomCMu(self, length):
+		
+		randomC = []
+		for pos in range(0, length):
+			#get random value between kmin and kmax
+			kValues = range(simulationSettings.general['kmin'], simulationSettings.general['kmax']+1)
+			randomCValue = random.choice(kValues)
+
+			#get random mu
+			bestCMuRandom = self.allCMuCombinations[randomCValue]
+			randomC.append(bestCMuRandom)
+		
+		return randomC
+
 	#Function to generate samples but then when multiple subclones are mixed within a sample. 
 	def generateMixedSamples(self):
 		#Starting from a healthy cell, start making subclones	
