@@ -664,7 +664,7 @@ class Simulator:
 			#Do not update the sample information just yet, as we wish to still define the real underlying tree first
 			newSample.name = clone.name
 			
-			if simulationSettings.general['randomTree'] == True:
+			if simulationSettings.runType['randomTree'] == True:
 				randomCMu = self.sampleRandomCMu(len(measurements[1].measurements))
 				newSample.bestCMu = randomCMu
 				newSample.originalCMu = randomCMu
