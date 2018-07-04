@@ -1,6 +1,6 @@
 files = dict(
 
-	outputDir = 'Results/snps_5000/',
+	outputDir = 'Results/snps_1000/',
 	segmentationFile = '../../TargetClone/InternalData/pq_segmentation.txt',
 	simulationProbabilityFile = "../../TargetClone/InternalData/lossGainProbabilityFile.txt",
 	targetCloneInstance = '../../TargetClone/InternalData/targetClone.pkl'
@@ -8,7 +8,7 @@ files = dict(
 
 general = dict(
 	numberOfSNVs = 50,
-	numberOfSNPs = 5000,
+	numberOfSNPs = 1000,
 	kmin = 1,
 	kmax = 6,
 	cellCycles = 4,
@@ -18,7 +18,7 @@ general = dict(
 	minimumMinorCloneFrequency = 41, #To test between 0 and 10, we set this value to 1. A value of 0 makes no sense for this test.
 	minimumSNVFrequency = 0.1 #We filter out every SNV below this frequency, as we assume that it comes from the minor clone and is thus contaminating. (Find optimal value for this frequency). This only works for the scripts that use the realVAF!
 )
-#
+
 runType = dict(
 	randomMeasurements = False, #Do we want random LAF and random SNVs to be assigned to each sample? 
 	horizontalShuffle = True, #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
