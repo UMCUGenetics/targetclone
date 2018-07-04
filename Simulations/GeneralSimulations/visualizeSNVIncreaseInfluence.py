@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 #1. Define the folders containing the data that we want to visualize
 motherFolder = sys.argv[1]
-snvNum = [10, 50, 100, 500, 1000, 5000, 10000, 50000]
+snvNum = [10, 50, 100, 500, 1000, 5000, 10000]
 
 #2. Read the errors from these folders for the normal case and corresponding shuffling
 
@@ -198,8 +198,8 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 	#ax.set_xlim(lim)
 	plt.tight_layout()
 	plt.legend()
-	plt.show()
-	#plt.savefig(title + '.svg')
+	#plt.show()
+	plt.savefig(title + '.svg')
 	
 	
 	return 0
@@ -207,10 +207,10 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 
 
 
-plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_hp', 0)
-plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_hp', 2)
-plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_hp', 4)
-plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_hp', 6)
+plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_snv', 0)
+plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2)
+plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4)
+plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_snv', 6)
 	
 
 
