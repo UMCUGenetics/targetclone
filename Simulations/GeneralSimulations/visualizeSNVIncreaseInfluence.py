@@ -40,7 +40,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 	groupedEuclideanErrors = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = dataFolder + '/snvs' + str(noiseLevel)
+		simulationFolder = dataFolder + '/snvs_' + str(noiseLevel)
 		
 		#Read all the errors into one list for this noise level
 		cErrors = []
