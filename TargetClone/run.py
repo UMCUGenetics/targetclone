@@ -87,29 +87,29 @@ class TargetClone:
 		#SITUATION WHERE EACH PARENT IS 2N
 		
 		#Define the first graph, where node 0 (precursor) is the parent of all subclones
-		edgeList = []
-		for i in range(1, len(vertices)):
-			edgeList.append((0, 0, i))
-		currentGraph = Graph(vertices, set(edgeList), edgeList)
-		
+		# edgeList = []
+		# for i in range(1, len(vertices)):
+		# 	edgeList.append((0, 0, i))
+		# currentGraph = Graph(vertices, set(edgeList), edgeList)
+		# 
 		
 		
 		
 		#ALTERNATIVE: RANDOM PARENT FOR EACH SUBCLONE
 		#Steps: - simulate random copy numbers and alleles for each parent
-		# edgeList = []
-		# for i in range(1, len(vertices)):
-		# 	#Each parent is possible, except for itself
-		# 	possibleParentsFront = range(0, i) 
-		# 	possibleParentsEnd = range(i+1, len(vertices))
-		# 	possibleParents = possibleParentsFront + possibleParentsEnd
-		# 	
-		# 	#sample a random parent
-		# 	parent = random.choice(possibleParents)
-		# 	edgeList.append((0, parent, i))
-		# 	samples[i].parent = samples[parent]
-		# currentGraph = Graph(vertices, set(edgeList), edgeList)
-		# print edgeList
+		edgeList = []
+		for i in range(1, len(vertices)):
+			#Each parent is possible, except for itself
+			possibleParentsFront = range(0, i) 
+			possibleParentsEnd = range(i+1, len(vertices))
+			possibleParents = possibleParentsFront + possibleParentsEnd
+			
+			#sample a random parent
+			parent = random.choice(possibleParents)
+			edgeList.append((0, parent, i))
+			samples[i].parent = samples[parent]
+		currentGraph = Graph(vertices, set(edgeList), edgeList)
+		print edgeList
 		
 		maxIterNum = settings.general['maximumIterations'] -1
 		converged = False
