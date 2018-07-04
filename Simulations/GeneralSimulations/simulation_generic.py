@@ -726,6 +726,27 @@ class Simulator:
 		
 		return randomC
 
+
+	def sampleRandomA(self, cMuCombinations):
+		alleleList = []
+		#Given the CMu, there are a possible number of alleles. Select one of these randomly.
+		for cMuCombination in cMuCombinations:
+			currentK = cMuCombination.c.c[1]
+			#Determine the alleles
+			possibleAlleles = []
+
+			#make Allele object
+			for copyN in range(0,currentK+1):
+				ACount = copyN
+				BCount = currentK - copyN
+				possibleAlleles.append(Alleles(ACount, BCount))
+			#sample random alleles
+			randomAlleles = random.choice(possibleAlleles)
+			alleleList.append(randomAlleles)
+
+		return alleleList
+		
+
 	#Function to generate samples but then when multiple subclones are mixed within a sample. 
 	def generateMixedSamples(self):
 		#Starting from a healthy cell, start making subclones	
