@@ -118,7 +118,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 		
 		print "tree sizes:"
 		print sum(treeSizes) / float(len(treeSizes))
-		exit()
+		#exit()
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
 		groupedAErrors[noiseLevel] = aErrors
@@ -751,7 +751,7 @@ simulationFolder = 'Results/generic_noise'
 dataFolder = 'Results/generic_noise'
 #noiseLevels = [0, 0.005, 0.01]
 noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
-noiseLevels = [0.02]
+noiseLevels = [0, 0.02]
 #noiseLevels = [0]
 #Put this here so that we can easily re-use it for other figures
 ambiguities = []
