@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 #1. Define the folders containing the data that we want to visualize
 motherFolder = sys.argv[1]
 
+snpNums = [100, 500, 1000, 5000, 10000, 50000] #use this for now because the folder names were changed to non-numbers
+
 #2. Read the errors from these folders for the normal case and corresponding shuffling
 
 
@@ -261,7 +263,7 @@ def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, above
 	
 	return 0
 
-snpNums = [100, 500, 1000, 5000, 10000, 50000] #use this for now because the folder names were changed to non-numbers
+
 
 plotHorizontalDependencyInfluence(averagedCErrors, averagedPCErrors, groupedAboveStdC, groupedBelowStdC, groupedAboveStdCP, groupedBelowStdCP, snpNums, 'Copy numbers', 'Copy_numbers_hp', 0)
 plotHorizontalDependencyInfluence(averagedAErrors, averagedPAErrors, groupedAboveStdA, groupedBelowStdA, groupedAboveStdAP, groupedBelowStdAP, snpNums, 'Alleles', 'Alleles_hp', 2)
