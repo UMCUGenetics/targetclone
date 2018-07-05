@@ -15,6 +15,8 @@ from alleles import Alleles
 from mu import Mu
 from math import sqrt
 
+import pickle as pkl
+
 plt.rcParams.update({'font.size': 14})
 
 
