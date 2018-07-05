@@ -960,6 +960,19 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
 					tree = eval(stringDict)
 					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+				
+				if re.match('simulationData.pkl', file):
+					pkl_file = open(file, 'rb')
+					simulationData = pickle.load(pkl_file)
+					pkl_file.close()
+					
+					#are the indices that we need in here?
+					for sample in simulationData.samples:
+						print sample.somaticVariantsInd
+						for var in sample.somaticVariants:
+							print var.position
+							print var.ind
+					exit()	
 					
 				if re.match('SomVar', file):
 					snvMatrix = np.loadtxt(subdir + '/' + file, dtype=int)
