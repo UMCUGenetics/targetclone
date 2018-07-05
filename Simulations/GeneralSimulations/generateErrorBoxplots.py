@@ -933,7 +933,7 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 	allSnvTreeErrors = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = simulationFolderLocation + str(noiseLevel) + '/'
+		simulationFolder = simulationFolderLocation + str(noiseLevel)
 		
 		methodTreeErrors = []
 		aTreeErrors = []
@@ -952,9 +952,9 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					aMatrix = np.loadtxt(subdir + '/' + file, dtype=str)
 				if re.match('EstimatedC', file): #read the file and obtain the a matrix
 					cMatrix = np.loadtxt(subdir + '/' + file, dtype=str)
-				if re.match('LAFMeasurements_0', file): #read the file and obtain the error
+				if re.match('LAFMeasurements_1', file): #read the file and obtain the error
 					lafMatrix = np.loadtxt(subdir + '/' + file, dtype=float)
-				if re.match('AFMeasurements_0', file): #read the file and obtain the error
+				if re.match('AFMeasurements_1', file): #read the file and obtain the error
 					afMatrix = np.loadtxt(subdir + '/' + file, dtype=float)
 				if re.match('RealTrees', file):
 					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
