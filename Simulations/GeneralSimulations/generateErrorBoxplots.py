@@ -984,8 +984,6 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 		
 			#Generate a tree using the A matrix
 			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions, segmentation))
-			print aTreeErrors
-			exit()
 			
 			#Generate a tree using the C matrix	
 			cTreeErrors.append(computeTreeErrorOtherMetrics.computeCTreeError(cMatrix, realTree))
