@@ -970,10 +970,10 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					
 					#are the indices that we need in here?
 					
-					variantIndices = simulationData.samples[0].somaticVariantsInd
-					chromosomes = simulationData.samples[0].measurements.chromosomes
-					positions = simulationData.samples[0].measurements.starts
-					segmentation = simulationData.samples[0].measurements.segmentation
+					variantIndices = simulationData.samples[1].somaticVariantsInd
+					chromosomes = simulationData.samples[1].measurements.chromosomes
+					positions = simulationData.samples[1].measurements.starts
+					segmentation = simulationData.samples[1].measurements.segmentation
 						
 					
 					
