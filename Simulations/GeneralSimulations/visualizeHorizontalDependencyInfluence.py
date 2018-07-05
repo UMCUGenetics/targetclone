@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 motherFolder = sys.argv[1]
 
 snpNums = [100, 500, 1000, 5000, 10000, 50000] #use this for now because the folder names were changed to non-numbers
-
+snpNums = [500]
 #2. Read the errors from these folders for the normal case and corresponding shuffling
 
 
@@ -45,7 +45,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 	groupedEuclideanErrors = dict()
 	
 	for noiseLevel in noiseLevels:
-		simulationFolder = dataFolder + '/snps_' + str(noiseLevel)
+		simulationFolder = dataFolder + '/snps_snv_' + str(noiseLevel)
 		
 		#Read all the errors into one list for this noise level
 		cErrors = []
