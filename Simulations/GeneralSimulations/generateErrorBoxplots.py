@@ -965,7 +965,7 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 				
 				if re.match('simulationData.pkl', file):
 					pkl_file = open(subdir + '/simulationData.pkl', 'rb')
-					simulationData = pickle.load(pkl_file)
+					simulationData = pkl.load(pkl_file)
 					pkl_file.close()
 					
 					#are the indices that we need in here?
