@@ -261,7 +261,7 @@ def obtainSomaticVariantIndices():
 	return [chromosomes, positions, variantIndices]
 	
 
-def computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree):
+def computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices, chromosomes, positions):
 	sampleNum = snvMatrix.shape[1]
 	
 	cObjMatrix = np.empty(cMatrix.shape, dtype=object)
