@@ -962,7 +962,7 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
 				
 				if re.match('simulationData.pkl', file):
-					pkl_file = open(file, 'rb')
+					pkl_file = open(subdir + '/simulationData.pkl', 'rb')
 					simulationData = pickle.load(pkl_file)
 					pkl_file.close()
 					
