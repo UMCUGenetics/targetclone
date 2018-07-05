@@ -973,6 +973,7 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					variantIndices = simulationData.samples[0].somaticVariantsInd
 					chromosomes = simulationData.samples[0].measurements.chromosomes
 					positions = simulationData.samples[0].measurements.starts
+					segmentation = simulationData.samples[0].measurements.segmentation
 						
 					
 					
@@ -982,7 +983,7 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 			snvTreeErrors.append(computeTreeErrorOtherMetrics.computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices, chromosomes, positions))
 		
 			#Generate a tree using the A matrix
-			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions))
+			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions, segmentation))
 			print aTreeErrors
 			exit()
 			

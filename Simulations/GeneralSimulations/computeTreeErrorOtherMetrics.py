@@ -349,7 +349,7 @@ def parseReferenceFile():
 		
 	
 
-def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions):
+def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions, segmentation):
 	sampleNum = aMatrix.shape[1]
 	
 	aObjMatrix = np.empty(aMatrix.shape, dtype=object)
