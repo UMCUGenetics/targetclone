@@ -349,7 +349,7 @@ def parseReferenceFile():
 		
 	
 
-def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree):
+def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions):
 	sampleNum = aMatrix.shape[1]
 	
 	aObjMatrix = np.empty(aMatrix.shape, dtype=object)
@@ -367,7 +367,7 @@ def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree):
 	
 	#Compute the distance pairwise between samples
 	distanceMatrix = np.empty([sampleNum,sampleNum], dtype=float)
-	[chromosomes, positions, segmentation, chromosomeArms] = parseReferenceFile()
+	
 	for sample1 in range(0, sampleNum):
 		for sample2 in range(0, sampleNum):
 			#make a dummy sample object for the FST function

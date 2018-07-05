@@ -980,10 +980,11 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					snvMatrix = np.loadtxt(subdir + '/' + file, dtype=int)
 			
 			snvTreeErrors.append(computeTreeErrorOtherMetrics.computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices, chromosomes, positions))
-			print snvTreeErrors
-			exit()
+		
 			#Generate a tree using the A matrix
-			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree))
+			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions))
+			print aTreeErrors
+			exit()
 			
 			#Generate a tree using the C matrix	
 			cTreeErrors.append(computeTreeErrorOtherMetrics.computeCTreeError(cMatrix, realTree))
