@@ -971,9 +971,10 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					#are the indices that we need in here?
 					for sample in simulationData.samples:
 						print sample.somaticVariantsInd
-						for var in sample.somaticVariants:
-							print var.position
-							print var.ind
+						print sample.measurements.chromosomes
+						print sample.measurements.starts
+						
+						
 					exit()	
 					
 				if re.match('SomVar', file):
