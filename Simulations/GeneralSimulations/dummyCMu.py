@@ -1,0 +1,2 @@
+class DummyCMu:
+	c = None
