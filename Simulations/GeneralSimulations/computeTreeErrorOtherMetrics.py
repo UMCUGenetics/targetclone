@@ -16,6 +16,7 @@ from alleles import Alleles
 from distance import SomaticVariantDistance
 from c import C
 from simulation_generic import SimulationProbabilities
+from dummyCMu import DummyCMu
 
 from simulationErrors import SimulationErrorHandler
 from scipy.spatial import distance
