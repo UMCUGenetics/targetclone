@@ -969,18 +969,19 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					pkl_file.close()
 					
 					#are the indices that we need in here?
-					for sample in simulationData.samples:
-						print sample.somaticVariantsInd
-						print sample.measurements.chromosomes
-						print sample.measurements.starts
+					
+					variantIndices = samples[0].somaticVariantsInd
+					chromosomes = samples[0].measurements.chromosomes
+					positions = samples[0].measurements.starts
 						
-						
-					exit()	
+					
 					
 				if re.match('SomVar', file):
 					snvMatrix = np.loadtxt(subdir + '/' + file, dtype=int)
 			
-			snvTreeErrors.append(computeTreeErrorOtherMetrics.computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree))
+			snvTreeErrors.append(computeTreeErrorOtherMetrics.computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices, chromosomes, positions))
+			print snvTreeErrors
+			exit()
 			#Generate a tree using the A matrix
 			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree))
 			
