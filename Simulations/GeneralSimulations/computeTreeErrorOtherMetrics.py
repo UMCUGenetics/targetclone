@@ -273,9 +273,6 @@ def computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices,
 			dummyCMu.c = cObj
 			cObjMatrix[row][col] = dummyCMu
 	
-	[chromosomes, positions, variantIndices ]= obtainSomaticVariantIndices()
-	#print variantIndices
-	
 	#Compute the distance pairwise between samples
 	distanceMatrix = np.empty([sampleNum,sampleNum], dtype=float)
 	
