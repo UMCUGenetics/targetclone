@@ -223,44 +223,6 @@ def computeCTreeError(cMatrix, realTree):
 	treeScore = simulationErrorHandler.computeTreeError([mst], realTree)
 	return treeScore
 
-#This is a bit annoying but we need the positions of the SNVs which have not been stored in a file
-def obtainSomaticVariantIndices():
-	simulationProbabilities = SimulationProbabilities()
-	#- store the probabilities in an object (simulationprobabilities)
-	simulationProbabilityFile = simulationSettings.files['simulationProbabilityFile']
-	simulationProbabilities.readFullProbabilityFile(simulationProbabilityFile)
-
-	[chromosomes, positions, segmentation, chromosomeArms] = parseReferenceFile()
-	offset = 0
-	variantIndices = []
-	for variant in simulationProbabilities.somaticVariants:
-		
-		position = variant.position
-		chromosome = variant.chromosome
-
-		for measurementPosition in range(0, len(positions)-1):
-			
-			if str(chromosome) == str(chromosomeArms[measurementPosition]): #the chromosome needs to be the same
-				
-				#for all the variants within the SNP range		
-				if int(position) > int(positions[measurementPosition]) and int(position) < int(positions[measurementPosition + 1]):
-					variantIndex = measurementPosition + offset
-					variantIndices.append(variantIndex)
-					offset += 1
-				#Situation where the somatic variant comes before the SNP measurements
-				if str(chromosome) != str(chromosomeArms[measurementPosition-1]) and int(position) <= int(positions[measurementPosition]):
-					variantIndex = measurementPosition + offset
-					variantIndices.append(variantIndex)
-					offset += 1
-				#Situation where the somatic variant comes after the SNP measurements
-				if str(chromosome) != str(chromosomeArms[measurementPosition+1]) and int(position) >= int(positions[measurementPosition]):
-					variantIndex = measurementPosition + offset
-					variantIndices.append(variantIndex)
-					offset += 1
-	
-	return [chromosomes, positions, variantIndices]
-	
-
 def computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices, chromosomes, positions):
 	sampleNum = snvMatrix.shape[1]
 	
@@ -349,7 +311,13 @@ def parseReferenceFile():
 		
 	
 
-def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions, segmentation):
+def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions):
+	segmentationFile = simulationSettings.files['segmentationFile']
+	
+	segmentation = Segmentation()
+	segmentation.setSegmentationFromFile(segmentationFile)
+	
+	
 	sampleNum = aMatrix.shape[1]
 	
 	aObjMatrix = np.empty(aMatrix.shape, dtype=object)

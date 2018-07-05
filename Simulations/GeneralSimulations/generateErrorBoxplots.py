@@ -983,7 +983,7 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 			snvTreeErrors.append(computeTreeErrorOtherMetrics.computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices, chromosomes, positions))
 		
 			#Generate a tree using the A matrix
-			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions, segmentation))
+			aTreeErrors.append(computeTreeErrorOtherMetrics.computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, positions))
 			
 			#Generate a tree using the C matrix	
 			cTreeErrors.append(computeTreeErrorOtherMetrics.computeCTreeError(cMatrix, realTree))
