@@ -1521,10 +1521,10 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 	plt.savefig('tumorFractionSummary.svg')
 
 #Figure 3F
-	
-plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors, binnedTErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd)
-
-exit()
+# 	
+# plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors, binnedTErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd)
+# 
+# exit()
 
 
 #Make scatterplots showing the difference between the normal simulations and the horizontal permutations
@@ -1747,7 +1747,7 @@ def plotNormalPermutedComparison(groupedCErrors, groupedAErrors, groupedMuErrors
 #Figure S8
 
 #In the read data with permutations I added Mu75 after the path for now, quick and dirty
-dataFolder = '../Results/'
+dataFolder = 'Results/generic_noise'
 noiseLevels = [0.02]
 [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors] = readDataIncludingPermutations(dataFolder, noiseLevels, '')
 
@@ -1782,8 +1782,8 @@ def plotATCorrelation(groupedAErrors, groupedTErrors):
 	plt.savefig('A_TCorrelation.svg')
 
 # 
-# plotATCorrelation(groupedAErrors[0.02], groupedTreeErrors[0.02])
-# exit()
+plotATCorrelation(groupedAErrors[0.02], groupedTreeErrors[0.02])
+exit()
 
 #Figure S9
 
