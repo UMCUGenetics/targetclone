@@ -839,7 +839,7 @@ def plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErro
 def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
-	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors] = readData(dataFolder, noiseLevels, '')
+	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
 	
 	#F2. Average the errors per noise level
 	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors] = \
