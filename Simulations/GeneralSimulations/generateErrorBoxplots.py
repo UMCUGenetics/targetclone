@@ -896,30 +896,30 @@ def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds
 #Figure 3G
 
 #loop through the noise levels
+# 
+# noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
+# #noiseLevels = [0, 0.005]
+# ambiguities = []
+# ambiguityScores = []
+# 
+# groupedAmbiguityScores = dict()
+# 
+# for noiseLevel in noiseLevels:
+# 	
+# 	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
+# 	print "noise level: ", noiseLevel
+# 	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
+# 	ambiguities.append(averageAmbiguities)
+# 	ambiguityScores.append(averageAmbiguityScore)
+# 	
+# 	groupedAmbiguityScores[noiseLevel] = allAmbiguityScores
+# 	
+# #commpute the standard deviations
+# ambiguityStds = obtainStandardDeviations(groupedAmbiguityScores, ambiguityScores)
+# 
+# plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds)
 
-noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
-#noiseLevels = [0, 0.005]
-ambiguities = []
-ambiguityScores = []
-
-groupedAmbiguityScores = dict()
-
-for noiseLevel in noiseLevels:
-	
-	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
-	print "noise level: ", noiseLevel
-	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
-	ambiguities.append(averageAmbiguities)
-	ambiguityScores.append(averageAmbiguityScore)
-	
-	groupedAmbiguityScores[noiseLevel] = allAmbiguityScores
-	
-#commpute the standard deviations
-ambiguityStds = obtainStandardDeviations(groupedAmbiguityScores, ambiguityScores)
-
-plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds)
-
-exit()
+# exit()
 
 #Plot the tree reconstruction errors when we use different measures. C vs. A, Euclidean, SNVs
 #It is not fair to compare to the iterative scores, so we re-compute the score based on A using only one iteration. Otherwise the entire simulations will need to be re-run. 
@@ -1063,39 +1063,39 @@ def plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTr
 	
 
 #Figure S7
-
-print "parsing simulation data"
-#Obtain all errors
-simulationFolder = 'Results/generic_noise'
-noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
-[allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
-#Compute the average errors and standard deviations
-print "computing averages: "
-averagedATreeErrors = averageData(allATreeErrors, 'T')
-averagedCTreeErrors = averageData(allCTreeErrors, 'T')
-averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
-averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
-averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
-print "computing standard deviations: "
-stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
-print "c:"
-stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
-print "snv:"
-stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
-print "euclidean:"
-stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
-print "tree:"
-stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
-
-allATreeErrors = None
-
-
-print "plotting: "
-#Make a plot of the tree errors
-plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
-							   stdEuclideanTreeErrors, stdMethodTreeErrors)
-
-exit()
+# 
+# print "parsing simulation data"
+# #Obtain all errors
+# simulationFolder = 'Results/generic_noise'
+# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+# [allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
+# #Compute the average errors and standard deviations
+# print "computing averages: "
+# averagedATreeErrors = averageData(allATreeErrors, 'T')
+# averagedCTreeErrors = averageData(allCTreeErrors, 'T')
+# averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
+# averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
+# averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
+# print "computing standard deviations: "
+# stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
+# print "c:"
+# stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
+# print "snv:"
+# stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
+# print "euclidean:"
+# stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
+# print "tree:"
+# stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
+# 
+# allATreeErrors = None
+# 
+# 
+# print "plotting: "
+# #Make a plot of the tree errors
+# plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
+# 							   stdEuclideanTreeErrors, stdMethodTreeErrors)
+# 
+# exit()
 
 
 
@@ -1420,31 +1420,31 @@ def binValues(orderedMu, sortedErrors):
 
 
 # # 
-# simulationFolder = '../Results/noise0.02/'
-# [sortedMu2, sortedCErrors2, sortedAErrors2, sortedMuErrors2, sortedTErrors2, sortedAmbiguityScores2, sortedAmbiguityCorrectedErrors2,
-#  sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2] = sortData(simulationFolder)
-# 
-# [binnedMu, binnedCErrors2, binnedStdAboveC2, binnedStdBelowC2]  = binValues(sortedMu2, sortedCErrors2)
-# 
-# [binnedMu, binnedAErrors2, binnedStdAboveA2, binnedStdBelowA2]  = binValues(sortedMu2, sortedAErrors2)
-# 
-# [binnedMu, binnedMuErrors2, binnedStdAboveMu2, binnedStdBelowMu2]  = binValues(sortedMu2, sortedMuErrors2)
-# 
-# [binnedMu, binnedTErrors2, binnedStdAboveT2, binnedStdBelowT2]  = binValues(sortedMu2, sortedTErrors2)
-# 
-# 
-# #Group the values
-# binnedCErrors = [binnedCErrors2]
-# binnedCStd = [binnedStdAboveC2, binnedStdBelowC2]
-# 
-# binnedAErrors = [binnedAErrors2]
-# binnedAStd = [binnedStdAboveA2, binnedStdBelowA2]
-# 
-# binnedMuErrors = [binnedMuErrors2]
-# binnedMuStd = [binnedStdAboveMu2, binnedStdBelowMu2]
-# 
-# binnedTErrors = [binnedTErrors2]
-# binnedTStd = [binnedStdAboveT2, binnedStdBelowT2]
+simulationFolder = '../Results/generic_noise0.02/'
+[sortedMu2, sortedCErrors2, sortedAErrors2, sortedMuErrors2, sortedTErrors2, sortedAmbiguityScores2, sortedAmbiguityCorrectedErrors2,
+ sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2] = sortData(simulationFolder)
+
+[binnedMu, binnedCErrors2, binnedStdAboveC2, binnedStdBelowC2]  = binValues(sortedMu2, sortedCErrors2)
+
+[binnedMu, binnedAErrors2, binnedStdAboveA2, binnedStdBelowA2]  = binValues(sortedMu2, sortedAErrors2)
+
+[binnedMu, binnedMuErrors2, binnedStdAboveMu2, binnedStdBelowMu2]  = binValues(sortedMu2, sortedMuErrors2)
+
+[binnedMu, binnedTErrors2, binnedStdAboveT2, binnedStdBelowT2]  = binValues(sortedMu2, sortedTErrors2)
+
+
+#Group the values
+binnedCErrors = [binnedCErrors2]
+binnedCStd = [binnedStdAboveC2, binnedStdBelowC2]
+
+binnedAErrors = [binnedAErrors2]
+binnedAStd = [binnedStdAboveA2, binnedStdBelowA2]
+
+binnedMuErrors = [binnedMuErrors2]
+binnedMuStd = [binnedStdAboveMu2, binnedStdBelowMu2]
+
+binnedTErrors = [binnedTErrors2]
+binnedTStd = [binnedStdAboveT2, binnedStdBelowT2]
 
 #Plot the noise level values in the same figure for C, A, mu and T
 
@@ -1522,9 +1522,9 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 
 #Figure 3F
 	
-# plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors, binnedTErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd)
-# 
-# exit()
+plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors, binnedTErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd)
+
+exit()
 
 
 #Make scatterplots showing the difference between the normal simulations and the horizontal permutations
