@@ -1782,7 +1782,7 @@ def plotATCorrelation(groupedAErrors, groupedTErrors):
 	plt.savefig('A_TCorrelation.svg')
 
 # 
-plotATCorrelation(groupedAErrors[0.02], groupedTreeErrors[0.02])
+plotATCorrelation(groupedAErrors['0.02'], groupedTreeErrors['0.02'])
 exit()
 
 #Figure S9
