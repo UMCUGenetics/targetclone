@@ -895,7 +895,7 @@ def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds
 			
 #Figure 3G
 
-loop through the noise levels
+#loop through the noise levels
 
 noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
 #noiseLevels = [0, 0.005]
