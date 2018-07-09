@@ -1502,7 +1502,7 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 
 	
 	ax.set_ylim(0,0.8)
-	ax2.set_ylim(-0.5,6)
+	ax2.set_ylim(-0.5,10)
 	
 	ax.set_xlim(-1,10)
 	
