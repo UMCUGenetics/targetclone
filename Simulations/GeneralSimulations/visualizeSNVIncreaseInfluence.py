@@ -198,8 +198,8 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 	#ax.set_xlim(lim)
 	plt.tight_layout()
 	#plt.legend()
-	plt.show()
-	#plt.savefig(title + '.svg')
+	#plt.show()
+	plt.savefig(title + '.svg')
 	
 	
 	return 0
