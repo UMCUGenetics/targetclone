@@ -842,8 +842,8 @@ def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
 	
 	#F2. Average the errors per noise level
-	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors] = \
-	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors)
+	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors] = \
+	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors)
 	
 	#Obtain the standard deviation above and below the mean for the averages
 	[groupedAboveStdC, groupedBelowStdC] = obtainStandardDeviations(groupedCErrors, averagedCErrors)
