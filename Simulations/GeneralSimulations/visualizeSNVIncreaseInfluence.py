@@ -151,7 +151,7 @@ print averagedTreeErrors
 
 #3. Make a plot with the error on the y axis, and the number of SNPs on the x axis. (4 plots per data type that we infer)
 
-def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotType, title, colInd):
+def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotType, title, colInd, lim):
 	
 	#Take the average and standard deviations as input
 	
@@ -185,7 +185,7 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 	p = ax.errorbar(xPositions, errors, yerr=[correctedBelowStd, correctedAboveStd], label='Normal', color=colors[colInd], linewidth=2)
 	legendLines.append(p[0])
 	
-	#ax.set_ylim(lim[0],lim[1])
+	ax.set_ylim(lim[0],lim[1])
 	ax.set_xlabel('Number of SNVs')
  	ax.set_ylabel('Error')
 	#ax.set_xlim(-0.005,0.105)
@@ -198,8 +198,8 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 	#ax.set_xlim(lim)
 	plt.tight_layout()
 	plt.legend()
-	#plt.show()
-	plt.savefig(title + '.svg')
+	plt.show()
+	#plt.savefig(title + '.svg')
 	
 	
 	return 0
@@ -207,10 +207,10 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 
 
 
-plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_snv', 0)
-plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2)
-plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4)
-plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_snv', 6)
+plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_snv', 0, [0,0.5])
+plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2, [0,0.5])
+plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4, [0,0.3])
+plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_snv', 6, [0,8])
 	
 
 
