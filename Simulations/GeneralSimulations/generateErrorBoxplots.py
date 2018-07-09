@@ -746,38 +746,38 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 	return 0
 
 
-#1. Make figure one panels A-D
-#For figure one, we average the errors across the noise levels and plot all values together in one tree.
-#For every simulation run, we also generate euclidean trees and compute the error. 
-simulationFolder = 'Results/generic_noise'
-dataFolder = 'Results/generic_noise'
-#noiseLevels = [0, 0.005, 0.01]
-noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
-#noiseLevels = [0, 0.02]
-#noiseLevels = [0]
-#Put this here so that we can easily re-use it for other figures
-ambiguities = []
-ambiguityScores = []
-groupedAmbiguities = dict()
-
-for noiseLevel in noiseLevels:
-	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
-	print "noise level: ", noiseLevel
-	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
-	groupedAmbiguities[noiseLevel] = allAmbiguityScores
-	ambiguities.append(averageAmbiguities)
-	ambiguityScores.append(averageAmbiguityScore)
-	
-#Also compute the ambiguity scores in the permuted data
-
-permutationFolder = 'Results/generic_random/'
-
-[averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
-groupedAmbiguitiesRandom = dict()
-groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
-generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
-
-exit()
+# #1. Make figure one panels A-D
+# #For figure one, we average the errors across the noise levels and plot all values together in one tree.
+# #For every simulation run, we also generate euclidean trees and compute the error. 
+# simulationFolder = 'Results/generic_noise'
+# dataFolder = 'Results/generic_noise'
+# #noiseLevels = [0, 0.005, 0.01]
+# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
+# #noiseLevels = [0, 0.02]
+# #noiseLevels = [0]
+# #Put this here so that we can easily re-use it for other figures
+# ambiguities = []
+# ambiguityScores = []
+# groupedAmbiguities = dict()
+# 
+# for noiseLevel in noiseLevels:
+# 	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
+# 	print "noise level: ", noiseLevel
+# 	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
+# 	groupedAmbiguities[noiseLevel] = allAmbiguityScores
+# 	ambiguities.append(averageAmbiguities)
+# 	ambiguityScores.append(averageAmbiguityScore)
+# 	
+# #Also compute the ambiguity scores in the permuted data
+# 
+# permutationFolder = 'Results/generic_random/'
+# 
+# [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
+# groupedAmbiguitiesRandom = dict()
+# groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
+# generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+# 
+# exit()
 
 #Make the random restarts figure
 
@@ -839,7 +839,7 @@ def plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErro
 def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
-	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors] = readData(dataFolder, noiseLevels, '_randomRestarts')
+	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors] = readData(dataFolder, noiseLevels, '')
 	
 	#F2. Average the errors per noise level
 	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors] = \
@@ -857,11 +857,11 @@ def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors,
 				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT)
 # Fig S6	
-# dataFolder = '../Results/'
-# 
-# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
-# generateRandomRestartsFigure(dataFolder, noiseLevels)
-# exit()	
+dataFolder = 'Results/random_restarts'
+
+noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+generateRandomRestartsFigure(dataFolder, noiseLevels)
+exit()	
 
 def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds):
 	
