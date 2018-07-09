@@ -197,7 +197,7 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 	ax.set_xticklabels(snpNums, rotation=90)
 	#ax.set_xlim(lim)
 	plt.tight_layout()
-	plt.legend()
+	#plt.legend()
 	plt.show()
 	#plt.savefig(title + '.svg')
 	
@@ -207,10 +207,10 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 
 
 
-plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_snv', 0, [0,0.5])
-plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2, [0,0.5])
-plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4, [0,0.3])
-plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_snv', 6, [0,8])
+plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_snv', 0, [-0.05,0.4])
+plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2, [-0.05,0.4])
+plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4, [-0.05,0.3])
+plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_snv', 6, [-0.05,6])
 	
 
 
