@@ -1782,8 +1782,8 @@ def plotATCorrelation(groupedAErrors, groupedTErrors):
 	plt.savefig('A_TCorrelation.svg')
 
 # 
-plotATCorrelation(groupedAErrors['0.02'], groupedTreeErrors['0.02'])
-exit()
+# plotATCorrelation(groupedAErrors['0.02'], groupedTreeErrors['0.02'])
+# exit()
 
 #Figure S9
 
@@ -1928,27 +1928,27 @@ def sortData(simulationFolder):
 
 #Call the function for all noise levels
 
-simulationFolder = '../Results/noise0/'
+simulationFolder = 'Results/generic_noise0/'
 [sortedMu0, sortedCErrors0, sortedAErrors0, sortedMuErrors0, sortedTErrors0, sortedAmbiguityScores0, sortedAmbiguityCorrectedErrors0,
  sortedPCErrors0, sortedPAErrors0, sortedPMuErrors0, sortedPTErrors0, sortedPAmbiguityErrors0, sortedPAmbiguityCorrectedErrors0] = sortData(simulationFolder)
-simulationFolder = '../Results/noise0.02/'
+simulationFolder = 'Results/generic_noise0.02/'
 [sortedMu2, sortedCErrors2, sortedAErrors2, sortedMuErrors2, sortedTErrors2, sortedAmbiguityScores2, sortedAmbiguityCorrectedErrors2,
  sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2] = sortData(simulationFolder)
-simulationFolder = '../Results/noise0.04/'
+simulationFolder = 'Results/generic_noise0.04/'
 [sortedMu4, sortedCErrors4, sortedAErrors4, sortedMuErrors4, sortedTErrors4, sortedAmbiguityScores4, sortedAmbiguityCorrectedErrors4,
  sortedPCErrors4, sortedPAErrors4, sortedPMuErrors4, sortedPTErrors4, sortedPAmbiguityErrors4, sortedPAmbiguityCorrectedErrors4] = sortData(simulationFolder)
-simulationFolder = '../Results/noise0.06/'
+simulationFolder = 'Results/generic_noise0.06/'
 [sortedMu6, sortedCErrors6, sortedAErrors6, sortedMuErrors6, sortedTErrors6, sortedAmbiguityScores6, sortedAmbiguityCorrectedErrors6,
  sortedPCErrors6, sortedPAErrors6, sortedPMuErrors6, sortedPTErrors6, sortedPAmbiguityErrors6, sortedPAmbiguityCorrectedErrors6] = sortData(simulationFolder)
-simulationFolder = '../Results/noise0.08/'
+simulationFolder = 'Results/generic_noise0.08/'
 [sortedMu8, sortedCErrors8, sortedAErrors8, sortedMuErrors8, sortedTErrors8, sortedAmbiguityScores8, sortedAmbiguityCorrectedErrors8,
  sortedPCErrors8, sortedPAErrors8, sortedPMuErrors8, sortedPTErrors8, sortedPAmbiguityErrors8, sortedPAmbiguityCorrectedErrors8] = sortData(simulationFolder)
-simulationFolder = '../Results/noise0.1/'
+simulationFolder = 'Results/generic_noise0.1/'
 [sortedMu10, sortedCErrors10, sortedAErrors10, sortedMuErrors10, sortedTErrors10, sortedAmbiguityScores10, sortedAmbiguityCorrectedErrors10,
  sortedPCErrors10, sortedPAErrors10, sortedPMuErrors10, sortedPTErrors10, sortedPAmbiguityErrors10, sortedPAmbiguityCorrectedErrors10] = sortData(simulationFolder)
 
 
-simulationFolder = '../Results/noise0_random/'
+simulationFolder = 'Results/generic_random/'
 [sortedMuR, sortedCErrorsR, sortedAErrorsR, sortedMuErrorsR, sortedTErrorsR, sortedAmbiguityScoresR, sortedAmbiguityCorrectedErrorsR,
  sortedPCErrorsR, sortedPAErrorsR, sortedPMuErrorsR, sortedPTErrorsR, sortedPAmbiguityErrorsR, sortedPAmbiguityCorrectedErrorsR] = sortData(simulationFolder)
 
