@@ -857,11 +857,11 @@ def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors,
 				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT)
 # Fig S6	
-dataFolder = 'Results/random_restarts'
-
-noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
-generateRandomRestartsFigure(dataFolder, noiseLevels)
-exit()	
+# dataFolder = 'Results/random_restarts'
+# 
+# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+# generateRandomRestartsFigure(dataFolder, noiseLevels)
+# exit()	
 
 def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds):
 	
@@ -895,31 +895,31 @@ def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds
 			
 #Figure 3G
 
-#loop through the noise levels
-# 
-# noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
-# #noiseLevels = [0, 0.005]
-# ambiguities = []
-# ambiguityScores = []
-# 
-# groupedAmbiguityScores = dict()
-# 
-# for noiseLevel in noiseLevels:
-# 	
-# 	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
-# 	print "noise level: ", noiseLevel
-# 	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
-# 	ambiguities.append(averageAmbiguities)
-# 	ambiguityScores.append(averageAmbiguityScore)
-# 	
-# 	groupedAmbiguityScores[noiseLevel] = allAmbiguityScores
-# 	
-# #commpute the standard deviations
-# ambiguityStds = obtainStandardDeviations(groupedAmbiguityScores, ambiguityScores)
-# 
-# plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds)
-# 
-# exit()
+loop through the noise levels
+
+noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
+#noiseLevels = [0, 0.005]
+ambiguities = []
+ambiguityScores = []
+
+groupedAmbiguityScores = dict()
+
+for noiseLevel in noiseLevels:
+	
+	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
+	print "noise level: ", noiseLevel
+	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
+	ambiguities.append(averageAmbiguities)
+	ambiguityScores.append(averageAmbiguityScore)
+	
+	groupedAmbiguityScores[noiseLevel] = allAmbiguityScores
+	
+#commpute the standard deviations
+ambiguityStds = obtainStandardDeviations(groupedAmbiguityScores, ambiguityScores)
+
+plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds)
+
+exit()
 
 #Plot the tree reconstruction errors when we use different measures. C vs. A, Euclidean, SNVs
 #It is not fair to compare to the iterative scores, so we re-compute the score based on A using only one iteration. Otherwise the entire simulations will need to be re-run. 
