@@ -1749,7 +1749,7 @@ def plotNormalPermutedComparison(groupedCErrors, groupedAErrors, groupedMuErrors
 #In the read data with permutations I added Mu75 after the path for now, quick and dirty
 dataFolder = 'Results/generic_noise'
 noiseLevels = ['0.02']
-[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors] = readDataIncludingPermutations(dataFolder, noiseLevels, '')
+[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, a, b] = readDataIncludingPermutations(dataFolder, noiseLevels, '')
 
 # #average the permuted data in bins
 # #averagedPCErrors = binPermutedData(groupedPCErrors)
