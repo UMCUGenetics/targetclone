@@ -195,10 +195,10 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, labels, colorInd, lim, tit
 	#ax.legend(legendLines, labels, loc=2, numpoints=1)
 	
 	ax.set_ylim(lim[0],lim[1])
-	ax.set_xlabel(r'Number of subclones in sample')
+	ax.set_xlabel(r'Number of additional subclones in sample')
 	ax.set_ylabel('Error')
-	ax.set_xlim(1.5,5.5)
-	ax.xaxis.set_ticks(np.arange(2, 6, 1))
+	ax.set_xlim(0.5,4.5)
+	ax.xaxis.set_ticks(np.arange(1, 5, 1))
 	ax.legend(legendLines, labelsLegend, loc=2, numpoints=1)
 
 	plt.tight_layout()
