@@ -1420,7 +1420,7 @@ def binValues(orderedMu, sortedErrors):
 
 
 # # 
-simulationFolder = '../Results/generic_noise0.02/'
+simulationFolder = 'Results/generic_noise0.02/'
 [sortedMu2, sortedCErrors2, sortedAErrors2, sortedMuErrors2, sortedTErrors2, sortedAmbiguityScores2, sortedAmbiguityCorrectedErrors2,
  sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2] = sortData(simulationFolder)
 
