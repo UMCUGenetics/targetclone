@@ -495,12 +495,12 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 def plotBoxplots(noiseLevels, errors, randomErrors, title):
 	
 	randomErrorList = randomErrors['generic_random']
-	
+	print randomErrorList
 	
 	#1. Make a list where each entry is the errors at a different noise level
 	errorList = errors.values()
 	errorList.append(randomErrorList)
-	
+	print errorList
 	ax = plt.gca()
 	ax.boxplot(errorList)
 	
