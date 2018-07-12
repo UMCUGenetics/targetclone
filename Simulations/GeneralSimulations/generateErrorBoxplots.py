@@ -511,7 +511,7 @@ def plotBoxplotsFigure(averagedCErrors, averagedAErrors, averagedMuErrors, avera
 	#plotData(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, randomCError, randomCStd, ['Copy numbers'], 0, [0,1], 'fig3_C.svg')
 	#plotData(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, randomAError, randomAStd, ['Alleles'], 1, [0,1], 'fig3_A.svg')
 	#plotData(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, randomMuError, randomMuStd, ['Tumor fraction'], 3, [0,0.6], 'fig3_Mu.svg')
-	plotBoxPlots(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, randomTreeError, randomTreeStd, ['Trees'], 4, [-1,10], 'fig3_T.svg')
+	plotBoxplots(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, randomTreeError, randomTreeStd, ['Trees'], 4, [-1,10], 'fig3_T.svg')
 	#plotData(noiseLevels, averagedAmbiguityErrors, groupedAboveStdAmb, groupedBelowStdAmb, ambiguityErrorsRandom, [groupedAboveStdAmbR,groupedBelowStdAmbR], ['Resolved ambiguities'], 5, [0,1], 'fig3_Amb.svg')
 	
 	
@@ -823,8 +823,8 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 simulationFolder = 'Results/generic_noise'
 dataFolder = 'Results/generic_noise'
 #noiseLevels = [0, 0.005, 0.01]
-noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
-#noiseLevels = [0, 0.02]
+#noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
+noiseLevels = [0, 0.02]
 #noiseLevels = [0]
 #Put this here so that we can easily re-use it for other figures
 ambiguities = []
