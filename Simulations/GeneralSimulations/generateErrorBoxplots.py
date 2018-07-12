@@ -411,6 +411,9 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	stdAbove = [i + randomStd[0][0] for i in [randomError]*len(noiseLevels)]
 	stdBelow = [i - randomStd[1][0] for i in [randomError]*len(noiseLevels)]
 	
+	print stdAbove
+	print stdBelow
+	
 	
 	ax.plot(noiseLevels, [randomError]*len(noiseLevels), color="#CDCDCD")
 	ax.plot(noiseLevels, stdAbove, color="#CDCDCD")
