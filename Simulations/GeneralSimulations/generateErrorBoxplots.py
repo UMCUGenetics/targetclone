@@ -517,10 +517,10 @@ def plotBoxplots(noiseLevels, errors, randomErrors, title):
 def makeBoxPlotFigure(dataFolder, noiseLevels):
 	
 	#0. Obtain the raw error data for the random case
-	noiseLevels = ['generic_random']
+	randomNoiseLevels = ['generic_random']
 	randomDataFolder = 'Results/'
 	[randomCErrors, randomAErrors, randomMuErrors, randomTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsentRandom, ancestrySwapErrorPresentRandom] = \
-	readDataIncludingPermutations(randomDataFolder, noiseLevels, '')
+	readDataIncludingPermutations(randomDataFolder, randomNoiseLevels, '')
 	
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
