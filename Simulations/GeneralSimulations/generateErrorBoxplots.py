@@ -491,7 +491,34 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 	#Swap errors.Should these be visualized in the same figure, or keep them separate?
 	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,6], 'fig3_AncestrySwapAbsent.svg')
 	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,12], 'fig3_AncestrySwapPresent.svg')
+
+def plotBoxplots(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, labels, colInd, lim, title):
 	
+	
+	#1. Make a list where each entry is the errors at a different noise level
+	print(errors)
+	exit()
+	
+	
+
+def plotBoxplotsFigure(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, 
+				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu,
+				  groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT, ambiguityScores, groupedAboveStdAmb, groupedBelowStdAmb,
+				  ambiguityScoresRandom, groupedAboveStdAmbR, groupedBelowStdAmbR,
+				  groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent):
+
+	#Also swap the ambiguity stds?
+	#plotData(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, randomCError, randomCStd, ['Copy numbers'], 0, [0,1], 'fig3_C.svg')
+	#plotData(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, randomAError, randomAStd, ['Alleles'], 1, [0,1], 'fig3_A.svg')
+	#plotData(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, randomMuError, randomMuStd, ['Tumor fraction'], 3, [0,0.6], 'fig3_Mu.svg')
+	plotBoxPlots(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, randomTreeError, randomTreeStd, ['Trees'], 4, [-1,10], 'fig3_T.svg')
+	#plotData(noiseLevels, averagedAmbiguityErrors, groupedAboveStdAmb, groupedBelowStdAmb, ambiguityErrorsRandom, [groupedAboveStdAmbR,groupedBelowStdAmbR], ['Resolved ambiguities'], 5, [0,1], 'fig3_Amb.svg')
+	
+	
+	
+	
+	
+
 
 def plotFigureOneOld(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors,
 				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu,
@@ -709,6 +736,40 @@ def computeCorrectAmbiguityScore(LAFAndCombinations, simulationFolder):
 	
 	return [averageAmbiguities, averageAmbiguityScore, ambiguityScores]
 
+def makeBoxPlotFigure(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, averageAmbiguityScoreRandom, groupedAmbiguityScoresRandom):
+	
+	#F1. Read the data from all the simulation folders (The normal and permuted errors)
+	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
+	
+	#F2. Average the errors per noise level
+	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors] = \
+	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors)
+	
+	
+	#Obtain the standard deviation above and below the mean for the averages
+	[groupedAboveStdC, groupedBelowStdC] = obtainStandardDeviations(groupedCErrors, averagedCErrors)
+
+	
+	[groupedAboveStdA, groupedBelowStdA] = obtainStandardDeviations(groupedAErrors, averagedAErrors)
+	[groupedAboveStdMu, groupedBelowStdMu] = obtainStandardDeviations(groupedMuErrors, averagedMuErrors)
+	[groupedAboveStdT, groupedBelowStdT] = obtainStandardDeviations(groupedTreeErrors, averagedTreeErrors)
+	
+	[groupedAboveStdAmb, groupedBelowStdAmb] = obtainStandardDeviations(groupedAmbiguities, ambiguityScores)
+
+	[groupedAboveStdAmbR, groupedBelowStdAmbR] = obtainStandardDeviations(groupedAmbiguityScoresRandom, averageAmbiguityScoreRandom)
+	
+	[groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent] = obtainStandardDeviations(groupedAncestryAbsentErrors, averagedSwapAbsentErrors)
+	[groupedAboveStdSwapPresent, groupedBelowStdSwapPresent] = obtainStandardDeviations(groupedAncestryPresentErrors, averagedSwapPresentErrors)
+
+	#F3. Plot the error per noise level in one figure
+	
+	plotBoxplotsFigure(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, 
+				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT,
+				  ambiguityScores, groupedAboveStdAmb, groupedBelowStdAmb, averageAmbiguityScoreRandom[0], groupedAboveStdAmbR, groupedBelowStdAmbR,
+				  groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent)
+	
+	return 0
+
 
 def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, averageAmbiguityScoreRandom, groupedAmbiguityScoresRandom):
 	
@@ -785,7 +846,8 @@ permutationFolder = 'Results/generic_random/'
 [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
 groupedAmbiguitiesRandom = dict()
 groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
-generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+#generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+makeBoxPlotFigure(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
 
 exit()
 
