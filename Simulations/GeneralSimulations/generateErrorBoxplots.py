@@ -501,6 +501,8 @@ def plotBoxplots(noiseLevels, errors, title):
 	ax = plt.gca()
 	ax.boxplot(errorList)
 	
+	ax.set_xticklabels(noiseLevels)
+	
 	plt.savefig(title)
 	plt.show()
 	
