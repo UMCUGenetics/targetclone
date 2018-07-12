@@ -203,7 +203,9 @@ def averageData(dictionary, type):
 					newValues.append(value)
 		
 		average = sum(newValues)/float(len(newValues))
-		averagedData.append(average)
+		median = np.median(newValues)
+		#averagedData.append(average)
+		averagedData.append(median)
 		
 	
 	#Sort the averagedData
