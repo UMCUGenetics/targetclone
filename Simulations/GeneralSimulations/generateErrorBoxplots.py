@@ -14,6 +14,7 @@ from combinations import AlleleCombination
 from alleles import Alleles
 from mu import Mu
 from math import sqrt
+from copy import deepcopy
 
 import pickle as pkl
 
@@ -510,7 +511,8 @@ def plotBoxplots(noiseLevels, errors, randomErrors, title):
 	ax = plt.gca()
 	ax.boxplot(errorList)
 	
-	xtickLabels = noiseLevels
+	
+	xtickLabels = deepcopy(noiseLevels)
 	xtickLabels.append('random')
 	ax.set_xticklabels(xtickLabels, rotation=90)
 	
