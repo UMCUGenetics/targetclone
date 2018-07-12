@@ -506,7 +506,7 @@ def plotBoxplots(noiseLevels, errors, randomErrors, title):
 	
 	xtickLabels = noiseLevels
 	xtickLabels.append('random')
-	ax.set_xticklabels(xtickLabels)
+	ax.set_xticklabels(xtickLabels, rotation=90)
 	
 	plt.savefig(title)
 	plt.show()
@@ -525,7 +525,13 @@ def makeBoxPlotFigure(dataFolder, noiseLevels):
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
 	
+	plotBoxplots(noiseLevels, groupedCErrors, randomCErrors, 'boxplot_C.svg')
+	plotBoxplots(noiseLevels, groupedAErrors, randomAErrors, 'boxplot_A.svg')
+	plotBoxplots(noiseLevels, groupedMuErrors, randomMuErrors, 'boxplot_Mu.svg')
 	plotBoxplots(noiseLevels, groupedTreeErrors, randomTreeErrors, 'boxplot_T.svg')
+	
+	plotBoxplots(noiseLevels, groupedAncestryAbsentErrors, ancestrySwapErrorAbsentRandom, 'boxplot_AncestrySwapAbsent.svg')
+	plotBoxplots(noiseLevels, groupedAncestryPresentErrors, ancestrySwapErrorPresentRandom, 'boxplot_AncestrySwapPresent.svg')
 	
 	return 0
 
