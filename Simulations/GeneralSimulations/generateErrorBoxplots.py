@@ -410,7 +410,7 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	
 	stdAbove = [i + randomStd[0][0] for i in [randomError]*len(noiseLevels)]
 	stdBelow = [i - randomStd[1][0] for i in [randomError]*len(noiseLevels)]
-	
+	print "random error stds: "
 	print stdAbove
 	print stdBelow
 	
@@ -428,15 +428,17 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 		newStd = belowStd[std]
 		if (errors[std]-newStd) < 0:
 			newStd = abs(0-errors[std])
-		correctedBelowStd.append(newStd)
+		#correctedBelowStd.append(newStd)
+		correctedBelowStd.append(belowStd[std])
 	correctedAboveStd = []
 	for std in range(0, len(aboveStd)):
 		newStd = aboveStd[std]
 		if errors[std]+newStd > 1 and labels[0] != 'Trees':
 			newStd = abs(1-errors[std])
-		correctedAboveStd.append(newStd)
+		#correctedAboveStd.append(newStd)
+		correctedAboveStd.append(aboveStd[std])
 	
-		
+	print "corrected stds: "	
 	print correctedBelowStd
 	print correctedAboveStd
 	#Plot the error for the simulations
