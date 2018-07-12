@@ -820,7 +820,7 @@ permutationFolder = 'Results/generic_random/'
 groupedAmbiguitiesRandom = dict()
 groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
 #generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
-makeBoxPlotFigure(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+makeBoxPlotFigure(dataFolder, noiseLevels)
 
 exit()
 
