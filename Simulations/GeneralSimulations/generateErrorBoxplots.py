@@ -492,8 +492,10 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,6], 'fig3_AncestrySwapAbsent.svg')
 	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,12], 'fig3_AncestrySwapPresent.svg')
 
-def plotBoxplots(noiseLevels, errors, title):
+def plotBoxplots(noiseLevels, errors, randomErrors, title):
 	
+	print randomErrors
+	exit()
 	
 	#1. Make a list where each entry is the errors at a different noise level
 	errorList = errors.values()
@@ -509,12 +511,17 @@ def plotBoxplots(noiseLevels, errors, title):
 	exit()
 	
 
-def makeBoxPlotFigure(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, averageAmbiguityScoreRandom, groupedAmbiguityScoresRandom):
+def makeBoxPlotFigure(dataFolder, noiseLevels):
+	
+	#0. Obtain the raw error data for the random case
+	noiseLevels = ['generic_random']
+	[randomCErrors, randomAErrors, randomMuErrors, randomTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsentRandom, ancestrySwapErrorPresentRandom] = \
+	readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
 	
-	plotBoxplots(noiseLevels, groupedTreeErrors, 'boxplot_T.svg')
+	plotBoxplots(noiseLevels, groupedTreeErrors, randomTreeErrors, 'boxplot_T.svg')
 	
 	return 0
 
