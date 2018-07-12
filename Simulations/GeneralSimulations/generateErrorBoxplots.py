@@ -496,7 +496,15 @@ def plotBoxplots(noiseLevels, errors, title):
 	
 	
 	#1. Make a list where each entry is the errors at a different noise level
-	print(errors)
+	errorList = errors.values()
+	
+	fig = plt.figure()
+	
+	ax = plt.gca()
+	ax.boxplot(errorList)
+	
+	fig.show()
+	
 	exit()
 	
 
