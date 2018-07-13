@@ -146,7 +146,7 @@ def computeAncestrySwapError(realTree, inferredTree):
 	
 	print "done computing swap errors"	
 	
-	return [ancestrySwapCountAbsentInInferred, ancestrySwapCountPresentInInferred]
+	return [ancestrySwapCountAbsentInInferred, ancestrySwapCountPresentInInferred, len(samplePairs)]
 
 
 def computeEuclideanDistanceBetweenSamples(sample1Laf, sample2Laf, sample1Snvs, sample2Snvs):

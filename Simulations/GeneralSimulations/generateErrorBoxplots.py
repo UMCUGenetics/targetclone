@@ -114,10 +114,12 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 					
 				
 			#Compute the ancestry swap error
-			[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+			[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
 			
-			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred)
-			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred)
+			#Instead of reporting the actual errors, what if we report percentages of how bad we could have done? 
+			
+			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred / float(noOfSamplePairs))
+			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred / float(noOfSamplePairs))
 		
 		print "tree sizes:"
 		print sum(treeSizes) / float(len(treeSizes))
@@ -835,8 +837,8 @@ permutationFolder = 'Results/generic_random/'
 [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
 groupedAmbiguitiesRandom = dict()
 groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
-#generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
-makeBoxPlotFigure(dataFolder, noiseLevels)
+generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+#makeBoxPlotFigure(dataFolder, noiseLevels)
 
 exit()
 
