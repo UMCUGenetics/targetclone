@@ -368,10 +368,10 @@ def readData(dataFolder, noiseLevels, addition):
 			
 			
 			#Compute the ancestry swap error
-			[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+			[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
 			
-			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred)
-			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred)
+			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred / float(noOfSamplePairs))
+			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred / float(noOfSamplePairs))
 				
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
