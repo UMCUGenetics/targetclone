@@ -136,11 +136,12 @@ def averageData(dictionary, type):
 	return sortedAveragedData
 
 def mean_confidence_interval(data, confidence=0.95):
-    a = 1.0*np.array(data)
-    n = len(a)
-    m, se = np.mean(a), scipy.stats.sem(a)
-    h = se * sp.stats.t.ppf((1+confidence)/2., n-1)
-    
+	a = 1.0*np.array(data)
+	n = len(a)
+	m, se = np.mean(a), scipy.stats.sem(a)
+	h = se * sp.stats.t.ppf((1+confidence)/2., n-1)
+	return m, m-h, m+h
+
 def obtainStandardDeviations(groupedErrors, averagedError):
 	
 	#Compute standard deviations, see if it is better
