@@ -57,6 +57,8 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 		ambiguityCorrectedErrors = []
 		averagedAncestrySwapError = []
 		
+		treeSizes = []
+		
 		for subdir, dirs, files in os.walk(simulationFolder):
 			
 			
