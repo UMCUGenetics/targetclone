@@ -1243,39 +1243,39 @@ def plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTr
 	
 
 #Figure S7
-
-print "parsing simulation data"
-#Obtain all errors
-simulationFolder = 'Results/generic_noise'
-noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
-[allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
-#Compute the average errors and standard deviations
-print "computing averages: "
-averagedATreeErrors = averageData(allATreeErrors, 'T')
-averagedCTreeErrors = averageData(allCTreeErrors, 'T')
-averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
-averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
-averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
-print "computing standard deviations: "
-stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
-print "c:"
-stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
-print "snv:"
-stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
-print "euclidean:"
-stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
-print "tree:"
-stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
-
-allATreeErrors = None
-
-
-print "plotting: "
-#Make a plot of the tree errors
-plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
-							   stdEuclideanTreeErrors, stdMethodTreeErrors)
-
-exit()
+# 
+# print "parsing simulation data"
+# #Obtain all errors
+# simulationFolder = 'Results/generic_noise'
+# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+# [allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
+# #Compute the average errors and standard deviations
+# print "computing averages: "
+# averagedATreeErrors = averageData(allATreeErrors, 'T')
+# averagedCTreeErrors = averageData(allCTreeErrors, 'T')
+# averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
+# averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
+# averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
+# print "computing standard deviations: "
+# stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
+# print "c:"
+# stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
+# print "snv:"
+# stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
+# print "euclidean:"
+# stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
+# print "tree:"
+# stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
+# 
+# allATreeErrors = None
+# 
+# 
+# print "plotting: "
+# #Make a plot of the tree errors
+# plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
+# 							   stdEuclideanTreeErrors, stdMethodTreeErrors)
+# 
+# exit()
 
 
 
@@ -1772,11 +1772,11 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 	plt.savefig('tumorFractionSummary.svg')
 
 #Figure 3F
-# 	
-# plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors,
-# binnedTErrors, binnedAncenstryErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd, binnedAncestryStd)
-# 
-# exit()
+	
+plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors,
+binnedTErrors, binnedAncenstryErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd, binnedAncestryStd)
+
+exit()
 
 
 #Make scatterplots showing the difference between the normal simulations and the horizontal permutations
