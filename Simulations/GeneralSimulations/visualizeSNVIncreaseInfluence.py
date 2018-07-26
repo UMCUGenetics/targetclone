@@ -165,10 +165,13 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 #Compute an average of the errors
 print "C"
 averagedCErrors = averageData(groupedCErrors, 'C')
+print averagedCErrors
 print "A"
 averagedAErrors = averageData(groupedAErrors, 'C')
+print averagedAErrors
 print "Mu"
 averagedMuErrors = averageData(groupedMuErrors, 'C')
+print averagedMuErrors
 print "T"
 averagedTreeErrors = averageData(groupedTreeErrors, 'T')
 print averagedTreeErrors
