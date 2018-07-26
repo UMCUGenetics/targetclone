@@ -10,6 +10,11 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 
+import computeTreeErrorOtherMetrics
+from tree import Graph
+import scipy as sp
+import scipy.stats
+
 #1. Define the folders containing the data that we want to visualize
 motherFolder = sys.argv[1]
 snvNum = [10, 50, 100, 500, 1000, 5000, 10000]
