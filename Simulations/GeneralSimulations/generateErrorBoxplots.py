@@ -1225,7 +1225,7 @@ def plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTr
 	
 	ax.legend(legendLines, labels, loc=2, numpoints=1)
 	
-	ax.set_ylim(0,1)
+	ax.set_ylim(0,0.6)
 	ax.set_xlabel(r'Sequencing noise ($\sigma$)')
  	ax.set_ylabel('Error (trees)')
 	#ax.set_xlim(-0.005,0.105)
