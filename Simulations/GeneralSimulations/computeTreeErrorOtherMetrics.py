@@ -38,8 +38,8 @@ def collectErrorsFromFile(file, subdir): #subdir
 #Then go up the tree, there should be only one path, until we reach the root of the tree.
 def isParentChildRelation(edgeList, parent, child):
 	
-	print "looking for parent: ", parent
-	print "looking for child: ", child 
+	#print "looking for parent: ", parent
+	#print "looking for child: ", child 
 	
 	#First obtain the parent of the child in the tree to initiate the search
 	
@@ -85,8 +85,8 @@ def computeAncestrySwapError(realTree, inferredTree):
 		The purpose of this function is to check how often pairs of parents and children are swapped compared to the real ground truth tree. 
 	"""
 	
-	print "edges: ", realTree.edgeList
-	print "edges: ", inferredTree.edgeList
+	#print "edges: ", realTree.edgeList
+	#print "edges: ", inferredTree.edgeList
 	
 	allSamples = realTree.vertices
 	
@@ -124,8 +124,8 @@ def computeAncestrySwapError(realTree, inferredTree):
 	
 	#For every 2 indices, if the first is 1 for the real tree, but the second is 1 for the inferred tree, relationships are swapped.
 	
-	print "real tree statuses: ", parentChildRelationStatusRealTree
-	print "inferred tree statuses: ", parentChildRelationStatusInferredTree
+	#print "real tree statuses: ", parentChildRelationStatusRealTree
+	#print "inferred tree statuses: ", parentChildRelationStatusInferredTree
 	
 	ancestrySwapCountAbsentInInferred = 0
 	ancestrySwapCountPresentInInferred = 0
@@ -141,10 +141,10 @@ def computeAncestrySwapError(realTree, inferredTree):
 			ancestrySwapCountPresentInInferred += 1 #This relation is not in the real tree, but newly added in the inferred tree. 
 			
 	
-	print "absent in inferred error: ", ancestrySwapCountAbsentInInferred
-	print "present in inferred error: ", ancestrySwapCountPresentInInferred
+	#print "absent in inferred error: ", ancestrySwapCountAbsentInInferred
+	#print "present in inferred error: ", ancestrySwapCountPresentInInferred
 	
-	print "done computing swap errors"	
+	#print "done computing swap errors"	
 	
 	return [ancestrySwapCountAbsentInInferred, ancestrySwapCountPresentInInferred, len(samplePairs)]
 
