@@ -15,6 +15,8 @@ from combinations import AlleleCombination
 from alleles import Alleles
 from mu import Mu
 from math import sqrt
+import scipy as sp
+import scipy.stats
 
 
 plt.rcParams.update({'font.size': 14})
