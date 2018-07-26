@@ -145,6 +145,13 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 	#Return the grouped data
 	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, groupedAncestrySwapErrorsAbsentInInferred, groupedAncestrySwapErrorsPresentInInferred]
 
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0*np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * sp.stats.t.ppf((1+confidence)/2., n-1)
+    return m, m-h, m+h
+
 def obtainStandardDeviations(groupedErrors, averagedError):
 	
 	
@@ -176,6 +183,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		currentStd = np.std(noiseValues)
 		currentMean = np.mean(noiseValues)
 		conf_int = stats.norm.interval(0.95, loc=currentMean, scale=currentStd)
+		conf_int = mean_confidence_interval(noiseValues)
 		print "noise level: ", groupedErrors.keys()[noiseLevelInd]
 		print "current mean: ", currentMean
 		print "current std: ", currentStd
