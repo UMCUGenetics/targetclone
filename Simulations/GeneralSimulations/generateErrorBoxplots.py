@@ -897,18 +897,22 @@ def plotDataRestarts(noiseLevels, errors, aboveStd, belowStd, labels, colInd, li
 	
 	legendLines = []
 	
+	
 	correctedBelowStd = []
 	for std in range(0, len(belowStd)):
 		newStd = belowStd[std]
 		if (errors[std]-newStd) < 0:
 			newStd = abs(0-errors[std])
-		correctedBelowStd.append(newStd)
+		#correctedBelowStd.append(newStd)
+		correctedBelowStd.append(errors[std] - belowStd[std])
 	correctedAboveStd = []
 	for std in range(0, len(aboveStd)):
 		newStd = aboveStd[std]
 		if errors[std]+newStd > 1 and labels[0] != 'Trees':
 			newStd = abs(1-errors[std])
-		correctedAboveStd.append(newStd)
+		#correctedAboveStd.append(newStd)
+		correctedAboveStd.append(aboveStd[std] - errors[std])
+	
 	
 		
 	print correctedBelowStd
@@ -934,23 +938,24 @@ def plotDataRestarts(noiseLevels, errors, aboveStd, belowStd, labels, colInd, li
 	#plt.show()
 	plt.savefig(title)
 	
-def plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors,
+def plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAverageSwapErrors,
 				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu,
-				  groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT):
+				  groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap):
 	
 	plotDataRestarts(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, ['Copy numbers'], 0, [0,1], 'randomRestarts_C.svg')
 	plotDataRestarts(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, ['Alleles'], 1, [0,1], 'randomRestarts_A.svg')
 	plotDataRestarts(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, ['Tumor fraction'], 3, [0,0.6], 'randomRestarts_Mu.svg')
 	plotDataRestarts(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, ['Trees'], 4, [-1,10], 'randomRestarts_T.svg')
+	plotDataRestarts(noiseLevels, averagedAverageSwapErrors, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap, ['Trees'], 4, [0,1], 'randomRestarts_Ancestry.svg')
 
 def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
-	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
+	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors, groupedAverageSwapErrors] = readData(dataFolder, noiseLevels, '')
 	
 	#F2. Average the errors per noise level
-	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors] = \
-	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors)
+	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, averagedAverageSwapErrors] = \
+	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors, groupedAverageSwapErrors)
 	
 	#Obtain the standard deviation above and below the mean for the averages
 	[groupedAboveStdC, groupedBelowStdC] = obtainStandardDeviations(groupedCErrors, averagedCErrors)
@@ -958,17 +963,18 @@ def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	[groupedAboveStdA, groupedBelowStdA] = obtainStandardDeviations(groupedAErrors, averagedAErrors)
 	[groupedAboveStdMu, groupedBelowStdMu] = obtainStandardDeviations(groupedMuErrors, averagedMuErrors)
 	[groupedAboveStdT, groupedBelowStdT] = obtainStandardDeviations(groupedTreeErrors, averagedTreeErrors)
+	[groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap] = obtainStandardDeviations(groupedAverageSwapErrors, averagedAverageSwapErrors)
 
 	#F3. Plot the error per noise level in one figure
 	
-	plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors,
-				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT)
+	plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAverageSwapErrors,
+				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap)
 # Fig S6	
-# dataFolder = 'Results/random_restarts'
-# 
-# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
-# generateRandomRestartsFigure(dataFolder, noiseLevels)
-# exit()	
+dataFolder = 'Results/random_restarts'
+
+noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+generateRandomRestartsFigure(dataFolder, noiseLevels)
+exit()	
 
 def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds):
 	
@@ -1182,39 +1188,39 @@ def plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTr
 	
 
 #Figure S7
-
-print "parsing simulation data"
-#Obtain all errors
-simulationFolder = 'Results/generic_noise'
-noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
-[allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
-#Compute the average errors and standard deviations
-print "computing averages: "
-averagedATreeErrors = averageData(allATreeErrors, 'T')
-averagedCTreeErrors = averageData(allCTreeErrors, 'T')
-averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
-averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
-averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
-print "computing standard deviations: "
-stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
-print "c:"
-stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
-print "snv:"
-stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
-print "euclidean:"
-stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
-print "tree:"
-stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
-
-allATreeErrors = None
-
-
-print "plotting: "
-#Make a plot of the tree errors
-plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
-							   stdEuclideanTreeErrors, stdMethodTreeErrors)
-
-exit()
+# 
+# print "parsing simulation data"
+# #Obtain all errors
+# simulationFolder = 'Results/generic_noise'
+# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+# [allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
+# #Compute the average errors and standard deviations
+# print "computing averages: "
+# averagedATreeErrors = averageData(allATreeErrors, 'T')
+# averagedCTreeErrors = averageData(allCTreeErrors, 'T')
+# averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
+# averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
+# averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
+# print "computing standard deviations: "
+# stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
+# print "c:"
+# stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
+# print "snv:"
+# stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
+# print "euclidean:"
+# stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
+# print "tree:"
+# stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
+# 
+# allATreeErrors = None
+# 
+# 
+# print "plotting: "
+# #Make a plot of the tree errors
+# plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
+# 							   stdEuclideanTreeErrors, stdMethodTreeErrors)
+# 
+# exit()
 
 
 
