@@ -122,6 +122,9 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 			
 			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred / float(noOfSamplePairs))
 			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred / float(noOfSamplePairs))
+			summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+			print summedError
+			exit()
 		
 		print "tree sizes:"
 		print sum(treeSizes) / float(len(treeSizes))
@@ -435,8 +438,6 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	plt.figure()
 	ax = plt.gca()
 	
-	
-	
 	stdAbove = [randomStd[0][0] for i in [randomError]*len(noiseLevels)]
 	stdBelow = [randomStd[1][0] for i in [randomError]*len(noiseLevels)]
 	print "random error stds: "
@@ -520,6 +521,10 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 	#Swap errors.Should these be visualized in the same figure, or keep them separate?
 	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,1], 'fig3_AncestrySwapAbsent.svg')
 	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapPresent.svg')
+	
+	
+	
+	
 
 def plotBoxplots(noiseLevels, errors, randomErrors, title):
 	
