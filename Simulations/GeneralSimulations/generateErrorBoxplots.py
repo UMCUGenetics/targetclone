@@ -15,7 +15,8 @@ from alleles import Alleles
 from mu import Mu
 from math import sqrt
 from copy import deepcopy
-from scipy import stats
+import scipy as sp
+import scipy.stats
 
 import pickle as pkl
 
