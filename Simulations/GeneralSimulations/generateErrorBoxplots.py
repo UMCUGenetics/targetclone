@@ -1706,7 +1706,7 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 		
 		correctedAboveStd.append(binnedCStd[0][std] - binnedC[0][std])
 	
-	p = ax.errorbar(mu, binnedC[0], yerr=[binnedCStd[1], binnedCStd[0]], label="C error", color = colors[0], linewidth=2, antialiased=True)
+	p = ax.errorbar(mu, binnedC[0], yerr=[correctedBelowStd, correctedAboveStd], label="C error", color = colors[0], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
 	labels.append('Copy numbers')
 	
@@ -1719,7 +1719,7 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 		
 		correctedAboveStd.append(binnedAStd[0][std] - binnedA[0][std])
 	
-	p = ax.errorbar(noiseLevelsA, binnedA[0], yerr=[binnedAStd[1], binnedAStd[0]], label="A error", color = colors[1], linewidth=2, antialiased=True)
+	p = ax.errorbar(noiseLevelsA, binnedA[0], yerr=[correctedBelowStd, correctedAboveStd], label="A error", color = colors[1], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
 	labels.append('Alleles')
 	
@@ -1732,7 +1732,7 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 		
 		correctedAboveStd.append(binnedMuStd[0][std] - binnedMu[0][std])
 	
-	p = ax.errorbar(noiseLevelsMu, binnedMu[0], yerr=[binnedMuStd[1], binnedMuStd[0]], label= "Mu error", color = colors[3], linewidth=2, antialiased=True)
+	p = ax.errorbar(noiseLevelsMu, binnedMu[0], yerr=[correctedBelowStd, correctedAboveStd], label= "Mu error", color = colors[3], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
 	labels.append('Tumor fraction')
 	# p = ax2.errorbar(noiseLevelsTree, binnedT[0], yerr=[stdBelow, binnedTStd[0]], label="T error", color = colors[4], linewidth=2, antialiased=True)
@@ -1748,7 +1748,7 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 		
 		correctedAboveStd.append(binnedAncestryStd[0][std] - binnedAncestry[0][std])
 	
-	p = ax.errorbar(noiseLevelsTree, binnedAncestry[0], yerr=[binnedAncestryStd[1], binnedAncestryStd[0]], label= "T error", color = colors[4], linewidth=2, antialiased=True)
+	p = ax.errorbar(noiseLevelsTree, binnedAncestry[0], yerr=[correctedBelowStd, correctedAboveStd], label= "T error", color = colors[4], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
 	labels.append('Trees')
 	
