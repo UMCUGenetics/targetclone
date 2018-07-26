@@ -426,22 +426,22 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	plt.figure()
 	ax = plt.gca()
 	
-	
-	
-	stdAbove = [randomStd[0][0] for i in [randomError]*len(noiseLevels)]
-	stdBelow = [randomStd[1][0] for i in [randomError]*len(noiseLevels)]
-	print "random error stds: "
-	print stdAbove
-	print stdBelow
-	
-	
-	ax.plot(noiseLevels, [randomError]*len(noiseLevels), color="#CDCDCD")
-	ax.plot(noiseLevels, stdAbove, color="#CDCDCD")
-	ax.plot(noiseLevels, stdBelow, color="#CDCDCD")
-	
-	ax.fill_between(noiseLevels, stdBelow, stdAbove, alpha=0.5, edgecolor='#CDCDCD', facecolor='#CDCDCD')
-	
-	legendLines = []
+	# 
+	# 
+	# stdAbove = [randomStd[0][0] for i in [randomError]*len(noiseLevels)]
+	# stdBelow = [randomStd[1][0] for i in [randomError]*len(noiseLevels)]
+	# print "random error stds: "
+	# print stdAbove
+	# print stdBelow
+	# 
+	# 
+	# ax.plot(noiseLevels, [randomError]*len(noiseLevels), color="#CDCDCD")
+	# ax.plot(noiseLevels, stdAbove, color="#CDCDCD")
+	# ax.plot(noiseLevels, stdBelow, color="#CDCDCD")
+	# 
+	# ax.fill_between(noiseLevels, stdBelow, stdAbove, alpha=0.5, edgecolor='#CDCDCD', facecolor='#CDCDCD')
+	# 
+	# legendLines = []
 	
 	# correctedBelowStd = []
 	# for std in range(0, len(belowStd)):
