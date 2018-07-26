@@ -162,6 +162,13 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 #Get the raw errors for the horizontal shuffle and the normal case
 [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAncestrySwapErrors] = readDataIncludingPermutations(motherFolder, snvNum)
 
+print groupedCErrors
+print groupedAErrors
+print groupedMuErrors
+print groupedTreeErrors
+print groupedAncestrySwapErrors
+exit()
+
 #Compute an average of the errors
 print "C"
 averagedCErrors = averageData(groupedCErrors, 'C')
@@ -177,7 +184,6 @@ averagedTreeErrors = averageData(groupedTreeErrors, 'T')
 print averagedTreeErrors
 averagedAncestryErrors = averageData(groupedAncestrySwapErrors, 'C')
 print averagedAncestryErrors
-exit()
 
 
 #Compute the standard deviation of the error (add later)
