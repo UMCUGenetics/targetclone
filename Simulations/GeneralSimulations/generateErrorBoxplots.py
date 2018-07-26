@@ -176,7 +176,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		currentStd = np.std(noiseValues)
 		currentMean = np.mean(noiseValues)
 		conf_int = stats.norm.interval(0.95, loc=currentMean, scale=currentStd)
-		
+		print "confidence interval: ", conf_int
 		#q1 = np.percentile(noiseValues, 5)
 		#q3 = np.percentile(noiseValues, 95)
 		#p025 = df.groupby('category')['number'].quantile(0.025)
@@ -187,6 +187,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		
 	sortedKeys, sortedBelow = zip(*sorted(zip(groupedErrors.keys(), groupedBelowStd)))
 	sortedKeys, sortedAbove = zip(*sorted(zip(groupedErrors.keys(), groupedAboveStd)))
+	exit()
 	return [sortedAbove, sortedBelow]
 
 def averageData(dictionary, type):
