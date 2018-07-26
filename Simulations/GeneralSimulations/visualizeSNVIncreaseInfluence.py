@@ -38,6 +38,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 	groupedAmbiguityErrors = dict()
 	
 	groupedEuclideanErrors = dict()
+	groupedAverageAncestrySwapErrors = dict()
 	
 	for noiseLevel in noiseLevels:
 		simulationFolder = dataFolder + '/snvs_' + str(noiseLevel)
@@ -49,6 +50,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 		treeErrors = []
 		ambiguityErrors = []
 		ambiguityCorrectedErrors = []
+		averagedAncestrySwapError = []
 		
 		for subdir, dirs, files in os.walk(simulationFolder):
 			
@@ -65,7 +67,23 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 					muErrors += collectErrorsFromFile(file, subdir)
 				if re.match('treeError', file): #read the file and obtain the error
 					treeErrors += collectErrorsFromFile(file, subdir)
-						
+				if re.match('RealTrees', file): #read the file and obtain the error
+					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+					tree = eval(stringDict)
+					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+					treeSizes.append(len(realTree.edgeList))
+				
+				if re.match('EstimatedTrees', file): #read the file and obtain the error
+					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+					tree = eval(stringDict)
+					inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+			
+			[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+			
+			#Instead of reporting the actual errors, what if we report percentages of how bad we could have done? 
+			summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+			averagedAncestrySwapError.append(summedError / float(noOfSamplePairs))
+					
 			
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
@@ -73,11 +91,12 @@ def readDataIncludingPermutations(dataFolder, noiseLevels):
 		groupedMuErrors[noiseLevel] = muErrors
 		groupedTreeErrors[noiseLevel] = treeErrors
 		groupedAmbiguityErrors[noiseLevel] = ambiguityCorrectedErrors
+		groupedAverageAncestrySwapErrors[noiseLevel] = averagedAncestrySwapError
 		
 		#Move this to a function to make it better
 		#Also compute the Euclidean distance trees for each noise levels, add this as an additional error
 	#Return the grouped data
-	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors]
+	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAverageAncestrySwapErrors]
 
 def averageData(dictionary, type):
 	
@@ -109,6 +128,12 @@ def averageData(dictionary, type):
 	
 	return sortedAveragedData
 
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0*np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * sp.stats.t.ppf((1+confidence)/2., n-1)
+    
 def obtainStandardDeviations(groupedErrors, averagedError):
 	
 	#Compute standard deviations, see if it is better
@@ -118,17 +143,17 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 	#It is more interesting to show the quantiles rather than the standard deviation
 	for noiseLevelInd in range(0, len(groupedErrors.keys())):
 		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
-		q1 = np.std(noiseValues)
-		q3 = np.std(noiseValues)
-		groupedAboveStd.append(q3)
-		groupedBelowStd.append(q1)
+		[mean, lower, upper] = mean_confidence_interval(noiseValues)
+		
+		groupedAboveStd.append(upper)
+		groupedBelowStd.append(lower)
 		
 	sortedKeys, sortedBelow = zip(*sorted(zip(groupedErrors.keys(), groupedBelowStd)))
 	sortedKeys, sortedAbove = zip(*sorted(zip(groupedErrors.keys(), groupedAboveStd)))
 	return [sortedAbove, sortedBelow]
 
 #Get the raw errors for the horizontal shuffle and the normal case
-[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors] = readDataIncludingPermutations(motherFolder, snvNum)
+[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAncestrySwapErrors] = readDataIncludingPermutations(motherFolder, snvNum)
 
 #Compute an average of the errors
 print "C"
@@ -140,6 +165,7 @@ averagedMuErrors = averageData(groupedMuErrors, 'C')
 print "T"
 averagedTreeErrors = averageData(groupedTreeErrors, 'T')
 print averagedTreeErrors
+averagedAncestryErrors = averageData(groupedAncestrySwapErrors, 'C')
 
 
 #Compute the standard deviation of the error (add later)
@@ -147,7 +173,7 @@ print averagedTreeErrors
 [groupedAboveStdA, groupedBelowStdA] = obtainStandardDeviations(groupedAErrors, averagedAErrors)
 [groupedAboveStdMu, groupedBelowStdMu] = obtainStandardDeviations(groupedMuErrors, averagedMuErrors)
 [groupedAboveStdT, groupedBelowStdT] = obtainStandardDeviations(groupedTreeErrors, averagedTreeErrors)
-
+[groupedAboveStdAncestry, groupedBelowStdAncestry] = obtainStandardDeviations(groupedAncestrySwapErrors, averagedAncestryErrors)
 
 #3. Make a plot with the error on the y axis, and the number of SNPs on the x axis. (4 plots per data type that we infer)
 
@@ -211,7 +237,6 @@ plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelo
 plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2, [-0.05,0.4])
 plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4, [-0.05,0.3])
 plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_snv', 6, [-0.05,6])
-	
-
+plotHorizontalDependencyInfluence(averagedAncestryErrors, groupedAboveStdAncestry, groupedBelowStdAncestry, snvNum, 'Trees', 'Ancestry_snv', 6, [0,0.3])
 
 
