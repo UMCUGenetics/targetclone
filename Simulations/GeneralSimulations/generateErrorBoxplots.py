@@ -176,6 +176,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		currentStd = np.std(noiseValues)
 		currentMean = np.mean(noiseValues)
 		conf_int = stats.norm.interval(0.95, loc=currentMean, scale=currentStd)
+		print "noise level: ", groupedErrors.keys[noiseLevelInd]
 		print "current mean: ", currentMean
 		print "current std: ", currentStd
 		print "confidence interval: ", conf_int
@@ -261,8 +262,11 @@ def computeRandomCaseError(dataFolder):
 	
 	#Obtain the standard deviations
 	
+	print "C std: "
 	randomCStd = obtainStandardDeviations(groupedCErrors, averagedCErrors)
+	print "A std: "
 	randomAStd = obtainStandardDeviations(groupedAErrors, averagedAErrors)
+	print "Mu std: "
 	randomMuStd = obtainStandardDeviations(groupedMuErrors, averagedMuErrors)
 	randomTreeStd = obtainStandardDeviations(groupedTreeErrors, averagedTreeErrors)
 	swapAbsentStd = obtainStandardDeviations(ancestrySwapErrorAbsent, averagedSwapErrorsAbsent)
