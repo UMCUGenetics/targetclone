@@ -53,6 +53,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 	groupedEuclideanErrors = dict()
 	groupedAncestrySwapErrorsAbsentInInferred = dict()
 	groupedAncestrySwapErrorsPresentInInferred = dict()
+	groupedAverageAncestrySwapErrors = dict()
 	
 	for noiseLevel in noiseLevels:
 		simulationFolder = dataFolder + noiseLevel
@@ -74,6 +75,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 		euclideanErrors = []
 		ancestrySwapErrorsAbsentInInferred = []
 		ancestrySwapErrorsPresentInInferred = []
+		averagedAncestrySwapError = []
 		
 		realTree = None
 		inferredTree = None
@@ -123,8 +125,8 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred / float(noOfSamplePairs))
 			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred / float(noOfSamplePairs))
 			summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
-			print summedError
-			exit()
+			averagedAncestrySwapError = summedError / float(2)
+			
 		
 		print "tree sizes:"
 		print sum(treeSizes) / float(len(treeSizes))
@@ -143,11 +145,12 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 		groupedEuclideanErrors[noiseLevel] = euclideanErrors
 		groupedAncestrySwapErrorsAbsentInInferred[noiseLevel] = ancestrySwapErrorsAbsentInInferred
 		groupedAncestrySwapErrorsPresentInInferred[noiseLevel] = ancestrySwapErrorsPresentInInferred
+		groupedAverageAncestrySwapErrors[noiseLevel] = averagedAncestrySwapError
 		
 		#Move this to a function to make it better
 		#Also compute the Euclidean distance trees for each noise levels, add this as an additional error
 	#Return the grouped data
-	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, groupedAncestrySwapErrorsAbsentInInferred, groupedAncestrySwapErrorsPresentInInferred]
+	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, groupedAncestrySwapErrorsAbsentInInferred, groupedAncestrySwapErrorsPresentInInferred, groupedAverageAncestrySwapErrors]
 
 def mean_confidence_interval(data, confidence=0.95):
     a = 1.0*np.array(data)
@@ -238,7 +241,7 @@ def averageData(dictionary, type):
 	return sortedAveragedData
 
 
-def averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, swapErrorAbsent, swapErrorPresent):
+def averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, swapErrorAbsent, swapErrorPresent, averagedSwapError):
 
 	averagedCErrors = averageData(groupedCErrors, 'C')
 	averagedAErrors = averageData(groupedAErrors, 'A')
@@ -250,15 +253,16 @@ def averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, 
 	averagedSwapErrorsAbsent = averageData(swapErrorAbsent, 'T')
 	averagedSwapErrorsPresent = averageData(swapErrorPresent, 'T')
 
+	averagedAveragedSwapErrors = averageData(averagedSwapError, 'T')
 	
-	return [averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapErrorsAbsent, averagedSwapErrorsPresent]
+	return [averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapErrorsAbsent, averagedSwapErrorsPresent, averagedAveragedSwapErrors]
 
 def computeRandomCaseError(dataFolder):
 	
 	#F1. Read the data from the data folder
 	#Make dummy noise levels to read the right folder
 	noiseLevels = ['generic_random']
-	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent] = \
+	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent, averagedSwapError] = \
 	readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
 	
@@ -269,8 +273,8 @@ def computeRandomCaseError(dataFolder):
 	#The distribution of the z-score is the same as the distribution of the permutations! It is only standardized. 
 
 	#F2. Average the errors (one noise level)
-	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, a, averagedSwapErrorsAbsent, averagedSwapErrorsPresent] = \
-	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedCErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent)
+	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, a, averagedSwapErrorsAbsent, averagedSwapErrorsPresent, averagedAveragedSwapError] = \
+	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedCErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent, averagedSwapError)
 	
 	#Obtain the standard deviations
 	
@@ -283,6 +287,7 @@ def computeRandomCaseError(dataFolder):
 	randomTreeStd = obtainStandardDeviations(groupedTreeErrors, averagedTreeErrors)
 	swapAbsentStd = obtainStandardDeviations(ancestrySwapErrorAbsent, averagedSwapErrorsAbsent)
 	swapPresentStd = obtainStandardDeviations(ancestrySwapErrorPresent, averagedSwapErrorsPresent)
+	averageSwapStd = obtainStandardDeviations(averagedSwapError, averagedAveragedSwapError)
 	
 	#randomCStd = np.std(groupedCErrors[noiseLevels[0]])
 	#randomAStd = np.std(groupedAErrors[noiseLevels[0]])
@@ -298,11 +303,11 @@ def computeRandomCaseError(dataFolder):
 	print averagedSwapErrorsAbsent
 	print averagedSwapErrorsPresent
 	
-	return [averagedCErrors[0], averagedAErrors[0], averagedMuErrors[0], averagedTreeErrors[0], averagedSwapErrorsAbsent[0], averagedSwapErrorsPresent[0], randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd]
+	return [averagedCErrors[0], averagedAErrors[0], averagedMuErrors[0], averagedTreeErrors[0], averagedSwapErrorsAbsent[0], averagedSwapErrorsPresent[0], averagedAveragedSwapError[0], randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd, averageSwapStd]
 
 #2. Calculate statistics for the completely random case
 dataFolder = 'Results/'
-[randomCError, randomAError, randomMuError, randomTreeError, randomSwapErrorAbsent, randomSwapErrorPresent, randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd] = computeRandomCaseError(dataFolder)
+[randomCError, randomAError, randomMuError, randomTreeError, randomSwapErrorAbsent, randomSwapErrorPresent, randomAverageSwapError, randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd, averageSwapStd] = computeRandomCaseError(dataFolder)
 
 
 def readData(dataFolder, noiseLevels, addition):
@@ -498,11 +503,11 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	plt.savefig(title)
 
 
-def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, 
+def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, averagedAverageSwapErrors, 
 				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu,
 				  groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT, ambiguityScores, groupedAboveStdAmb, groupedBelowStdAmb,
 				  ambiguityScoresRandom, groupedAboveStdAmbR, groupedBelowStdAmbR,
-				  groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent):
+				  groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap):
 	
 	
 	
@@ -522,7 +527,7 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,1], 'fig3_AncestrySwapAbsent.svg')
 	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapPresent.svg')
 	
-	
+	plotData(noiseLevels, averagedAverageSwapErrors, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap, randomAverageSwapError, averageSwapStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapAveraged.svg')
 	
 	
 
@@ -796,7 +801,7 @@ def computeCorrectAmbiguityScore(LAFAndCombinations, simulationFolder):
 def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, averageAmbiguityScoreRandom, groupedAmbiguityScoresRandom):
 	
 	#F1. Read the data from all the simulation folders (The normal and permuted errors)
-	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors] = readData(dataFolder, noiseLevels, '')
+	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors, groupedAverageSwapErrors] = readData(dataFolder, noiseLevels, '')
 	# 
 	print groupedCErrors
 	# print np.percentile(groupedCErrors[0.01], 0)
@@ -810,8 +815,8 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 	
 	
 	#F2. Average the errors per noise level
-	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors] = \
-	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors)
+	[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, averagedAverageSwapErrors] = \
+	averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors, groupedAverageSwapErrors)
 	
 	
 	#Obtain the standard deviation above and below the mean for the averages
@@ -829,13 +834,14 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 	
 	[groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent] = obtainStandardDeviations(groupedAncestryAbsentErrors, averagedSwapAbsentErrors)
 	[groupedAboveStdSwapPresent, groupedBelowStdSwapPresent] = obtainStandardDeviations(groupedAncestryPresentErrors, averagedSwapPresentErrors)
+	[groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap] = obtainStandardDeviations(groupedAverageSwapErrors, averagedAverageSwapErrors)
 
 	#F3. Plot the error per noise level in one figure
 	
-	plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, 
+	plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAmbiguityErrors, averagedSwapAbsentErrors, averagedSwapPresentErrors, averagedAverageSwapErrors, 
 				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT,
 				  ambiguityScores, groupedAboveStdAmb, groupedBelowStdAmb, averageAmbiguityScoreRandom[0], groupedAboveStdAmbR, groupedBelowStdAmbR,
-				  groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent)
+				  groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap)
 	
 	return 0
 
