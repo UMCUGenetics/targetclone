@@ -150,6 +150,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 	#It is more interesting to show the quantiles rather than the standard deviation
 	for noiseLevelInd in range(0, len(groupedErrors.keys())):
 		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
+		print noiseValues
 		[mean, lower, upper] = mean_confidence_interval(noiseValues)
 		
 		groupedAboveStd.append(upper)
@@ -161,13 +162,6 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 
 #Get the raw errors for the horizontal shuffle and the normal case
 [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAncestrySwapErrors] = readDataIncludingPermutations(motherFolder, snvNum)
-
-print groupedCErrors
-print groupedAErrors
-print groupedMuErrors
-print groupedTreeErrors
-print groupedAncestrySwapErrors
-exit()
 
 #Compute an average of the errors
 print "C"
@@ -207,20 +201,20 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 	ax = plt.gca()
 	
 	legendLines = []
-	
 	correctedBelowStd = []
 	for std in range(0, len(belowStd)):
 		newStd = belowStd[std]
 		if (errors[std]-newStd) < 0:
 			newStd = abs(0-errors[std])
-		correctedBelowStd.append(newStd)
+		#correctedBelowStd.append(newStd)
+		correctedBelowStd.append(errors[std] - belowStd[std])
 	correctedAboveStd = []
 	for std in range(0, len(aboveStd)):
 		newStd = aboveStd[std]
-		if errors[std]+newStd > 1 and plotType != 'Trees':
+		if errors[std]+newStd > 1 and labels[0] != 'Trees':
 			newStd = abs(1-errors[std])
-		correctedAboveStd.append(newStd)
-	
+		#correctedAboveStd.append(newStd)
+		correctedAboveStd.append(aboveStd[std] - errors[std])
 		
 	print correctedBelowStd
 	print correctedAboveStd
