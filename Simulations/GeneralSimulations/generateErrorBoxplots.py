@@ -206,9 +206,9 @@ def averageData(dictionary, type):
 					newValues.append(value)
 		
 		average = sum(newValues)/float(len(newValues))
-		median = np.median(newValues)
-		#averagedData.append(average)
-		averagedData.append(median)
+		
+		averagedData.append(average)
+		
 		
 	
 	#Sort the averagedData
@@ -492,8 +492,8 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 	plotData(noiseLevels, averagedAmbiguityErrors, groupedAboveStdAmb, groupedBelowStdAmb, ambiguityErrorsRandom, [groupedAboveStdAmbR,groupedBelowStdAmbR], ['Resolved ambiguities'], 5, [0,1], 'fig3_Amb.svg')
 	
 	#Swap errors.Should these be visualized in the same figure, or keep them separate?
-	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,6], 'fig3_AncestrySwapAbsent.svg')
-	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,12], 'fig3_AncestrySwapPresent.svg')
+	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,1], 'fig3_AncestrySwapAbsent.svg')
+	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapPresent.svg')
 
 def plotBoxplots(noiseLevels, errors, randomErrors, title):
 	
@@ -815,7 +815,7 @@ simulationFolder = 'Results/generic_noise'
 dataFolder = 'Results/generic_noise'
 #noiseLevels = [0, 0.005, 0.01]
 noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
-#noiseLevels = [0, 0.02]
+noiseLevels = [0.02]
 #noiseLevels = [0]
 #Put this here so that we can easily re-use it for other figures
 ambiguities = []
