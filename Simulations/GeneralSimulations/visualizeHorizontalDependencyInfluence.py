@@ -249,7 +249,7 @@ averagedPAncestrySwapErrors = averageData(groupedPAncestrySwapErrors, 'C')
 
 #3. Make a plot with the error on the y axis, and the number of SNPs on the x axis. (4 plots per data type that we infer)
 
-def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, aboveStdP, belowStdP, snpNums, plotType, title, colInd, ylim):
+def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, aboveStdP, belowStdP, snpNums, plotType, title, colInd, lim):
 	
 	#Take the average and standard deviations as input
 	
