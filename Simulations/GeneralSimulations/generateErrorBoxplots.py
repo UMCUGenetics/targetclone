@@ -1746,7 +1746,7 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 	correctedAboveStd = []
 	for std in range(0, len(binnedAncestryStd[0])):
 		
-		correctedAboveStd.append(stdSnvTreeEbinnedAncestryStdrrors[0][std] - binnedAncestry[0][std])
+		correctedAboveStd.append(binnedAncestryStd[0][std] - binnedAncestry[0][std])
 	
 	p = ax.errorbar(noiseLevelsTree, binnedAncestry[0], yerr=[binnedAncestryStd[1], binnedAncestryStd[0]], label= "T error", color = colors[4], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
