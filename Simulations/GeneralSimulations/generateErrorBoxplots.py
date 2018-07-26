@@ -476,7 +476,7 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	print "plotting above: ", aboveStd
 	print "plotting below: ", belowStd
 	
-	p = ax.errorbar(noiseLevels, errors, yerr=[belowStd, aboveStd], label='$E_C$', color=colors[colInd], linewidth=2)
+	p = ax.errorbar(noiseLevels, errors, yerr=[correctedBelowStd, correctedAboveStd], label='$E_C$', color=colors[colInd], linewidth=2)
 	#legendLines.append(p[0])
 	
 	#ax.legend(legendLines, labels, loc=2, numpoints=1)
