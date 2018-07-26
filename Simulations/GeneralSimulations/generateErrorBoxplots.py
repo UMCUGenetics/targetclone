@@ -862,29 +862,29 @@ noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
 #noiseLevels = [0.015, 0.02, 0.025]
 #noiseLevels = [0]
 #Put this here so that we can easily re-use it for other figures
-ambiguities = []
-ambiguityScores = []
-groupedAmbiguities = dict()
-
-for noiseLevel in noiseLevels:
-	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
-	print "noise level: ", noiseLevel
-	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
-	groupedAmbiguities[noiseLevel] = allAmbiguityScores
-	ambiguities.append(averageAmbiguities)
-	ambiguityScores.append(averageAmbiguityScore)
-	
-#Also compute the ambiguity scores in the permuted data
-
-permutationFolder = 'Results/generic_random/'
-
-[averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
-groupedAmbiguitiesRandom = dict()
-groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
-generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
-#makeBoxPlotFigure(dataFolder, noiseLevels)
-
-exit()
+# ambiguities = []
+# ambiguityScores = []
+# groupedAmbiguities = dict()
+# 
+# for noiseLevel in noiseLevels:
+# 	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
+# 	print "noise level: ", noiseLevel
+# 	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
+# 	groupedAmbiguities[noiseLevel] = allAmbiguityScores
+# 	ambiguities.append(averageAmbiguities)
+# 	ambiguityScores.append(averageAmbiguityScore)
+# 	
+# #Also compute the ambiguity scores in the permuted data
+# 
+# permutationFolder = 'Results/generic_random/'
+# 
+# [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
+# groupedAmbiguitiesRandom = dict()
+# groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
+# generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+# #makeBoxPlotFigure(dataFolder, noiseLevels)
+# 
+# exit()
 
 #Make the random restarts figure
 
@@ -1055,8 +1055,8 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 				continue
 			for file in files:
 				
-				if re.match('treeError', file): #read the file and obtain the error
-					methodTreeErrors += collectErrorsFromFile(file, subdir)
+				#if re.match('treeError', file): #read the file and obtain the error
+				#	methodTreeErrors += collectErrorsFromFile(file, subdir)
 				if re.match('EstimatedA', file): #read the file and obtain the a matrix
 					aMatrix = np.loadtxt(subdir + '/' + file, dtype=str)
 				if re.match('EstimatedC', file): #read the file and obtain the a matrix
@@ -1065,10 +1065,16 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					lafMatrix = np.loadtxt(subdir + '/' + file, dtype=float)
 				if re.match('AFMeasurements_1', file): #read the file and obtain the error
 					afMatrix = np.loadtxt(subdir + '/' + file, dtype=float)
-				if re.match('RealTrees', file):
+				
+				if re.match('RealTrees', file): #read the file and obtain the error
 					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
 					tree = eval(stringDict)
 					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+				
+				if re.match('EstimatedTrees', file): #read the file and obtain the error
+					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+					tree = eval(stringDict)
+					inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
 				
 				if re.match('simulationData.pkl', file):
 					pkl_file = open(subdir + '/simulationData.pkl', 'rb')
@@ -1086,6 +1092,12 @@ def readSimulationData(simulationFolderLocation, noiseLevels):
 					
 				if re.match('SomVar', file):
 					snvMatrix = np.loadtxt(subdir + '/' + file, dtype=int)
+			
+			[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+			
+			
+			summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+			methodTreeErrors.append(summedError / float(noOfSamplePairs))
 			
 			snvTreeErrors.append(computeTreeErrorOtherMetrics.computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices, chromosomes, positions))
 		
@@ -1170,39 +1182,39 @@ def plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTr
 	
 
 #Figure S7
-# 
-# print "parsing simulation data"
-# #Obtain all errors
-# simulationFolder = 'Results/generic_noise'
-# noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
-# [allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
-# #Compute the average errors and standard deviations
-# print "computing averages: "
-# averagedATreeErrors = averageData(allATreeErrors, 'T')
-# averagedCTreeErrors = averageData(allCTreeErrors, 'T')
-# averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
-# averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
-# averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
-# print "computing standard deviations: "
-# stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
-# print "c:"
-# stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
-# print "snv:"
-# stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
-# print "euclidean:"
-# stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
-# print "tree:"
-# stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
-# 
-# allATreeErrors = None
-# 
-# 
-# print "plotting: "
-# #Make a plot of the tree errors
-# plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
-# 							   stdEuclideanTreeErrors, stdMethodTreeErrors)
-# 
-# exit()
+
+print "parsing simulation data"
+#Obtain all errors
+simulationFolder = 'Results/generic_noise'
+noiseLevels = [0.005, 0.01, 0.015, 0.02, 0.025, 0.03]
+[allATreeErrors, allCTreeErrors, allSnvTreeErrors, allEuclideanTreeErrors, allMethodTreeErrors] = readSimulationData(simulationFolder, noiseLevels)
+#Compute the average errors and standard deviations
+print "computing averages: "
+averagedATreeErrors = averageData(allATreeErrors, 'T')
+averagedCTreeErrors = averageData(allCTreeErrors, 'T')
+averagedSnvTreeErrors = averageData(allSnvTreeErrors, 'T')
+averagedEuclideanTreeErrors = averageData(allEuclideanTreeErrors, 'T')
+averagedMethodTreeErrors = averageData(allMethodTreeErrors, 'T')
+print "computing standard deviations: "
+stdATreeErrors = obtainStandardDeviations(allATreeErrors, averagedATreeErrors)
+print "c:"
+stdCTreeErrors = obtainStandardDeviations(allCTreeErrors, averagedCTreeErrors)
+print "snv:"
+stdSnvTreeErrors = obtainStandardDeviations(allSnvTreeErrors, averagedSnvTreeErrors)
+print "euclidean:"
+stdEuclideanTreeErrors = obtainStandardDeviations(allEuclideanTreeErrors, averagedEuclideanTreeErrors)
+print "tree:"
+stdMethodTreeErrors = obtainStandardDeviations(allMethodTreeErrors, averagedMethodTreeErrors)
+
+allATreeErrors = None
+
+
+print "plotting: "
+#Make a plot of the tree errors
+plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTreeErrors, averagedSnvTreeErrors, averagedEuclideanTreeErrors, averagedMethodTreeErrors, stdATreeErrors, stdCTreeErrors, stdSnvTreeErrors,
+							   stdEuclideanTreeErrors, stdMethodTreeErrors)
+
+exit()
 
 
 
