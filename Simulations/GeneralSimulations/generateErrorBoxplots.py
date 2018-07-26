@@ -942,11 +942,11 @@ def plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErro
 				  noiseLevels, groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu,
 				  groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap):
 	
-	plotDataRestarts(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, ['Copy numbers'], 0, [0,1], 'randomRestarts_C.svg')
-	plotDataRestarts(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, ['Alleles'], 1, [0,1], 'randomRestarts_A.svg')
+	plotDataRestarts(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, ['Copy numbers'], 0, [0,0.4], 'randomRestarts_C.svg')
+	plotDataRestarts(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, ['Alleles'], 1, [0,0.4], 'randomRestarts_A.svg')
 	plotDataRestarts(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, ['Tumor fraction'], 3, [0,0.6], 'randomRestarts_Mu.svg')
 	plotDataRestarts(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, ['Trees'], 4, [-1,10], 'randomRestarts_T.svg')
-	plotDataRestarts(noiseLevels, averagedAverageSwapErrors, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap, ['Trees'], 4, [0,1], 'randomRestarts_Ancestry.svg')
+	plotDataRestarts(noiseLevels, averagedAverageSwapErrors, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap, ['Trees'], 4, [0,0.3], 'randomRestarts_Ancestry.svg')
 
 def generateRandomRestartsFigure(dataFolder, noiseLevels):
 	
@@ -978,6 +978,16 @@ exit()
 
 def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds):
 	
+	correctedBelowStd = []
+	for std in range(0, len(ambiguityStds[1])):
+		
+		correctedBelowStd.append(errors[std] - ambiguityStds[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(ambiguityStds[0])):
+		
+		correctedAboveStd.append(ambiguityStds[0][std] - errors[std])
+	
+	
 	colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
 	
 	ax = plt.gca()
@@ -986,7 +996,7 @@ def plotAmbiguityScores(noiseLevels, ambiguities, ambiguityScores, ambiguityStds
 	labels = ['Ambiguities', 'Resolved ambiguities']
 	p = ax.errorbar(noiseLevels, ambiguities, label='Ambiguities', color=colors[0], linewidth=2)
 	legendLines.append(p[0])
-	p = ax.errorbar(noiseLevels, ambiguityScores, label='Resolved ambiguities', color=colors[1], linewidth=2, yerr=[ambiguityStds[1], ambiguityStds[0]])
+	p = ax.errorbar(noiseLevels, ambiguityScores, label='Resolved ambiguities', color=colors[1], linewidth=2, yerr=[correctedBelowStd, correctedAboveStd])
 	legendLines.append(p[0])
 	
 	ax.legend(legendLines, labels, loc=1, numpoints=1)
@@ -1148,24 +1158,69 @@ def plotTreeErrorsDifferentMetrics(noiseLevels, averagedATreeErrors, averagedCTr
 	
 	#correct the standard deviations if these go below 0
 	correctedBelowStd = []
-	for std in range(0, len(stdMethodTreeErrors[1])):
-		newStd = stdMethodTreeErrors[1][std]
-		if (averagedMethodTreeErrors[std]-newStd) < 0:
-			newStd = abs(0-averagedMethodTreeErrors[std])
-		correctedBelowStd.append(newStd)
-	
+	for std in range(0, len(stdATreeErrors[1])):
+		
+		correctedBelowStd.append(averagedATreeErrors[std] - stdATreeErrors[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(stdATreeErrors[0])):
+		
+		correctedAboveStd.append(stdATreeErrors[0][std] - averagedATreeErrors[std])
 	
 	legendLines = []
 	labels = ['Alleles', 'Copy numbers', 'Somatic SNV', 'Euclidean (LAF)', 'TargetClone']
-	p = ax.errorbar(noiseLevelsA, averagedATreeErrors, yerr=[stdATreeErrors[1], stdATreeErrors[0]], label='A', color=colors[1], linewidth=2)
+	p = ax.errorbar(noiseLevelsA, averagedATreeErrors, yerr=[correctedBelowStd, correctedAboveStd], label='A', color=colors[1], linewidth=2)
 	legendLines.append(p[0])
-	p = ax.errorbar(noiseLevels, averagedCTreeErrors, yerr=[stdCTreeErrors[1], stdCTreeErrors[0]], label='C', color=colors[0], linewidth=2)
+	
+	correctedBelowStd = []
+	for std in range(0, len(stdCTreeErrors[1])):
+		
+		correctedBelowStd.append(averagedCTreeErrors[std] - stdCTreeErrors[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(stdCTreeErrors[0])):
+		
+		correctedAboveStd.append(stdCTreeErrors[0][std] - averagedCTreeErrors[std])
+	
+	
+	p = ax.errorbar(noiseLevels, averagedCTreeErrors, yerr=[correctedBelowStd, correctedAboveStd], label='C', color=colors[0], linewidth=2)
 	legendLines.append(p[0])
-	p = ax.errorbar(noiseLevelsSnv, averagedSnvTreeErrors, yerr=[stdSnvTreeErrors[1], stdSnvTreeErrors[0]], label='SNV', color=colors[3], linewidth=2)
+	
+	correctedBelowStd = []
+	for std in range(0, len(stdSnvTreeErrors[1])):
+		
+		correctedBelowStd.append(averagedSnvTreeErrors[std] - stdSnvTreeErrors[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(stdSnvTreeErrors[0])):
+		
+		correctedAboveStd.append(stdSnvTreeErrors[0][std] - averagedSnvTreeErrors[std])
+	
+	
+	p = ax.errorbar(noiseLevelsSnv, averagedSnvTreeErrors, yerr=[correctedBelowStd, correctedAboveStd], label='SNV', color=colors[3], linewidth=2)
 	legendLines.append(p[0])
-	p = ax.errorbar(noiseLevelsEucl, averagedEuclideanTreeErrors, yerr=[stdEuclideanTreeErrors[1], stdEuclideanTreeErrors[0]], label='Euclidean', color=colors[4], linewidth=2)
+	
+	correctedBelowStd = []
+	for std in range(0, len(stdEuclideanTreeErrors[1])):
+		
+		correctedBelowStd.append(averagedEuclideanTreeErrors[std] - stdEuclideanTreeErrors[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(stdEuclideanTreeErrors[0])):
+		
+		correctedAboveStd.append(stdEuclideanTreeErrors[0][std] - averagedEuclideanTreeErrors[std])
+	
+	
+	p = ax.errorbar(noiseLevelsEucl, averagedEuclideanTreeErrors, yerr=[correctedBelowStd, correctedAboveStd], label='Euclidean', color=colors[4], linewidth=2)
 	legendLines.append(p[0])
-	p = ax.errorbar(noiseLevelsTc, averagedMethodTreeErrors, yerr=[correctedBelowStd, stdMethodTreeErrors[0]], label='TargetClone', color=colors[5], linewidth=2)
+	
+	correctedBelowStd = []
+	for std in range(0, len(stdMethodTreeErrors[1])):
+		
+		correctedBelowStd.append(averagedMethodTreeErrors[std] - stdMethodTreeErrors[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(stdMethodTreeErrors[0])):
+		
+		correctedAboveStd.append(stdMethodTreeErrors[0][std] - averagedMethodTreeErrors[std])
+	
+	
+	p = ax.errorbar(noiseLevelsTc, averagedMethodTreeErrors, yerr=[correctedBelowStd, correctedAboveStd], label='TargetClone', color=colors[5], linewidth=2)
 	legendLines.append(p[0])
 	
 	ax.legend(legendLines, labels, loc=2, numpoints=1)
@@ -1329,6 +1384,8 @@ def sortData(simulationFolder):
 	ambiguityPErrors = []
 	ambiguityPCorrectedErrors = []
 	
+	orderedAncestryErrors = []
+	
 	#This needs an ordering
 	for subdir, dirs, files in os.walk(simulationFolder):
 		#print subdir
@@ -1391,8 +1448,27 @@ def sortData(simulationFolder):
 				pAmbiguityError = float(collectErrorsFromFile(file, subdir)[0])
 			if re.match('pAmbiguityCorrectedError', file):
 				pAmbiguityCorrectedError = float(collectErrorsFromFile(file, subdir)[0])	
+			
+			if re.match('RealTrees', file): #read the file and obtain the error
+					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+					tree = eval(stringDict)
+					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+					treeSizes.append(len(realTree.edgeList))
+				
+			if re.match('EstimatedTrees', file): #read the file and obtain the error
+				stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+				tree = eval(stringDict)
+				inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
 		
 		
+		[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+			
+		#Instead of reporting the actual errors, what if we report percentages of how bad we could have done? 
+		
+		summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+		orderedAncestryErrors.append(summedError / float(noOfSamplePairs))
+		
+	
 		orderedMu.append(currentMu)
 		orderedCErrors.append(cError)
 		orderedAErrors.append(aError)
@@ -1419,6 +1495,7 @@ def sortData(simulationFolder):
 	sortedTErrors = []
 	sortedAmbiguityErrors = []
 	sortedAmbiguityCorrectedErrors = []
+	sortedAncestryErrors = []
 	
 	sortedPCErrors = []
 	sortedPAErrors = []
@@ -1435,6 +1512,7 @@ def sortData(simulationFolder):
 		sortedTErrors.append(orderedTErrors[ind])
 		sortedAmbiguityErrors.append(ambiguityErrors[ind])
 		sortedAmbiguityCorrectedErrors.append(ambiguityCorrectedErrors[ind])
+		sortedAncestryErrors.append(orderedAncestryErrors[ind])
 		
 		sortedPCErrors.append(orderedPCErrors[ind])
 		sortedPAErrors.append(orderedPAErrors[ind])
@@ -1444,7 +1522,7 @@ def sortData(simulationFolder):
 		sortedPAmbiguityCorrectedErrors.append(ambiguityPCorrectedErrors[ind])
 	
 	
-	return [sortedMu, sortedCErrors, sortedAErrors, sortedMuErrors, sortedTErrors, sortedAmbiguityErrors, sortedAmbiguityCorrectedErrors, sortedPCErrors, sortedPAErrors, sortedPMuErrors, sortedPTErrors, sortedPAmbiguityErrors, sortedPAmbiguityCorrectedErrors]
+	return [sortedMu, sortedCErrors, sortedAErrors, sortedMuErrors, sortedTErrors, sortedAmbiguityErrors, sortedAmbiguityCorrectedErrors, sortedPCErrors, sortedPAErrors, sortedPMuErrors, sortedPTErrors, sortedPAmbiguityErrors, sortedPAmbiguityCorrectedErrors, sortedAncestryErrors]
 	
 
 #Call the function for all noise levels
@@ -1464,24 +1542,31 @@ def binValues(orderedMu, sortedErrors):
 		
 		errorValues = [sortedErrors[i] for i in range(offset,offset+binSize)]
 		binnedMu.append(boxInd)
-		meanError = sum(errorValues) / float(len(errorValues))
-		binnedError.append(meanError)
-	
 		
-		#Compute all values above and below the mean
-		above = []
-		below = []
+		[mean, lower, upper] = mean_confidence_interval(errorValues)
+		# 
+		# 
+		# meanError = sum(errorValues) / float(len(errorValues))
+		# binnedError.append(meanError)
+		# 
+		# 
+		# #Compute all values above and below the mean
+		# above = []
+		# below = []
+		# 
+		# 
+		# for value in range(0, len(errorValues)):
+		# 	if errorValues[value] > meanError:
+		# 		above.append(errorValues[value])
+		# 	else:
+		# 		below.append(errorValues[value])
+		# 	
+		# 
+		# binnedStdAbove.append(np.std(errorValues))
+		# binnedStdBelow.append(np.std(errorValues))
 		
-		
-		for value in range(0, len(errorValues)):
-			if errorValues[value] > meanError:
-				above.append(errorValues[value])
-			else:
-				below.append(errorValues[value])
-			
-
-		binnedStdAbove.append(np.std(errorValues))
-		binnedStdBelow.append(np.std(errorValues))
+		binnedStdAbove.append(upper)
+		binnedStdBelow.append(lower)
 		
 		#Make sure that the sd is also reported per bin
 		
@@ -1547,7 +1632,7 @@ def binValues(orderedMu, sortedErrors):
 # # 
 simulationFolder = 'Results/generic_noise0.02/'
 [sortedMu2, sortedCErrors2, sortedAErrors2, sortedMuErrors2, sortedTErrors2, sortedAmbiguityScores2, sortedAmbiguityCorrectedErrors2,
- sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2] = sortData(simulationFolder)
+ sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2, sortedAncestryErrors] = sortData(simulationFolder)
 
 [binnedMu, binnedCErrors2, binnedStdAboveC2, binnedStdBelowC2]  = binValues(sortedMu2, sortedCErrors2)
 
@@ -1556,6 +1641,8 @@ simulationFolder = 'Results/generic_noise0.02/'
 [binnedMu, binnedMuErrors2, binnedStdAboveMu2, binnedStdBelowMu2]  = binValues(sortedMu2, sortedMuErrors2)
 
 [binnedMu, binnedTErrors2, binnedStdAboveT2, binnedStdBelowT2]  = binValues(sortedMu2, sortedTErrors2)
+
+[binnedMu, binnedAncestryErrors2, binnedStdAboveAncestry, binnedStdBelowAncestry]  = binValues(sortedMu2, sortedAncestryErrors)
 
 
 #Group the values
@@ -1571,9 +1658,13 @@ binnedMuStd = [binnedStdAboveMu2, binnedStdBelowMu2]
 binnedTErrors = [binnedTErrors2]
 binnedTStd = [binnedStdAboveT2, binnedStdBelowT2]
 
+binnedAncenstryErrors = [binnedAncestryErrors2]
+binnedAncestryStd = [binnedStdAboveAncestry, binnedStdBelowAncestry]
+
 #Plot the noise level values in the same figure for C, A, mu and T
 
-def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, binnedCStd, binnedAStd, binnedMuStd, binnedTStd):
+def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, binnedAncestry, binnedCStd,
+									binnedAStd, binnedMuStd, binnedTStd, binnedAncestryStd):
 	
 	plt.figure()
 	colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
@@ -1590,7 +1681,7 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 	print mu
 
 	ax = axes()
-	ax2 = ax.twinx()
+	#ax2 = ax.twinx()
 	
 	labels = []
 	legendLines = []
@@ -1604,38 +1695,73 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 	print binnedCStd[0]
 	
 	
-	stdBelow = []
-	for error in range(0, len(binnedTStd[1])):
-		newStd = binnedTStd[1][error]
-		if binnedT[0][error]-newStd < 0:
-			newStd = abs(0-binnedT[0][error])
-		stdBelow.append(newStd)
+	correctedBelowStd = []
+	for std in range(0, len(binnedCStd[1])):
 		
+		correctedBelowStd.append(binnedC[0][std] - binnedCStd[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(binnedCStd[0])):
+		
+		correctedAboveStd.append(binnedCStd[0][std] - binnedC[0][std])
 	
 	p = ax.errorbar(mu, binnedC[0], yerr=[binnedCStd[1], binnedCStd[0]], label="C error", color = colors[0], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
 	labels.append('Copy numbers')
+	
+	correctedBelowStd = []
+	for std in range(0, len(binnedAStd[1])):
+		
+		correctedBelowStd.append(binnedA[0][std] - binnedAStd[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(binnedAStd[0])):
+		
+		correctedAboveStd.append(binnedAStd[0][std] - binnedA[0][std])
+	
 	p = ax.errorbar(noiseLevelsA, binnedA[0], yerr=[binnedAStd[1], binnedAStd[0]], label="A error", color = colors[1], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
 	labels.append('Alleles')
+	
+	correctedBelowStd = []
+	for std in range(0, len(binnedMuStd[1])):
+		
+		correctedBelowStd.append(binnedMu[0][std] - binnedMuStd[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(binnedMuStd[0])):
+		
+		correctedAboveStd.append(binnedMuStd[0][std] - binnedMu[0][std])
+	
 	p = ax.errorbar(noiseLevelsMu, binnedMu[0], yerr=[binnedMuStd[1], binnedMuStd[0]], label= "Mu error", color = colors[3], linewidth=2, antialiased=True)
 	legendLines.append(p[0])
 	labels.append('Tumor fraction')
-	p = ax2.errorbar(noiseLevelsTree, binnedT[0], yerr=[stdBelow, binnedTStd[0]], label="T error", color = colors[4], linewidth=2, antialiased=True)
-	legendLines2.append(p[0])
-	labels2.append('Trees')
+	# p = ax2.errorbar(noiseLevelsTree, binnedT[0], yerr=[stdBelow, binnedTStd[0]], label="T error", color = colors[4], linewidth=2, antialiased=True)
+	# legendLines2.append(p[0])
+	# labels2.append('Trees')
+	
+	correctedBelowStd = []
+	for std in range(0, len(binnedAncestryStd[1])):
+		
+		correctedBelowStd.append(binnedAncestry[0][std] - binnedAncestryStd[1][std])
+	correctedAboveStd = []
+	for std in range(0, len(binnedAncestryStd[0])):
+		
+		correctedAboveStd.append(stdSnvTreeEbinnedAncestryStdrrors[0][std] - binnedAncestry[0][std])
+	
+	p = ax.errorbar(noiseLevelsTree, binnedAncestry[0], yerr=[binnedAncestryStd[1], binnedAncestryStd[0]], label= "T error", color = colors[4], linewidth=2, antialiased=True)
+	legendLines.append(p[0])
+	labels.append('Trees')
+	
 
 	
 	ax.set_ylim(0,0.8)
-	ax2.set_ylim(-0.5,12)
+	#ax2.set_ylim(-0.5,12)
 	
 	ax.set_xlim(-1,10)
 	
 	ax.legend(legendLines, labels, loc=2)
-	ax2.legend(legendLines2, labels2)
+	#ax2.legend(legendLines2, labels2)
 	ax.set_xlabel('mu (% tumor fraction)')
  	ax.set_ylabel('Error')
-	ax2.set_ylabel('Error')
+	#ax2.set_ylabel('Error')
 	#ax.set_xticklabels(['', 1, 2, 3, 4, 5, 6, ''])
 	ax.set_xticklabels(['0-10', '10-20', '20-30', '30-40', '40-50', '50-60', '60-70', '70-80', '80-90', '90-100'], rotation=90)
 	ax.set_xticks(range(0,10))
@@ -1647,7 +1773,8 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 
 #Figure 3F
 # 	
-# plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors, binnedTErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd)
+# plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors,
+# binnedTErrors, binnedAncenstryErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd, binnedAncestryStd)
 # 
 # exit()
 
