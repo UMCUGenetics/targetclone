@@ -174,8 +174,10 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
 		q1 = np.std(noiseValues)
 		q3 = np.std(noiseValues)
-		#q1 = np.percentile(noiseValues, 25)
-		#q3 = np.percentile(noiseValues, 75)
+		q1 = np.percentile(noiseValues, 5)
+		q3 = np.percentile(noiseValues, 95)
+		#p025 = df.groupby('category')['number'].quantile(0.025)
+		#p975 = df.groupby('category')['number'].quantile(0.975)
 		
 		groupedAboveStd.append(q3)
 		groupedBelowStd.append(q1)
@@ -437,14 +439,14 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 		if (errors[std]-newStd) < 0:
 			newStd = abs(0-errors[std])
 		#correctedBelowStd.append(newStd)
-		correctedBelowStd.append(belowStd[std])
+		correctedBelowStd.append(errors[std] - belowStd[std])
 	correctedAboveStd = []
 	for std in range(0, len(aboveStd)):
 		newStd = aboveStd[std]
 		if errors[std]+newStd > 1 and labels[0] != 'Trees':
 			newStd = abs(1-errors[std])
 		#correctedAboveStd.append(newStd)
-		correctedAboveStd.append(aboveStd[std])
+		correctedAboveStd.append(aboveStd[std] - errors[std])
 	
 	print "corrected stds: "	
 	print correctedBelowStd
