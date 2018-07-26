@@ -443,26 +443,26 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	
 	legendLines = []
 	
-	correctedBelowStd = []
-	for std in range(0, len(belowStd)):
-		newStd = belowStd[std]
-		if (errors[std]-newStd) < 0:
-			newStd = abs(0-errors[std])
-		#correctedBelowStd.append(newStd)
-		correctedBelowStd.append(belowStd[std])
-	correctedAboveStd = []
-	for std in range(0, len(aboveStd)):
-		newStd = aboveStd[std]
-		if errors[std]+newStd > 1 and labels[0] != 'Trees':
-			newStd = abs(1-errors[std])
-		#correctedAboveStd.append(newStd)
-		correctedAboveStd.append(aboveStd[std])
-	
-	print "corrected stds: "	
-	print correctedBelowStd
-	print correctedAboveStd
+	# correctedBelowStd = []
+	# for std in range(0, len(belowStd)):
+	# 	newStd = belowStd[std]
+	# 	if (errors[std]-newStd) < 0:
+	# 		newStd = abs(0-errors[std])
+	# 	#correctedBelowStd.append(newStd)
+	# 	correctedBelowStd.append(belowStd[std])
+	# correctedAboveStd = []
+	# for std in range(0, len(aboveStd)):
+	# 	newStd = aboveStd[std]
+	# 	if errors[std]+newStd > 1 and labels[0] != 'Trees':
+	# 		newStd = abs(1-errors[std])
+	# 	#correctedAboveStd.append(newStd)
+	# 	correctedAboveStd.append(aboveStd[std])
+	# 
+	# print "corrected stds: "	
+	# print correctedBelowStd
+	# print correctedAboveStd
 	#Plot the error for the simulations
-	p = ax.errorbar(noiseLevels, errors, yerr=[correctedBelowStd, correctedAboveStd], label='$E_C$', color=colors[colInd], linewidth=2)
+	p = ax.errorbar(noiseLevels, errors, yerr=[belowStd, aboveStd], label='$E_C$', color=colors[colInd], linewidth=2)
 	legendLines.append(p[0])
 	
 	#ax.legend(legendLines, labels, loc=2, numpoints=1)
@@ -497,7 +497,9 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 		ambiguityErrors.append(1-score)
 	
 	#Also swap the ambiguity stds?
+	print "plotting c: "
 	plotData(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, randomCError, randomCStd, ['Copy numbers'], 0, [0,1], 'fig3_C.svg')
+	print "plotting A: "
 	plotData(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, randomAError, randomAStd, ['Alleles'], 1, [0,1], 'fig3_A.svg')
 	plotData(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, randomMuError, randomMuStd, ['Tumor fraction'], 3, [0,0.6], 'fig3_Mu.svg')
 	plotData(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, randomTreeError, randomTreeStd, ['Trees'], 4, [-1,10], 'fig3_T.svg')
