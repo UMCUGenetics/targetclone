@@ -462,6 +462,11 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	# print correctedBelowStd
 	# print correctedAboveStd
 	#Plot the error for the simulations
+	
+	print "plotting means: ", errors
+	print "plotting above: ", aboveStd
+	print "plotting below: ", belowStd
+	
 	p = ax.errorbar(noiseLevels, errors, yerr=[belowStd, aboveStd], label='$E_C$', color=colors[colInd], linewidth=2)
 	legendLines.append(p[0])
 	
@@ -497,9 +502,7 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 		ambiguityErrors.append(1-score)
 	
 	#Also swap the ambiguity stds?
-	print "plotting c: "
 	plotData(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, randomCError, randomCStd, ['Copy numbers'], 0, [0,1], 'fig3_C.svg')
-	print "plotting A: "
 	plotData(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, randomAError, randomAStd, ['Alleles'], 1, [0,1], 'fig3_A.svg')
 	plotData(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, randomMuError, randomMuStd, ['Tumor fraction'], 3, [0,0.6], 'fig3_Mu.svg')
 	plotData(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, randomTreeError, randomTreeStd, ['Trees'], 4, [-1,10], 'fig3_T.svg')
@@ -800,7 +803,6 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 	#Obtain the standard deviation above and below the mean for the averages
 	print "C std:"
 	[groupedAboveStdC, groupedBelowStdC] = obtainStandardDeviations(groupedCErrors, averagedCErrors)
-
 	print "A std: "
 	[groupedAboveStdA, groupedBelowStdA] = obtainStandardDeviations(groupedAErrors, averagedAErrors)
 	print "mu std: "
