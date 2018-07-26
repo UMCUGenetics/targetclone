@@ -944,7 +944,7 @@ def plotFigureOneRandomRestarts(averagedCErrors, averagedAErrors, averagedMuErro
 	
 	plotDataRestarts(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, ['Copy numbers'], 0, [0,0.4], 'randomRestarts_C.svg')
 	plotDataRestarts(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, ['Alleles'], 1, [0,0.4], 'randomRestarts_A.svg')
-	plotDataRestarts(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, ['Tumor fraction'], 3, [0,0.6], 'randomRestarts_Mu.svg')
+	plotDataRestarts(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, ['Tumor fraction'], 3, [0,0.3], 'randomRestarts_Mu.svg')
 	plotDataRestarts(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, ['Trees'], 4, [-1,10], 'randomRestarts_T.svg')
 	plotDataRestarts(noiseLevels, averagedAverageSwapErrors, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap, ['Trees'], 4, [0,0.3], 'randomRestarts_Ancestry.svg')
 
