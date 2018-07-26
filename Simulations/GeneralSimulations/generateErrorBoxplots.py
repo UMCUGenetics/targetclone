@@ -1547,8 +1547,8 @@ def binValues(orderedMu, sortedErrors):
 		[mean, lower, upper] = mean_confidence_interval(errorValues)
 		# 
 		# 
-		# meanError = sum(errorValues) / float(len(errorValues))
-		# binnedError.append(meanError)
+		meanError = sum(errorValues) / float(len(errorValues))
+		binnedError.append(meanError)
 		# 
 		# 
 		# #Compute all values above and below the mean
@@ -1637,10 +1637,6 @@ simulationFolder = 'Results/generic_noise0.02/'
 
 
 [binnedMu, binnedCErrors2, binnedStdAboveC2, binnedStdBelowC2]  = binValues(sortedMu2, sortedCErrors2)
-
-
-print "sorted c errors: ", binnedCErrors2
-exit()
 
 [binnedMu, binnedAErrors2, binnedStdAboveA2, binnedStdBelowA2]  = binValues(sortedMu2, sortedAErrors2)
 
