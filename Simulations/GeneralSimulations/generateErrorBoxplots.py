@@ -187,7 +187,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		
 	sortedKeys, sortedBelow = zip(*sorted(zip(groupedErrors.keys(), groupedBelowStd)))
 	sortedKeys, sortedAbove = zip(*sorted(zip(groupedErrors.keys(), groupedAboveStd)))
-	exit()
+	
 	return [sortedAbove, sortedBelow]
 
 def averageData(dictionary, type):
