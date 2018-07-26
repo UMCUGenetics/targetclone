@@ -196,10 +196,16 @@ def computeEuclideanTreeError(lafMatrix, snvMatrix, realTree):
 	
 	#Compute the MST
 	fullGraph = generateInitialTree(distanceMatrix, realTree.vertices)
-	mst = computeMST(fullGraph, realTree.vertices)
-	simulationErrorHandler = SimulationErrorHandler()
-	treeScore = simulationErrorHandler.computeTreeError([mst], realTree)
-	return treeScore
+	inferredTree = computeMST(fullGraph, realTree.vertices)
+	
+	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeAncestrySwapError(realTree, inferredTree)
+			
+	summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+	averagedAncestrySwapError = summedError / float(noOfSamplePairs)
+	
+	#simulationErrorHandler = SimulationErrorHandler()
+	#treeScore = simulationErrorHandler.computeTreeError([mst], realTree)
+	return averagedAncestrySwapError
 
 def computeCTreeError(cMatrix, realTree):
 	sampleNum = cMatrix.shape[1]
@@ -220,7 +226,7 @@ def computeCTreeError(cMatrix, realTree):
 	fullGraph = generateInitialTree(distanceMatrix, realTree.vertices)
 	inferredTree = computeMST(fullGraph, realTree.vertices)
 	
-	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeAncestrySwapError(realTree, inferredTree)
 			
 	summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
 	averagedAncestrySwapError = summedError / float(noOfSamplePairs)
@@ -274,7 +280,7 @@ def computeSNVTreeError(snvMatrix, cMatrix, lafMatrix, realTree, variantIndices,
 	fullGraph = generateInitialTree(distanceMatrix, realTree.vertices)
 	inferredTree = computeMST(fullGraph, realTree.vertices)
 	
-	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeAncestrySwapError(realTree, inferredTree)
 			
 	summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
 	averagedAncestrySwapError = summedError / float(noOfSamplePairs)
@@ -369,7 +375,7 @@ def computeATreeError(aMatrix, lafMatrix, afMatrix, realTree, chromosomes, posit
 	fullGraph = generateInitialTree(distanceMatrix, realTree.vertices)
 	inferredTree = computeMST(fullGraph, realTree.vertices)
 	
-	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeAncestrySwapError(realTree, inferredTree)
 			
 	summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
 	averagedAncestrySwapError = summedError / float(noOfSamplePairs)
