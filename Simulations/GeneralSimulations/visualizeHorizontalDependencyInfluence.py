@@ -249,7 +249,7 @@ averagedPAncestrySwapErrors = averageData(groupedPAncestrySwapErrors, 'C')
 
 #3. Make a plot with the error on the y axis, and the number of SNPs on the x axis. (4 plots per data type that we infer)
 
-def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, aboveStdP, belowStdP, snpNums, plotType, title, colInd):
+def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, aboveStdP, belowStdP, snpNums, plotType, title, colInd, ylim):
 	
 	#Take the average and standard deviations as input
 	
@@ -298,7 +298,7 @@ def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, above
 	legendLines.append(p[0])
 	
 	
-	#ax.set_ylim(lim[0],lim[1])
+	ax.set_ylim(lim[0],lim[1])
 	ax.set_xlabel('Number of SNPs')
  	ax.set_ylabel('Error')
 	#ax.set_xlim(-0.005,0.105)
@@ -319,12 +319,12 @@ def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, above
 
 
 
-plotHorizontalDependencyInfluence(averagedCErrors, averagedPCErrors, groupedAboveStdC, groupedBelowStdC, groupedAboveStdCP, groupedBelowStdCP, snpNums, 'Copy numbers', 'Copy_numbers_hp', 0)
-plotHorizontalDependencyInfluence(averagedAErrors, averagedPAErrors, groupedAboveStdA, groupedBelowStdA, groupedAboveStdAP, groupedBelowStdAP, snpNums, 'Alleles', 'Alleles_hp', 2)
-plotHorizontalDependencyInfluence(averagedMuErrors, averagedPMuErrors, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdMuP, groupedBelowStdMuP, snpNums, 'Mu', 'Mu_hp', 4)
+plotHorizontalDependencyInfluence(averagedCErrors, averagedPCErrors, groupedAboveStdC, groupedBelowStdC, groupedAboveStdCP, groupedBelowStdCP, snpNums, 'Copy numbers', 'Copy_numbers_hp', 0, [0, 0.6])
+plotHorizontalDependencyInfluence(averagedAErrors, averagedPAErrors, groupedAboveStdA, groupedBelowStdA, groupedAboveStdAP, groupedBelowStdAP, snpNums, 'Alleles', 'Alleles_hp', 2, [0, 0.06])
+plotHorizontalDependencyInfluence(averagedMuErrors, averagedPMuErrors, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdMuP, groupedBelowStdMuP, snpNums, 'Mu', 'Mu_hp', 4, [0, 0.5])
 plotHorizontalDependencyInfluence(averagedTreeErrors, averagedPTreeErrors, groupedAboveStdT, groupedBelowStdT, groupedAboveStdTP, groupedBelowStdTP, snpNums, 'Trees', 'Trees_hp', 6)
 	
-plotHorizontalDependencyInfluence(averagedAncestrySwapErrors, averagedPAncestrySwapErrors, groupedAboveStdAncestry, groupedBelowStdAncestry, groupedAboveStdAncestryP, groupedBelowStdAncestry, snpNums, 'Trees', 'Ancestry_hp', 6)
+plotHorizontalDependencyInfluence(averagedAncestrySwapErrors, averagedPAncestrySwapErrors, groupedAboveStdAncestry, groupedBelowStdAncestry, groupedAboveStdAncestryP, groupedBelowStdAncestry, snpNums, 'Trees', 'Ancestry_hp', 6, [0, 0.15])
 
 #4. Another plot that we can make is show how much performance is gained with the horizontal dependency on the y axis, and the average distance between SNPs on the x axis (all in 1 plot is possible)
 
