@@ -8,6 +8,7 @@ import os
 import re
 import numpy as np
 import matplotlib.pyplot as plt
+import computeTreeErrorOtherMetrics
 
 #1. Define the folders containing the data that we want to visualize
 motherFolder = sys.argv[1]
