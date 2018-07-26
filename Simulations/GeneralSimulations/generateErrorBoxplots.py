@@ -194,8 +194,8 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		#p025 = df.groupby('category')['number'].quantile(0.025)
 		#p975 = df.groupby('category')['number'].quantile(0.975)
 		
-		groupedAboveStd.append(lower)
-		groupedBelowStd.append(upper)
+		groupedAboveStd.append(upper)
+		groupedBelowStd.append(lower)
 		
 	sortedKeys, sortedBelow = zip(*sorted(zip(groupedErrors.keys(), groupedBelowStd)))
 	sortedKeys, sortedAbove = zip(*sorted(zip(groupedErrors.keys(), groupedAboveStd)))
