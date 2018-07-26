@@ -173,6 +173,8 @@ print "T"
 averagedTreeErrors = averageData(groupedTreeErrors, 'T')
 print averagedTreeErrors
 averagedAncestryErrors = averageData(groupedAncestrySwapErrors, 'C')
+print averagedAncestryErrors
+exit()
 
 
 #Compute the standard deviation of the error (add later)
