@@ -1407,6 +1407,7 @@ def sortData(simulationFolder):
 		pAmbiguityCorrectedError = 0
 		
 		#print subdir
+		treeSizes = []
 		
 		for file in files:
 			#print file
@@ -1450,10 +1451,10 @@ def sortData(simulationFolder):
 				pAmbiguityCorrectedError = float(collectErrorsFromFile(file, subdir)[0])	
 			
 			if re.match('RealTrees', file): #read the file and obtain the error
-					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
-					tree = eval(stringDict)
-					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
-					treeSizes.append(len(realTree.edgeList))
+				stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+				tree = eval(stringDict)
+				realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+				treeSizes.append(len(realTree.edgeList))
 				
 			if re.match('EstimatedTrees', file): #read the file and obtain the error
 				stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
