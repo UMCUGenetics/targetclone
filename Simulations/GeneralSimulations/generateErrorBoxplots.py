@@ -458,14 +458,14 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 		if (errors[std]-newStd) < 0:
 			newStd = abs(0-errors[std])
 		#correctedBelowStd.append(newStd)
-		correctedBelowStd.append(belowStd[std])
+		correctedBelowStd.append(errors[std] - belowStd[std])
 	correctedAboveStd = []
 	for std in range(0, len(aboveStd)):
 		newStd = aboveStd[std]
 		if errors[std]+newStd > 1 and labels[0] != 'Trees':
 			newStd = abs(1-errors[std])
 		#correctedAboveStd.append(newStd)
-		correctedAboveStd.append(aboveStd[std])
+		correctedAboveStd.append(aboveStd[std] - errors[std])
 	
 	print "corrected stds: "	
 	print correctedBelowStd
