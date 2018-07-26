@@ -172,10 +172,13 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 	#It is more interesting to show the quantiles rather than the standard deviation
 	for noiseLevelInd in range(0, len(groupedErrors.keys())):
 		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
-		q1 = np.std(noiseValues)
-		q3 = np.std(noiseValues)
-		q1 = np.percentile(noiseValues, 5)
-		q3 = np.percentile(noiseValues, 95)
+		currentStd = np.std(noiseValues)
+		currentMean = np.mean(noiseValues)
+		conf_int = stats.norm.interval(0.95, loc=currentMean, scale=currentStd)
+		print conf_int
+		exit()
+		#q1 = np.percentile(noiseValues, 5)
+		#q3 = np.percentile(noiseValues, 95)
 		#p025 = df.groupby('category')['number'].quantile(0.025)
 		#p975 = df.groupby('category')['number'].quantile(0.975)
 		
