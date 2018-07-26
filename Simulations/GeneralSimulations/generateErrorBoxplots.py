@@ -175,7 +175,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
 		currentStd = np.std(noiseValues)
 		currentMean = np.mean(noiseValues)
-		conf_int = stats.norm.interval(0.95, loc=currentMean, scale=currentStd)
+		conf_int = stats.norm.interval(0.75, loc=currentMean, scale=currentStd)
 		print "confidence interval: ", conf_int
 		#q1 = np.percentile(noiseValues, 5)
 		#q3 = np.percentile(noiseValues, 95)
