@@ -184,18 +184,18 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		currentStd = np.std(noiseValues)
 		currentMean = np.mean(noiseValues)
 		#conf_int = stats.norm.interval(0.95, loc=currentMean, scale=currentStd)
-		conf_int = mean_confidence_interval(noiseValues)
+		[mean, lower, upper] = mean_confidence_interval(noiseValues)
 		print "noise level: ", groupedErrors.keys()[noiseLevelInd]
 		print "current mean: ", currentMean
 		print "current std: ", currentStd
-		print "confidence interval: ", conf_int
+		print "confidence interval: ", lower, upper
 		#q1 = np.percentile(noiseValues, 5)
 		#q3 = np.percentile(noiseValues, 95)
 		#p025 = df.groupby('category')['number'].quantile(0.025)
 		#p975 = df.groupby('category')['number'].quantile(0.975)
 		
-		groupedAboveStd.append(conf_int[1])
-		groupedBelowStd.append(conf_int[0])
+		groupedAboveStd.append(lower)
+		groupedBelowStd.append(upper)
 		
 	sortedKeys, sortedBelow = zip(*sorted(zip(groupedErrors.keys(), groupedBelowStd)))
 	sortedKeys, sortedAbove = zip(*sorted(zip(groupedErrors.keys(), groupedAboveStd)))
