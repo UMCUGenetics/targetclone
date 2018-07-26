@@ -1635,6 +1635,9 @@ simulationFolder = 'Results/generic_noise0.02/'
 [sortedMu2, sortedCErrors2, sortedAErrors2, sortedMuErrors2, sortedTErrors2, sortedAmbiguityScores2, sortedAmbiguityCorrectedErrors2,
  sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2, sortedAncestryErrors] = sortData(simulationFolder)
 
+print "sorted c errors: ", sortedCErrors2
+exit()
+
 [binnedMu, binnedCErrors2, binnedStdAboveC2, binnedStdBelowC2]  = binValues(sortedMu2, sortedCErrors2)
 
 [binnedMu, binnedAErrors2, binnedStdAboveA2, binnedStdBelowA2]  = binValues(sortedMu2, sortedAErrors2)
