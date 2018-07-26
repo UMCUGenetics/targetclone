@@ -241,10 +241,10 @@ def plotHorizontalDependencyInfluence(errors, aboveStd, belowStd, snpNums, plotT
 
 
 
-plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_snv', 0, [-0.05,0.4])
-plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2, [-0.05,0.4])
-plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4, [-0.05,0.3])
+plotHorizontalDependencyInfluence(averagedCErrors, groupedAboveStdC, groupedBelowStdC, snvNum, 'Copy numbers', 'Copy_numbers_snv', 0, [0,0.3])
+plotHorizontalDependencyInfluence(averagedAErrors, groupedAboveStdA, groupedBelowStdA, snvNum, 'Alleles', 'Alleles_snv', 2, [0,0.3])
+plotHorizontalDependencyInfluence(averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, snvNum, 'Mu', 'Mu_snv', 4, [0,0.2])
 plotHorizontalDependencyInfluence(averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, snvNum, 'Trees', 'Trees_snv', 6, [-0.05,6])
-plotHorizontalDependencyInfluence(averagedAncestryErrors, groupedAboveStdAncestry, groupedBelowStdAncestry, snvNum, 'Trees', 'Ancestry_snv', 6, [0,0.3])
+plotHorizontalDependencyInfluence(averagedAncestryErrors, groupedAboveStdAncestry, groupedBelowStdAncestry, snvNum, 'Trees', 'Ancestry_snv', 6, [0,0.2])
 
 
