@@ -125,7 +125,7 @@ def readDataIncludingPermutations(dataFolder, noiseLevels, addition):
 			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred / float(noOfSamplePairs))
 			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred / float(noOfSamplePairs))
 			summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
-			averagedAncestrySwapError = summedError / float(2)
+			averagedAncestrySwapError.append(summedError / float(2))
 			
 		
 		print "tree sizes:"
@@ -326,6 +326,7 @@ def readData(dataFolder, noiseLevels, addition):
 	groupedEuclideanErrors = dict()
 	groupedAncestryAbsentErrors = dict()
 	groupedAncestryPresentErrors = dict()
+	groupedAverageAncestrySwapErrors = dict()
 	
 	for noiseLevel in noiseLevels:
 		simulationFolder = dataFolder + str(noiseLevel) + addition
@@ -347,6 +348,7 @@ def readData(dataFolder, noiseLevels, addition):
 		euclideanErrors = []
 		ancestrySwapErrorsAbsentInInferred = []
 		ancestrySwapErrorsPresentInInferred = []
+		averagedAncestrySwapError = []
 		
 		lafMatrix = None
 		realTree = None
@@ -401,7 +403,9 @@ def readData(dataFolder, noiseLevels, addition):
 			
 			ancestrySwapErrorsAbsentInInferred.append(ancestrySwapErrorAbsentInInferred / float(noOfSamplePairs))
 			ancestrySwapErrorsPresentInInferred.append(ancestrySwapErrorPresentInInferred / float(noOfSamplePairs))
-				
+			summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+			averagedAncestrySwapError.append(summedError / float(2))
+			
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
 		groupedAErrors[noiseLevel] = aErrors
@@ -416,11 +420,13 @@ def readData(dataFolder, noiseLevels, addition):
 		groupedEuclideanErrors[noiseLevel] = euclideanErrors
 		groupedAncestryAbsentErrors[noiseLevel] = ancestrySwapErrorsAbsentInInferred
 		groupedAncestryPresentErrors[noiseLevel] = ancestrySwapErrorsPresentInInferred
+		groupedAverageAncestrySwapErrors[noiseLevel] = averagedAncestrySwapError
 		
 		#Move this to a function to make it better
 		#Also compute the Euclidean distance trees for each noise levels, add this as an additional error
 	#Return the grouped data
-	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors]
+	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAmbiguityErrors, groupedAncestryAbsentErrors, groupedAncestryPresentErrors, groupedAverageAncestrySwapErrors]
+	
 
 def convertToZScores(randomError, randomStd, realErrors):
 	
