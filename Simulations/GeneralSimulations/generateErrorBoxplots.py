@@ -175,7 +175,7 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
 		currentStd = np.std(noiseValues)
 		currentMean = np.mean(noiseValues)
-		conf_int = stats.norm.interval(0.75, loc=currentMean, scale=currentStd)
+		conf_int = stats.norm.interval(0.95, loc=currentMean, scale=currentStd)
 		print "confidence interval: ", conf_int
 		#q1 = np.percentile(noiseValues, 5)
 		#q3 = np.percentile(noiseValues, 95)
@@ -422,8 +422,8 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, randomError, randomStd, la
 	
 	
 	
-	stdAbove = [i + randomStd[0][0] for i in [randomError]*len(noiseLevels)]
-	stdBelow = [i - randomStd[1][0] for i in [randomError]*len(noiseLevels)]
+	stdAbove = [randomStd[0][0] for i in [randomError]*len(noiseLevels)]
+	stdBelow = [randomStd[1][0] for i in [randomError]*len(noiseLevels)]
 	print "random error stds: "
 	print stdAbove
 	print stdBelow
