@@ -50,6 +50,7 @@ def readData(dataFolder, noiseLevels, addition):
 		muErrors = []
 		treeErrors = []
 		averagedAncestrySwapError = []
+		treeSizes = []
 		
 		for subdir, dirs, files in os.walk(simulationFolder):
 			if subdir == simulationFolder: #we are not interested in the root folder
