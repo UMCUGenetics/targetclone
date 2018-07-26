@@ -293,8 +293,10 @@ def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, above
 		
 	#Plot the error for the simulations
 	xPositions = range(0, len(snpNums))
+	offset = 0.03
+	xPositionsOffset = [i - offset for i in xPositions]
 	print xPositions
-	p = ax.errorbar(xPositions, pErrors, yerr=[correctedBelowStdP, correctedAboveStdP], label='Shuffled LAF', color=colors[colInd+1], linewidth=2)
+	p = ax.errorbar(xPositionsOffset, pErrors, yerr=[correctedBelowStdP, correctedAboveStdP], label='Shuffled LAF', color=colors[colInd+1], linewidth=2)
 	legendLines.append(p[0])
 	
 	
