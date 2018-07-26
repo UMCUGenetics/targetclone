@@ -39,6 +39,7 @@ def readData(dataFolder, noiseLevels, addition):
 	groupedAErrors = dict()
 	groupedMuErrors = dict()
 	groupedTreeErrors = dict()
+	groupedAverageAncestrySwapErrors = dict()
 	
 	for noiseLevel in noiseLevels:
 		simulationFolder = dataFolder + "_" + str(noiseLevel)
@@ -48,6 +49,7 @@ def readData(dataFolder, noiseLevels, addition):
 		aErrors = []
 		muErrors = []
 		treeErrors = []
+		averagedAncestrySwapError = []
 		
 		for subdir, dirs, files in os.walk(simulationFolder):
 			if subdir == simulationFolder: #we are not interested in the root folder
@@ -61,16 +63,39 @@ def readData(dataFolder, noiseLevels, addition):
 					muErrors += collectErrorsFromFile(file, subdir)
 				if re.match('treeError', file): #read the file and obtain the error
 					treeErrors += collectErrorsFromFile(file, subdir)
+				if re.match('RealTrees', file): #read the file and obtain the error
+					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+					tree = eval(stringDict)
+					realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+					treeSizes.append(len(realTree.edgeList))
 				
+				if re.match('EstimatedTrees', file): #read the file and obtain the error
+					stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+					tree = eval(stringDict)
+					inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+				
+			[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+			
+			summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+			averagedAncestrySwapError.append(summedError / float(noOfSamplePairs))
 			
 		#Gather the data per noise level
 		groupedCErrors[noiseLevel] = cErrors
 		groupedAErrors[noiseLevel] = aErrors
 		groupedMuErrors[noiseLevel] = muErrors
 		groupedTreeErrors[noiseLevel] = treeErrors
+		groupedAverageAncestrySwapErrors[noiseLevel] = averagedAncestrySwapError
 		
 	#Return the grouped data
-	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors]
+	return [groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAverageAncestrySwapErrors]
+
+
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0*np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * sp.stats.t.ppf((1+confidence)/2., n-1)
+    return m, m-h, m+h
 
 
 def obtainStandardDeviations(groupedErrors, averagedError):
@@ -82,10 +107,10 @@ def obtainStandardDeviations(groupedErrors, averagedError):
 	#It is more interesting to show the quantiles rather than the standard deviation
 	for noiseLevelInd in range(0, len(groupedErrors.keys())):
 		noiseValues = groupedErrors[groupedErrors.keys()[noiseLevelInd]]
-		q1 = np.std(noiseValues)
-		q3 = np.std(noiseValues)
-		groupedAboveStd.append(q3)
-		groupedBelowStd.append(q1)
+		[mean, lower, upper] = mean_confidence_interval(noiseValues)
+		
+		groupedAboveStd.append(upper)
+		groupedBelowStd.append(lower)
 		
 	sortedKeys, sortedBelow = zip(*sorted(zip(groupedErrors.keys(), groupedBelowStd)))
 	sortedKeys, sortedAbove = zip(*sorted(zip(groupedErrors.keys(), groupedAboveStd)))
@@ -121,15 +146,16 @@ def averageData(dictionary, type):
 	return sortedAveragedData
 
 #Average errors
-def averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors):
+def averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAncestryErrors):
 
 	averagedCErrors = averageData(groupedCErrors, 'C')
 	averagedAErrors = averageData(groupedAErrors, 'A')
 	averagedMuErrors = averageData(groupedMuErrors, 'Mu')
 	
 	averagedTreeErrors = averageData(groupedTreeErrors, 'T')
+	averagedAncestryErrors = averageData(groupedAncestryErrors, 'C')
 
-	return [averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors]
+	return [averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAncestryErrors]
 
 #3. Make line plots showing increase in errors across the increase in the number of subclones
 # C, A, mu and T can be in one figure
@@ -174,18 +200,14 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, labels, colorInd, lim, tit
 		
 		correctedBelowStd = []
 		for std in range(0, len(belowStd[contaminationInd])):
-			newStd = belowStd[contaminationInd][std]
-			if (errors[contaminationInd][std]-newStd) < 0:
-				newStd = abs(0-errors[contaminationInd][std])
-			correctedBelowStd.append(newStd)
+			
+			correctedBelowStd.append(errors[contaminationInd][std] - belowStd[contaminationInd][std])
 		correctedAboveStd = []
 		for std in range(0, len(aboveStd[contaminationInd])):
-			newStd = aboveStd[contaminationInd][std]
-			if errors[contaminationInd][std]+newStd > 1 and labels[0] != 'Trees':
-				newStd = abs(1-errors[contaminationInd][std])
-			correctedAboveStd.append(newStd)
+			
+			correctedAboveStd.append(aboveStd[contaminationInd][std] - errors[contaminationInd][std])
 		
-	
+		
 		#Plot the error for the simulations
 		#p = ax.errorbar(noiseLevels, errors[contaminationInd], yerr=[correctedBelowStd, correctedAboveStd], label='$E_C$', color=colors[colInd], linewidth=2)
 		p = ax.errorbar(offsetNoiseLevels[contaminationInd], errors[contaminationInd], yerr=[correctedBelowStd, correctedAboveStd], label=contaminationLevels[contaminationInd], linewidth=2, color=colors[colorInd])
@@ -207,13 +229,15 @@ def plotData(noiseLevels, errors, aboveStd, belowStd, labels, colorInd, lim, tit
 	plt.savefig(title)
 
 
-def plotFigureOne(allCErrors, allAErrors, allMuErrors, allTreeErrors, allCStdAbove, allAStdAbove, allMuStdAbove, allTreeStdAbove, allCStdBelow, allAStdBelow, allMuStdBelow, allTreeStdBelow):
+def plotFigureOne(allCErrors, allAErrors, allMuErrors, allTreeErrors, allAncestryErrors, allCStdAbove, allAStdAbove, allMuStdAbove, allTreeStdAbove, allCStdBelow, allAStdBelow, allMuStdBelow, allTreeStdBelow, allAncestryStdAbove, allAncestryStdBelow):
 	
 	plotData(noiseLevels, allCErrors, allCStdAbove, allCStdBelow, ['Copy numbers'], 0, [0,1], 'Output/Polyclonality/polyclonal_C_all.svg')
 	plotData(noiseLevels, allAErrors, allAStdAbove, allAStdBelow, ['Alleles'], 1, [0,1], 'Output/Polyclonality/polyclonal_A_all.svg')
 	plotData(noiseLevels, allMuErrors, allMuStdAbove, allMuStdBelow, ['Tumor fraction'], 3, [0,0.6], 'Output/Polyclonality/polyclonal_Mu_all.svg')
 	plotData(noiseLevels, allTreeErrors, allTreeStdAbove, allTreeStdBelow, ['Trees'], 4, [-1,17], 'Output/Polyclonality/polyclonal_T_all.svg')
+	plotData(noiseLevels, allAncestryErrors, allAncestryStdAbove, allAncestryStdBelow, ['Trees'], 4, [0,0.3], 'Output/Polyclonality/polyclonal_Ancestry_all.svg')
 
+	
 
 def generatePolyclonalityFigure(simulationFolder, noiseLevels, contaminationLevels):
 	
@@ -221,52 +245,60 @@ def generatePolyclonalityFigure(simulationFolder, noiseLevels, contaminationLeve
 	allAErrors = []
 	allMuErrors = []
 	allTreeErrors = []
+	allAncestryErrors = []
 	
 	allCStdAbove = []
 	allAStdAbove = []
 	allMuStdAbove = []
 	allTreeStdAbove = []
+	allAncestryStdAbove = []
 	
 	allCStdBelow = []
 	allAStdBelow = []
 	allMuStdBelow = []
 	allTreeStdBelow = []
+	allAncestryStdBelow = []
+	
 	
 	for contaminationLevel in contaminationLevels:
 		dataFolder = simulationFolder + str(contaminationLevel)
 		#F1. Read the data from all the simulation folders
-		[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors] = readData(dataFolder, noiseLevels, '')
+		[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAncestryErrors] = readData(dataFolder, noiseLevels, '')
 		
 		#F2. Average the errors per noise level
-		[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors] = \
-		averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors)
+		[averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors, averagedAncestryErrors] = \
+		averageErrorsPerNoiseLevel(groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedAncestryErrors)
 		
 		allCErrors.append(averagedCErrors)
 		allAErrors.append(averagedAErrors)
 		allMuErrors.append(averagedMuErrors)
 		allTreeErrors.append(averagedTreeErrors)
+		allAncestryErrors.append(averagedAncestryErrors)
 		
 		#Obtain the standard deviation above and below the mean for the averages
 		[groupedAboveStdC, groupedBelowStdC] = obtainStandardDeviations(groupedCErrors, averagedCErrors)
 		[groupedAboveStdA, groupedBelowStdA] = obtainStandardDeviations(groupedAErrors, averagedAErrors)
 		[groupedAboveStdMu, groupedBelowStdMu] = obtainStandardDeviations(groupedMuErrors, averagedMuErrors)
 		[groupedAboveStdT, groupedBelowStdT] = obtainStandardDeviations(groupedTreeErrors, averagedTreeErrors)
+		[groupedAboveStdAncestry, groupedBelowStdAncestry] = obtainStandardDeviations(groupedAncestryErrors, averagedAncestryErrors)
 		
 		allCStdAbove.append(groupedAboveStdC)
 		allAStdAbove.append(groupedAboveStdA)
 		allMuStdAbove.append(groupedAboveStdMu)
 		allTreeStdAbove.append(groupedAboveStdT)
+		allAncestryStdAbove.append(groupedAboveStdAncestry)
 		
 		allCStdBelow.append(groupedBelowStdC)
 		allAStdBelow.append(groupedBelowStdA)
 		allMuStdBelow.append(groupedBelowStdMu)
 		allTreeStdBelow.append(groupedBelowStdT)
+		allAncestryStdBelow.append(groupedBelowStdAncestry)
 
 	#F3. Plot the error per noise level in one figure
 	#plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTreeErrors,
 	#			  groupedAboveStdC, groupedBelowStdC, groupedAboveStdA, groupedBelowStdA, groupedAboveStdMu, groupedBelowStdMu, groupedAboveStdT, groupedBelowStdT)
 
-	plotFigureOne(allCErrors, allAErrors, allMuErrors, allTreeErrors, allCStdAbove, allAStdAbove, allMuStdAbove, allTreeStdAbove, allCStdBelow, allAStdBelow, allMuStdBelow, allTreeStdBelow)
+	plotFigureOne(allCErrors, allAErrors, allMuErrors, allTreeErrors, allAncestryErrors, allCStdAbove, allAStdAbove, allMuStdAbove, allTreeStdAbove, allCStdBelow, allAStdBelow, allMuStdBelow, allTreeStdBelow, allAncestryStdAbove, allAncestryStdBelow)
 	
 	return 0
 
