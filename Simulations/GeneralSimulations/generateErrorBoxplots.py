@@ -261,7 +261,7 @@ def computeRandomCaseError(dataFolder):
 	
 	#F1. Read the data from the data folder
 	#Make dummy noise levels to read the right folder
-	noiseLevels = ['generic_random']
+	noiseLevels = ['noise0_random'] #generic_random for generic simulations
 	[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, ancestrySwapErrorAbsent, ancestrySwapErrorPresent, averagedSwapError] = \
 	readDataIncludingPermutations(dataFolder, noiseLevels, '')
 	
@@ -306,7 +306,7 @@ def computeRandomCaseError(dataFolder):
 	return [averagedCErrors[0], averagedAErrors[0], averagedMuErrors[0], averagedTreeErrors[0], averagedSwapErrorsAbsent[0], averagedSwapErrorsPresent[0], averagedAveragedSwapError[0], randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd, averageSwapStd]
 
 #2. Calculate statistics for the completely random case
-dataFolder = 'Results/'
+dataFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/' #Simply Results/ for the new generic simulations
 [randomCError, randomAError, randomMuError, randomTreeError, randomSwapErrorAbsent, randomSwapErrorPresent, randomAverageSwapError, randomCStd, randomAStd, randomMuStd, randomTreeStd, swapAbsentStd, swapPresentStd, averageSwapStd] = computeRandomCaseError(dataFolder)
 
 
@@ -523,17 +523,17 @@ def plotFigureOne(averagedCErrors, averagedAErrors, averagedMuErrors, averagedTr
 		ambiguityErrors.append(1-score)
 	
 	#Also swap the ambiguity stds?
-	plotData(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, randomCError, randomCStd, ['Copy numbers'], 0, [0,1], 'fig3_C.svg')
-	plotData(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, randomAError, randomAStd, ['Alleles'], 1, [0,1], 'fig3_A.svg')
-	plotData(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, randomMuError, randomMuStd, ['Tumor fraction'], 3, [0,0.6], 'fig3_Mu.svg')
-	plotData(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, randomTreeError, randomTreeStd, ['Trees'], 4, [-1,10], 'fig3_T.svg')
-	plotData(noiseLevels, averagedAmbiguityErrors, groupedAboveStdAmb, groupedBelowStdAmb, ambiguityErrorsRandom, [groupedAboveStdAmbR,groupedBelowStdAmbR], ['Resolved ambiguities'], 5, [0,1], 'fig3_Amb.svg')
+	plotData(noiseLevels, averagedCErrors, groupedAboveStdC, groupedBelowStdC, randomCError, randomCStd, ['Copy numbers'], 0, [0,1], 'fig3_C_TGCC.svg')
+	plotData(noiseLevels, averagedAErrors, groupedAboveStdA, groupedBelowStdA, randomAError, randomAStd, ['Alleles'], 1, [0,1], 'fig3_A_TGCC.svg')
+	plotData(noiseLevels, averagedMuErrors, groupedAboveStdMu, groupedBelowStdMu, randomMuError, randomMuStd, ['Tumor fraction'], 3, [0,0.6], 'fig3_Mu_TGCC.svg')
+	plotData(noiseLevels, averagedTreeErrors, groupedAboveStdT, groupedBelowStdT, randomTreeError, randomTreeStd, ['Trees'], 4, [-1,10], 'fig3_T_TGCC.svg')
+	plotData(noiseLevels, averagedAmbiguityErrors, groupedAboveStdAmb, groupedBelowStdAmb, ambiguityErrorsRandom, [groupedAboveStdAmbR,groupedBelowStdAmbR], ['Resolved ambiguities'], 5, [0,1], 'fig3_Amb_TGCC.svg')
 	
 	#Swap errors.Should these be visualized in the same figure, or keep them separate?
-	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,1], 'fig3_AncestrySwapAbsent.svg')
-	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapPresent.svg')
+	plotData(noiseLevels, averagedSwapAbsentErrors, groupedAboveStdSwapAbsent, groupedBelowStdSwapAbsent, randomSwapErrorAbsent, swapAbsentStd, ['Ancestry swap'], 5, [0,1], 'fig3_AncestrySwapAbsent_TGCC.svg')
+	plotData(noiseLevels, averagedSwapPresentErrors, groupedAboveStdSwapPresent, groupedBelowStdSwapPresent, randomSwapErrorPresent, swapPresentStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapPresent_TGCC.svg')
 	
-	plotData(noiseLevels, averagedAverageSwapErrors, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap, randomAverageSwapError, averageSwapStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapAveraged.svg')
+	plotData(noiseLevels, averagedAverageSwapErrors, groupedAboveStdAveragedSwap, groupedBelowStdAveragedSwap, randomAverageSwapError, averageSwapStd, ['Ancestry swap'], 6, [0,1], 'fig3_AncestrySwapAveraged_TGCC.svg')
 	
 	
 
@@ -855,36 +855,36 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 # #1. Make figure one panels A-D
 # #For figure one, we average the errors across the noise levels and plot all values together in one tree.
 # #For every simulation run, we also generate euclidean trees and compute the error. 
-simulationFolder = 'Results/generic_noise'
-dataFolder = 'Results/generic_noise'
+simulationFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise' #Results/generic_noise
+dataFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise' #Results/generic_noise
 #noiseLevels = [0, 0.005, 0.01]
 noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
 #noiseLevels = [0.015, 0.02, 0.025]
 #noiseLevels = [0]
 #Put this here so that we can easily re-use it for other figures
-# ambiguities = []
-# ambiguityScores = []
-# groupedAmbiguities = dict()
-# 
-# for noiseLevel in noiseLevels:
-# 	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
-# 	print "noise level: ", noiseLevel
-# 	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
-# 	groupedAmbiguities[noiseLevel] = allAmbiguityScores
-# 	ambiguities.append(averageAmbiguities)
-# 	ambiguityScores.append(averageAmbiguityScore)
-# 	
-# #Also compute the ambiguity scores in the permuted data
-# 
-# permutationFolder = 'Results/generic_random/'
-# 
-# [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
-# groupedAmbiguitiesRandom = dict()
-# groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
-# generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
-# #makeBoxPlotFigure(dataFolder, noiseLevels)
-# 
-# exit()
+ambiguities = []
+ambiguityScores = []
+groupedAmbiguities = dict()
+
+for noiseLevel in noiseLevels:
+	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
+	print "noise level: ", noiseLevel
+	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
+	groupedAmbiguities[noiseLevel] = allAmbiguityScores
+	ambiguities.append(averageAmbiguities)
+	ambiguityScores.append(averageAmbiguityScore)
+	
+#Also compute the ambiguity scores in the permuted data
+
+permutationFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise0_random/'#'Results/generic_random/'
+
+[averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
+groupedAmbiguitiesRandom = dict()
+groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
+generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+#makeBoxPlotFigure(dataFolder, noiseLevels)
+
+exit()
 
 #Make the random restarts figure
 
