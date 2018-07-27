@@ -2400,13 +2400,13 @@ def plotBinnedValues(binnedMu, binnedErrors, binnedStdAbove, binnedStdBelow, ymi
 	plt.tight_layout()
 
 	#plt.show()
-	plt.savefig(title + '_S1.svg')
+	plt.savefig(title + '_fullMu.svg')
 
 plotBinnedValues(binnedMu, binnedCErrors, binnedCStdAbove, binnedCStdBelow, 0, 1.4, 'C')
 plotBinnedValues(binnedMu, binnedAErrors, binnedAStdAbove, binnedAStdBelow, 0, 1.4, 'A')
 plotBinnedValues(binnedMu, binnedMuErrors, binnedMuStdAbove, binnedMuStdBelow, 0, 0.7, 'Mu')
 plotBinnedValues(binnedMu, binnedTErrors, binnedTStdAbove, binnedTStdBelow, -0.5, 11, 'T')
-plotBinnedValues(binnedMu, binnedAncestryErrors, binnedAncestryStdAbove, binnedAncestryStdBelow, 0, 0.8, 'C')	
+plotBinnedValues(binnedMu, binnedAncestryErrors, binnedAncestryStdAbove, binnedAncestryStdBelow, 0, 0.8, 'Ancestry')	
 
 
 
