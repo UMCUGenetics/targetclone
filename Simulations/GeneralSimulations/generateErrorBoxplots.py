@@ -1774,11 +1774,11 @@ def plotNoise2TumorFractionsSummary(mu, binnedC, binnedA, binnedMu, binnedT, bin
 	plt.savefig('tumorFractionSummary.svg')
 
 #Figure 3F
-	
-plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors,
-binnedTErrors, binnedAncenstryErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd, binnedAncestryStd)
-
-exit()
+# 	
+# plotNoise2TumorFractionsSummary(binnedMu, binnedCErrors, binnedAErrors, binnedMuErrors,
+# binnedTErrors, binnedAncenstryErrors, binnedCStd, binnedAStd, binnedMuStd, binnedTStd, binnedAncestryStd)
+# 
+# exit()
 
 
 #Make scatterplots showing the difference between the normal simulations and the horizontal permutations
@@ -2062,6 +2062,8 @@ def sortData(simulationFolder):
 	ambiguityPErrors = []
 	ambiguityPCorrectedErrors = []
 	
+	orderedAncestryErrors = []
+	
 	#This needs an ordering
 	for subdir, dirs, files in os.walk(simulationFolder):
 		#print subdir
@@ -2083,6 +2085,7 @@ def sortData(simulationFolder):
 		pAmbiguityCorrectedError = 0
 		
 		#print subdir
+		treeSizes = []
 		
 		for file in files:
 			#print file
@@ -2125,6 +2128,24 @@ def sortData(simulationFolder):
 			if re.match('pAmbiguityCorrectedError', file):
 				pAmbiguityCorrectedError = float(collectErrorsFromFile(file, subdir)[0])	
 		
+			if re.match('RealTrees', file): #read the file and obtain the error
+				stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+				tree = eval(stringDict)
+				realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+				treeSizes.append(len(realTree.edgeList))
+				
+			if re.match('EstimatedTrees', file): #read the file and obtain the error
+				stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+				tree = eval(stringDict)
+				inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+		
+		[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+			
+		#Instead of reporting the actual errors, what if we report percentages of how bad we could have done? 
+		
+		summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+		orderedAncestryErrors.append(summedError / float(noOfSamplePairs))
+		
 		
 		orderedMu.append(currentMu)
 		orderedCErrors.append(cError)
@@ -2152,6 +2173,7 @@ def sortData(simulationFolder):
 	sortedTErrors = []
 	sortedAmbiguityErrors = []
 	sortedAmbiguityCorrectedErrors = []
+	sortedAncestryErrors = []
 	
 	sortedPCErrors = []
 	sortedPAErrors = []
@@ -2168,6 +2190,7 @@ def sortData(simulationFolder):
 		sortedTErrors.append(orderedTErrors[ind])
 		sortedAmbiguityErrors.append(ambiguityErrors[ind])
 		sortedAmbiguityCorrectedErrors.append(ambiguityCorrectedErrors[ind])
+		sortedAncestryErrors.append(orderedAncestryErrors[ind])
 		
 		sortedPCErrors.append(orderedPCErrors[ind])
 		sortedPAErrors.append(orderedPAErrors[ind])
@@ -2177,34 +2200,34 @@ def sortData(simulationFolder):
 		sortedPAmbiguityCorrectedErrors.append(ambiguityPCorrectedErrors[ind])
 	
 	
-	return [sortedMu, sortedCErrors, sortedAErrors, sortedMuErrors, sortedTErrors, sortedAmbiguityErrors, sortedAmbiguityCorrectedErrors, sortedPCErrors, sortedPAErrors, sortedPMuErrors, sortedPTErrors, sortedPAmbiguityErrors, sortedPAmbiguityCorrectedErrors]
+	return [sortedMu, sortedCErrors, sortedAErrors, sortedMuErrors, sortedTErrors, sortedAmbiguityErrors, sortedAmbiguityCorrectedErrors, sortedPCErrors, sortedPAErrors, sortedPMuErrors, sortedPTErrors, sortedPAmbiguityErrors, sortedPAmbiguityCorrectedErrors, sortedAncestryErrors ]
 	
 
 #Call the function for all noise levels
 
 simulationFolder = 'Results/generic_noise0/'
 [sortedMu0, sortedCErrors0, sortedAErrors0, sortedMuErrors0, sortedTErrors0, sortedAmbiguityScores0, sortedAmbiguityCorrectedErrors0,
- sortedPCErrors0, sortedPAErrors0, sortedPMuErrors0, sortedPTErrors0, sortedPAmbiguityErrors0, sortedPAmbiguityCorrectedErrors0] = sortData(simulationFolder)
+ sortedPCErrors0, sortedPAErrors0, sortedPMuErrors0, sortedPTErrors0, sortedPAmbiguityErrors0, sortedPAmbiguityCorrectedErrors0, sortedAncestryErrors0] = sortData(simulationFolder)
 simulationFolder = 'Results/generic_noise0.02/'
 [sortedMu2, sortedCErrors2, sortedAErrors2, sortedMuErrors2, sortedTErrors2, sortedAmbiguityScores2, sortedAmbiguityCorrectedErrors2,
- sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2] = sortData(simulationFolder)
+ sortedPCErrors2, sortedPAErrors2, sortedPMuErrors2, sortedPTErrors2, sortedPAmbiguityErrors2, sortedPAmbiguityCorrectedErrors2, sortedAncestryErrors2] = sortData(simulationFolder)
 simulationFolder = 'Results/generic_noise0.04/'
 [sortedMu4, sortedCErrors4, sortedAErrors4, sortedMuErrors4, sortedTErrors4, sortedAmbiguityScores4, sortedAmbiguityCorrectedErrors4,
- sortedPCErrors4, sortedPAErrors4, sortedPMuErrors4, sortedPTErrors4, sortedPAmbiguityErrors4, sortedPAmbiguityCorrectedErrors4] = sortData(simulationFolder)
+ sortedPCErrors4, sortedPAErrors4, sortedPMuErrors4, sortedPTErrors4, sortedPAmbiguityErrors4, sortedPAmbiguityCorrectedErrors4, sortedAncestryErrors4] = sortData(simulationFolder)
 simulationFolder = 'Results/generic_noise0.06/'
 [sortedMu6, sortedCErrors6, sortedAErrors6, sortedMuErrors6, sortedTErrors6, sortedAmbiguityScores6, sortedAmbiguityCorrectedErrors6,
- sortedPCErrors6, sortedPAErrors6, sortedPMuErrors6, sortedPTErrors6, sortedPAmbiguityErrors6, sortedPAmbiguityCorrectedErrors6] = sortData(simulationFolder)
+ sortedPCErrors6, sortedPAErrors6, sortedPMuErrors6, sortedPTErrors6, sortedPAmbiguityErrors6, sortedPAmbiguityCorrectedErrors6, sortedAncestryErrors6] = sortData(simulationFolder)
 simulationFolder = 'Results/generic_noise0.08/'
 [sortedMu8, sortedCErrors8, sortedAErrors8, sortedMuErrors8, sortedTErrors8, sortedAmbiguityScores8, sortedAmbiguityCorrectedErrors8,
- sortedPCErrors8, sortedPAErrors8, sortedPMuErrors8, sortedPTErrors8, sortedPAmbiguityErrors8, sortedPAmbiguityCorrectedErrors8] = sortData(simulationFolder)
+ sortedPCErrors8, sortedPAErrors8, sortedPMuErrors8, sortedPTErrors8, sortedPAmbiguityErrors8, sortedPAmbiguityCorrectedErrors8, sortedAncestryErrors8] = sortData(simulationFolder)
 simulationFolder = 'Results/generic_noise0.1/'
 [sortedMu10, sortedCErrors10, sortedAErrors10, sortedMuErrors10, sortedTErrors10, sortedAmbiguityScores10, sortedAmbiguityCorrectedErrors10,
- sortedPCErrors10, sortedPAErrors10, sortedPMuErrors10, sortedPTErrors10, sortedPAmbiguityErrors10, sortedPAmbiguityCorrectedErrors10] = sortData(simulationFolder)
+ sortedPCErrors10, sortedPAErrors10, sortedPMuErrors10, sortedPTErrors10, sortedPAmbiguityErrors10, sortedPAmbiguityCorrectedErrors10, sortedAncestryErrors10] = sortData(simulationFolder)
 
 
 simulationFolder = 'Results/generic_random/'
 [sortedMuR, sortedCErrorsR, sortedAErrorsR, sortedMuErrorsR, sortedTErrorsR, sortedAmbiguityScoresR, sortedAmbiguityCorrectedErrorsR,
- sortedPCErrorsR, sortedPAErrorsR, sortedPMuErrorsR, sortedPTErrorsR, sortedPAmbiguityErrorsR, sortedPAmbiguityCorrectedErrorsR] = sortData(simulationFolder)
+ sortedPCErrorsR, sortedPAErrorsR, sortedPMuErrorsR, sortedPTErrorsR, sortedPAmbiguityErrorsR, sortedPAmbiguityCorrectedErrorsR, sortedAncestryErrorsR] = sortData(simulationFolder)
 
 
 #Have a function that bins by mu
@@ -2225,22 +2248,22 @@ def binValues(orderedMu, sortedErrors):
 		binnedMu.append(boxInd)
 		meanError = sum(errorValues) / float(len(errorValues))
 		binnedError.append(meanError)
-	
+		[mean, lower, upper] = mean_confidence_interval(errorValues)
 		
 		#Compute all values above and below the mean
-		above = []
-		below = []
-		
-		
-		for value in range(0, len(errorValues)):
-			if errorValues[value] > meanError:
-				above.append(errorValues[value])
-			else:
-				below.append(errorValues[value])
-			
+		# above = []
+		# below = []
+		# 
+		# 
+		# for value in range(0, len(errorValues)):
+		# 	if errorValues[value] > meanError:
+		# 		above.append(errorValues[value])
+		# 	else:
+		# 		below.append(errorValues[value])
+		# 	
 
-		binnedStdAbove.append(np.std(errorValues))
-		binnedStdBelow.append(np.std(errorValues))
+		binnedStdAbove.append(upper)
+		binnedStdBelow.append(lower)
 		
 		#Make sure that the sd is also reported per bin
 		
@@ -2278,9 +2301,16 @@ def binValues(orderedMu, sortedErrors):
 [binnedMu, binnedTErrors8, binnedStdAboveT8, binnedStdBelowT8]  = binValues(sortedMu8, sortedTErrors8)
 [binnedMu, binnedTErrors10, binnedStdAboveT10, binnedStdBelowT10]  = binValues(sortedMu10, sortedTErrors10)
 
+#Ancestry errors
+[binnedMu, binnedAncestryErrors0, binnedStdAboveAncestry0, binnedStdBelowAncestry0] = binValues(sortedMu0, sortedAncestryErrors0)
+[binnedMu, binnedAncestryErrors2, binnedStdAboveAncestry2, binnedStdBelowAncestry2]  = binValues(sortedMu2, sortedAncestryErrors2)
+[binnedMu, binnedAncestryErrors4, binnedStdAboveAncestry4, binnedStdBelowAncestry4]  = binValues(sortedMu4, sortedAncestryErrors4)
+[binnedMu, binnedAncestryErrors6, binnedStdAboveAncestry6, binnedStdBelowAncestry6]  = binValues(sortedMu6, sortedAncestryErrors6)
+[binnedMu, binnedAncestryErrors8, binnedStdAboveAncestry8, binnedStdBelowAncestry8]  = binValues(sortedMu8, sortedAncestryErrors8)
+[binnedMu, binnedAncestryErrors10, binnedStdAboveAncestry10, binnedStdBelowAncestry10]  = binValues(sortedMu10, sortedAncestryErrors10)
+
+
 #Do the same binning but then for the completely random case
-
-
 
 
 #Group the values
@@ -2299,6 +2329,11 @@ binnedMuStdBelow = [binnedStdBelowMu0, binnedStdBelowMu2, binnedStdBelowMu4, bin
 binnedTErrors = [binnedTErrors0, binnedTErrors2, binnedTErrors4, binnedTErrors6, binnedTErrors8, binnedTErrors10]
 binnedTStdAbove = [binnedStdAboveT0, binnedStdAboveT2, binnedStdAboveT4, binnedStdAboveT6, binnedStdAboveT8, binnedStdAboveT10]
 binnedTStdBelow = [binnedStdBelowT0, binnedStdBelowT2, binnedStdBelowT4, binnedStdBelowT6, binnedStdBelowT8, binnedStdBelowT10]
+
+#ancestry errors
+binnedAncestryErrors = [binnedAncestryErrors0, binnedAncestryErrors2, binnedAncestryErrors4, binnedAncestryErrors6, binnedAncestryErrors8, binnedAncestryErrors10]
+binnedAncestryStdAbove = [binnedStdAboveAncestry0, binnedStdAboveAncestry2, binnedStdAboveAncestry4, binnedStdAboveAncestry6, binnedStdAboveAncestry8, binnedStdAboveAncestry10]
+binnedAncestryStdBelow = [binnedStdBelowAncestry0, binnedStdBelowAncestry2, binnedStdBelowAncestry4, binnedStdBelowAncestry6, binnedStdBelowAncestry8, binnedStdBelowAncestry10]
 
 #Plotting function
 
@@ -2339,15 +2374,16 @@ def plotBinnedValues(binnedMu, binnedErrors, binnedStdAbove, binnedStdBelow, ymi
 		print binnedStdBelow[binnedError]
 		print binnedStdAbove[binnedError]
 		
-		newStdBelow = []
-		#Make sure that the stds are corrected
+		correctedBelowStd = []
 		for std in range(0, len(binnedStdBelow[binnedError])):
-			newStd = binnedStdBelow[binnedError][std]
-			if binnedErrors[binnedError][std]-newStd < 0:
-				newStd = abs(0-binnedErrors[binnedError][std])
-			newStdBelow.append(newStd)
+			
+			correctedBelowStd.append(binnedErrors[binnedError][std] - binnedStdBelow[binnedError][std])
+		correctedAboveStd = []
+		for std in range(0, len(binnedStdAbove[binnedError])):
+			
+			correctedAboveStd.append(binnedStdAbove[binnedError][std] - binnedErrors[binnedError][std])
 		
-		p = plt.errorbar(binnedMuOffsets[binnedError], binnedErrors[binnedError], yerr=[newStdBelow, binnedStdAbove[binnedError]], label='Simulations', linewidth=2)
+		p = plt.errorbar(binnedMuOffsets[binnedError], binnedErrors[binnedError], yerr=[correctedBelowStd, correctedAboveStd], label='Simulations', linewidth=2)
 		legendLines.append(p[0])
 		#labels.append('Simulations')
 	
@@ -2370,7 +2406,7 @@ plotBinnedValues(binnedMu, binnedCErrors, binnedCStdAbove, binnedCStdBelow, 0, 1
 plotBinnedValues(binnedMu, binnedAErrors, binnedAStdAbove, binnedAStdBelow, 0, 1.4, 'A')
 plotBinnedValues(binnedMu, binnedMuErrors, binnedMuStdAbove, binnedMuStdBelow, 0, 0.7, 'Mu')
 plotBinnedValues(binnedMu, binnedTErrors, binnedTStdAbove, binnedTStdBelow, -0.5, 11, 'T')
-	
+plotBinnedValues(binnedMu, binnedAncestryErrors, binnedAncestryStdAbove, binnedAncestryStdBelow, 0, 0.8, 'C')	
 
 
 
