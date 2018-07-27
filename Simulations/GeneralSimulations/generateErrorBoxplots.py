@@ -855,36 +855,36 @@ def generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguiti
 # #1. Make figure one panels A-D
 # #For figure one, we average the errors across the noise levels and plot all values together in one tree.
 # #For every simulation run, we also generate euclidean trees and compute the error. 
-simulationFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise' #Results/generic_noise
-dataFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise' #Results/generic_noise
-#noiseLevels = [0, 0.005, 0.01]
-noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
-#noiseLevels = [0.015, 0.02, 0.025]
-#noiseLevels = [0]
-#Put this here so that we can easily re-use it for other figures
-ambiguities = []
-ambiguityScores = []
-groupedAmbiguities = dict()
-
-for noiseLevel in noiseLevels:
-	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
-	print "noise level: ", noiseLevel
-	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
-	groupedAmbiguities[noiseLevel] = allAmbiguityScores
-	ambiguities.append(averageAmbiguities)
-	ambiguityScores.append(averageAmbiguityScore)
-	
-#Also compute the ambiguity scores in the permuted data
-
-permutationFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise0_random/'#'Results/generic_random/'
-
-[averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
-groupedAmbiguitiesRandom = dict()
-groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
-generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
-#makeBoxPlotFigure(dataFolder, noiseLevels)
-
-exit()
+# simulationFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise' #Results/generic_noise
+# dataFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise' #Results/generic_noise
+# #noiseLevels = [0, 0.005, 0.01]
+# noiseLevels = [0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.04, 0.06, 0.08, 0.1]
+# #noiseLevels = [0.015, 0.02, 0.025]
+# #noiseLevels = [0]
+# #Put this here so that we can easily re-use it for other figures
+# ambiguities = []
+# ambiguityScores = []
+# groupedAmbiguities = dict()
+# 
+# for noiseLevel in noiseLevels:
+# 	currentSimulationFolder = simulationFolder + str(noiseLevel) + '/'
+# 	print "noise level: ", noiseLevel
+# 	[averageAmbiguities, averageAmbiguityScore, allAmbiguityScores] = computeCorrectAmbiguityScore(LAFAndCombinations, currentSimulationFolder)
+# 	groupedAmbiguities[noiseLevel] = allAmbiguityScores
+# 	ambiguities.append(averageAmbiguities)
+# 	ambiguityScores.append(averageAmbiguityScore)
+# 	
+# #Also compute the ambiguity scores in the permuted data
+# 
+# permutationFolder = '/hpc/cog_bioinf/ridder/users/mnieboer/targetClone/TargetClone_1601/Results/noise0_random/'#'Results/generic_random/'
+# 
+# [averageAmbiguitiesRandom, averageAmbiguityScoreRandom, allAmbiguityScoresRandom] = computeCorrectAmbiguityScore(LAFAndCombinations, permutationFolder)
+# groupedAmbiguitiesRandom = dict()
+# groupedAmbiguitiesRandom[0] = allAmbiguityScoresRandom
+# generateFigureOne(dataFolder, noiseLevels, ambiguityScores, groupedAmbiguities, [averageAmbiguityScoreRandom], groupedAmbiguitiesRandom)
+# #makeBoxPlotFigure(dataFolder, noiseLevels)
+# 
+# exit()
 
 #Make the random restarts figure
 
@@ -2003,7 +2003,9 @@ def plotNormalPermutedComparison(groupedCErrors, groupedAErrors, groupedMuErrors
 #In the read data with permutations I added Mu75 after the path for now, quick and dirty
 dataFolder = 'Results/generic_noise'
 noiseLevels = ['0.02']
-#[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors, groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, a, b] = readDataIncludingPermutations(dataFolder, noiseLevels, '')
+
+[groupedCErrors, groupedAErrors, groupedMuErrors, groupedTreeErrors, groupedPCErrors,
+groupedPAErrors, groupedPMuErrors, groupedPTreeErrors, groupedAncestrySwapErrorsAbsentInInferred, groupedAncestrySwapErrorsPresentInInferred, groupedAverageAncestrySwapErrors] = readDataIncludingPermutations(dataFolder, noiseLevels, '')
 
 # #average the permuted data in bins
 # #averagedPCErrors = binPermutedData(groupedPCErrors)
@@ -2036,8 +2038,8 @@ def plotATCorrelation(groupedAErrors, groupedTErrors):
 	plt.savefig('A_TCorrelation.svg')
 
 # 
-# plotATCorrelation(groupedAErrors['0.02'], groupedTreeErrors['0.02'])
-# exit()
+plotATCorrelation(groupedAErrors['0.02'], groupedAverageAncestrySwapErrors['0.02'])
+exit()
 
 #Figure S9
 
