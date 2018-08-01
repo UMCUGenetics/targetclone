@@ -29,7 +29,12 @@ for d in "$folder"/*/ ; do
 	
 	echo "Tumor file: $tumorFileName"
 	
-	if [ "$tumorFileName" = "ERS312128" ] #skip the normal sample
+	if [ "$tumorFileName" = "ERS312128"] #skip the normal sample
+	then
+		continue
+	fi
+	
+	if [ "$tumorFileName" = "ERS312123"] #skip already processed files
 	then
 		continue
 	fi
