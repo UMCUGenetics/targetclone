@@ -1,3 +1,14 @@
+#!/bin/bash
+#$ -V
+#$ -S /bin/bash
+#$ -cwd
+#$ -m as
+#$ -M m.m.nieboer@umcutrecht.nl
+#$ -l h_vmem=8G
+#$ -l h_rt=20:00:00
+#$ -e cnvKit_e
+#$ -o cnvKit_o
+
 #Script to run the copy number calling pipeline for ovarian data.
 
 #1. Obtain the directory where all the BAM files and VCF files are stored per sample
