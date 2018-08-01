@@ -1,19 +1,19 @@
 #The goal of this script is to given an input directory run the call for calling major and minor copy numbers for all samples using CNVKit.
 
+#Ovarian data specific script
 
 folder="$1" #tumor folder
-
 
 for d in "$folder"/*/ ; do
 	
 	#1. First get the cns file
-	cnsFile=`ls "$d"/output/*.cns`
+	cnsFile=`ls "$d"/cnvKit/*.cns`
 	
 	#2. Also read the right vcf file
-	vcfFile=`ls "$d"*.snp.vcf`
+	vcfFile=`ls "$d"*._filtered.vcf`
 	
 	#3. Get the purity from the theta output
-	thetaOutFile=`ls "$d"/output/*.n2.results`
+	thetaOutFile=`ls "$d"/cnvKit/*.n2.results`
 	echo "$thetaOutFile"
 	lineCount=0
 	while IFS='' read -r line || [[ -n "$line" ]]; do
@@ -35,7 +35,7 @@ for d in "$folder"/*/ ; do
 	
 	echo "$vcfFile"
 	
-	cnvkit.py call "$cnsFile" -v "$vcfFile" --purity "$tumorMu" -y -m clonal -o "$cnsFile".call
+	cnvkit.py call "$cnsFile" -v "$vcfFile" --purity "$tumorMu" -x -m clonal -o "$cnsFile".call
 	
 done
 
