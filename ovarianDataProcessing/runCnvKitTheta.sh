@@ -56,16 +56,18 @@ for d in "$folder"/*/ ; do
 	python generateThetaNormalAndTumorSnpFile.py "$tumorSnpFile" "$normalVcfFile" "$vcfFile" "$d"/cnvKit/normal.snp_formatted.txt "$d"/cnvKit/tumor.snp_formatted_corrected.txt
 	
 	
+	####RUNNING THETA IS NOT POSSIBLE ON THE HPC, THE MULTIPROCESSING LIBRARY OF PYTHON GIVES A UNICODE ERROR THAT I DON'T KNOW HOW TO SOLVE. SO AFTER GENERATING THE THETA FILES, THETA NEEDS TO BE RUN ON MAC WHERE IT DOES WORK
+	#AFTER THAT COPY THE RESULTS BACK
+	
 	#2.3 Run TheTA
-	intervalCountFile=`ls $d/cnvKit/*.interval_count`
-	echo "interval file: $intervalCountFile"
+	#intervalCountFile=`ls $d/cnvKit/*.interval_count`
+	#echo "interval file: $intervalCountFile"
 	
 	
-	"$thetaPath"/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$d"/cnvKit/tumor.snp_formatted_corrected.txt --NORMAL_FILE "$d"/cnvKit/normal.snp_formatted.txt --BAF --FORCE -n 2 -d "$d"/cnvKit/
+	#"$thetaPath"/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$d"/cnvKit/tumor.snp_formatted_corrected.txt --NORMAL_FILE "$d"/cnvKit/normal.snp_formatted.txt --BAF --FORCE -n 2 -d "$d"/cnvKit/
 	##
 	###Theta also does not seem to want to output to a specific directory (you shitty tools >:( ) so I move them after they have been created.
 	#mv "$tumorFileName"* "$d"/output
 	
-	break
 	
 done
