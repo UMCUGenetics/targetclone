@@ -37,6 +37,8 @@ for d in "$folder"/*/ ; do
 	
 	cnvkit.py call "$cnsFile" -v "$vcfFile" --purity "$tumorMu" -x -m clonal -o "$cnsFile".call
 	
+	break
+	
 done
 
 
