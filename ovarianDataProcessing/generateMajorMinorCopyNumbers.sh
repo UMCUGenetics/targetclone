@@ -35,7 +35,7 @@ for d in "$folder"/*/ ; do
 	
 	echo "$vcfFile"
 	
-	cnvkit.py call "$cnsFile" -v "$vcfFile" --purity "$tumorMu" -x -m clonal -o "$cnsFile".call
+	cnvkit.py call "$cnsFile" -v "$vcfFile" --purity "$tumorMu" -x female -m clonal -o "$cnsFile".call
 	
 	break
 	
