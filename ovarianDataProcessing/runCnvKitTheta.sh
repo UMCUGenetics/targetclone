@@ -38,10 +38,10 @@ for d in "$folder"/*/ ; do
 	
 	#Skip CNVKit, has already been done for all samples. Only run TheTA2
 
-#	cnvkit.py batch "$bamFile" --normal "$normalBamFile" \
-#    --targets "$targetFile" --fasta "$refFastaFile" -m wgs \
-#    --output-reference ref.cnn --output-dir "$d/cnvKit/"
-#	
+	cnvkit.py batch "$bamFile" --normal "$normalBamFile" \
+    --fasta "$refFastaFile" -m wgs \
+    --output-reference "$d"/cnvKit/ref.cnn --output-dir "$d/cnvKit/"
+	
 #	#2.2 Generate the tumor.snp files for theta
 	cnsFile=`ls "$d"/cnvKit/*.cns`
 	
