@@ -5,6 +5,7 @@
 folder="$1"
 normalDir="$2" #directory with the reference samples
 refFastaFile="$3"
+thetaPath="$4"
 
 #1.2 Obtain the fie locations of the normal files
 normalBamFile=`ls "$normalDir"*.bam`
@@ -36,10 +37,10 @@ for d in "$folder"/*/ ; do
 	#2.1 Run CNVKit to do the segmentation
 	
 	#Skip CNVKit, has already been done for all samples. Only run TheTA2
-#	
+
 #	cnvkit.py batch "$bamFile" --normal "$normalBamFile" \
-#    --targets "$targetFile" --fasta "$refFastaFile" -m amplicon \
-#    --output-reference ref.cnn --output-dir "$d/output/"
+#    --targets "$targetFile" --fasta "$refFastaFile" -m wgs \
+#    --output-reference ref.cnn --output-dir "$d/cnvKit/"
 #	
 #	#2.2 Generate the tumor.snp files for theta
 	cnsFile=`ls "$d"/cnvKit/*.cns`
@@ -54,13 +55,13 @@ for d in "$folder"/*/ ; do
 	echo "$tumorSnpFile"
 	python generateThetaNormalAndTumorSnpFile.py "$tumorSnpFile" "$normalVcfFile" "$vcfFile" "$d"/cnvKit/normal.snp_formatted.txt "$d"/cnvKit/tumor.snp_formatted_corrected.txt
 	
-	#
-	##2.3 Run TheTA
-	#intervalCountFile=`ls *.interval_count`
-	#echo "interval file: $intervalCountFile"
-	#
-	#
-	#THetA/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$tumorSnpFile" --NORMAL_FILE "$d"/normal.snp_formatted.txt --BAF --NUM_PROCESSES 2 --FORCE -n 2
+	
+	#2.3 Run TheTA
+	intervalCountFile=`ls $d/cnvKit/*.interval_count`
+	echo "interval file: $intervalCountFile"
+	
+	
+	"$thetaPath"/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$d"/cnvKit/tumor.snp_formatted_corrected.txt --NORMAL_FILE "$d"/normal.snp_formatted.txt --BAF --NUM_PROCESSES 2 --FORCE -n 2
 	##
 	###Theta also does not seem to want to output to a specific directory (you shitty tools >:( ) so I move them after they have been created.
 	#mv "$tumorFileName"* "$d"/output
