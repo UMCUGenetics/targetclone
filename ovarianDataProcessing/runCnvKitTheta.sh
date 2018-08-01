@@ -4,8 +4,7 @@
 
 folder="$1"
 normalDir="$2" #directory with the reference samples
-targetFile="$3" #place to find the targets
-refFastaFile="$4"
+refFastaFile="$3"
 
 #1.2 Obtain the fie locations of the normal files
 normalBamFile=`ls "$normalDir"*.bam`
@@ -14,8 +13,14 @@ normalVcfFile=`ls "$normalDir"*_filtered.vcf`
 #2. For each folder, run the pipeline (can be in parallel if necessary, but it seems very fast so far)
 
 for d in "$folder"/*/ ; do
+	
 	bamFile=`ls "$d"*.bam`
 	vcfFile=`ls "$d"*_filtered.vcf`
+	
+	if [ ! -f "$vcfFile" ]; then
+		echo "File not found!"
+		continue
+	fi
 	
 	#Extract the tumor sample file name	
 	filename=$(basename -- "$bamFile")
@@ -41,7 +46,8 @@ for d in "$folder"/*/ ; do
 	
 	echo "Vcf file: $vcfFile"
 	
-	cnvkit.py export theta "$cnsFile" -r ref.cnn -v "$vcfFile" #appears that it is not possible to specify output folder
+	echo "ref: $d/cnvKit/ref.cnn"
+	cnvkit.py export theta "$cnsFile" -r "$d"/cnvKit/ref.cnn -v "$vcfFile" #appears that it is not possible to specify output folder
 	
 	##2.3 Generate the normal.snp.txt files for theta
 	tumorSnpFile=`ls *.tumor.snp_formatted.txt`
