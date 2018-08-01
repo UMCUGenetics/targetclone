@@ -99,7 +99,7 @@ def writeAlleleCounts(outFile, vcfEntries):
 				
 				#Write the data to a new file
 				
-				out.write(chromosome + "\t" + position + "\t" + refCount + "\t" + varCount + "\n")
+				out.write(chromosome + "\t" + position + "\t" + str(refCount) + "\t" + str(varCount) + "\n")
 			
 writeAlleleCounts(normalSnpOutFile, normalVcfEntries)
 writeAlleleCounts(tumorSnpOutFile, tumorVcfEntries)
