@@ -61,7 +61,7 @@ for d in "$folder"/*/ ; do
 	echo "interval file: $intervalCountFile"
 	
 	
-	"$thetaPath"/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$d"/cnvKit/tumor.snp_formatted_corrected.txt --NORMAL_FILE "$d"/normal.snp_formatted.txt --BAF --NUM_PROCESSES 2 --FORCE -n 2
+	"$thetaPath"/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$d"/cnvKit/tumor.snp_formatted_corrected.txt --NORMAL_FILE "$d"/cnvKit/normal.snp_formatted.txt --BAF --NUM_PROCESSES 2 --FORCE -n 2
 	##
 	###Theta also does not seem to want to output to a specific directory (you shitty tools >:( ) so I move them after they have been created.
 	#mv "$tumorFileName"* "$d"/output
