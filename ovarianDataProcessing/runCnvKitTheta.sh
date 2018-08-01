@@ -39,6 +39,12 @@ for d in "$folder"/*/ ; do
 		continue
 	fi
 	
+	if [ "$tumorFileName" = "ERS312124" ] #skip already processed files
+	then
+		continue
+	fi
+	
+	
 	#2.1 Run CNVKit to do the segmentation
 	
 	#Skip CNVKit, has already been done for all samples. Only run TheTA2
