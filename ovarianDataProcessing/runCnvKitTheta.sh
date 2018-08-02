@@ -45,16 +45,10 @@ for d in "$folder"/*/ ; do
 		continue
 	fi
 	
-	if [ "$tumorFileName" = "ERS312123" ] #skip already processed files
+	if [ "$tumorFileName" != "ERS312132" ] #skip already processed files
 	then
 		continue
 	fi
-	
-	if [ "$tumorFileName" = "ERS312124" ] #skip already processed files
-	then
-		continue
-	fi
-	
 	
 	#2.1 Run CNVKit to do the segmentation
 	
@@ -77,6 +71,10 @@ for d in "$folder"/*/ ; do
 	echo "$tumorSnpFile"
 	python generateThetaNormalAndTumorSnpFile.py "$tumorSnpFile" "$normalVcfFile" "$vcfFile" "$d"/cnvKit/normal.snp_formatted.txt "$d"/cnvKit/tumor.snp_formatted_corrected.txt
 	
+	#Move the temporary files to the right directory
+	mv *.tumor_snp_formatted.txt "$d"/cnvKit/
+	mv *.normal_snp_formatted.txt "$d"/cnvKit/
+	mv *.interval_count "$d"/cnvKit/
 	
 	####RUNNING THETA IS NOT POSSIBLE ON THE HPC, THE MULTIPROCESSING LIBRARY OF PYTHON GIVES A UNICODE ERROR THAT I DON'T KNOW HOW TO SOLVE. SO AFTER GENERATING THE THETA FILES, THETA NEEDS TO BE RUN ON MAC WHERE IT DOES WORK
 	#AFTER THAT COPY THE RESULTS BACK
