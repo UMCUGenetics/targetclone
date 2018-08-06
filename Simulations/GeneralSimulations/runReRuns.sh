@@ -28,7 +28,7 @@ for d in "$folder"/*/ ; do
 	#Per 300 jobs, wait for everything of the previous iteration to complete.
 	
 	if ! ((counter % 3)); then
-		sleep 15m #wait for most of the jobs to complete before re-submitting
+		sleep 20m #wait for most of the jobs to complete before re-submitting
 	fi
 	
 	counter=$((counter+1))
