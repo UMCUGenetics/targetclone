@@ -19,11 +19,19 @@ folder="$1"
 #For each folder, start an array job which will run TC on the same dataset 100 times.
 #Wait before submitting more jobs.
 
+counter=1
 for d in "$folder"/*/ ; do
     
 	uuid="$(basename "$d")"
 	qsub -t 1-101:1 runReRuns_pythonCall.sh "$mu" "$uuid"
-	break #test with 1 for now
+	
+	#Per 300 jobs, wait for everything of the previous iteration to complete.
+	
+	if ! ((counter % 3)); then
+		sleep 5m #wait for most of the jobs to complete before re-submitting
+	fi
+	
+	counter=$((counter+1))
 done
 
 
