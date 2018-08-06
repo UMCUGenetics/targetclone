@@ -316,7 +316,7 @@ class Simulator:
 		if simulationSettings.runType['horizontalShuffle'] == True:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID + '_horizontalShuffle'
 		elif simulationSettings.runType['reRun'] == True:
-			newDir = simulationSettings.files['outputDir'] + self.uniqueID + '_' + uuid.uuid4() #Add random UUID for each re-run
+			newDir = simulationSettings.files['outputDir'] + self.uniqueID + '_' + str(uuid.uuid4()) #Add random UUID for each re-run
 		else:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		
