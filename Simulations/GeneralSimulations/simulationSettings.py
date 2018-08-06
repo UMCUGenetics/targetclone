@@ -25,5 +25,5 @@ runType = dict(
 	segmentation = False, #do we wish to run with segmentation on the SNP measurements? 
 	mixedSamples = False, #mix additional subclones into the samples?
 	randomTree = False, #Should the tree be made with random precursors
-	reRun = True #Re-run the simulation on the same data? 
+	reRun = False #Re-run the simulation on the same data? 
 )
