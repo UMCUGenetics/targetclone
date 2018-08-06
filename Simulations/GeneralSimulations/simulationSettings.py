@@ -1,6 +1,6 @@
 files = dict(
 
-	outputDir = 'Results/snps_snv_500/',
+	outputDir = 'Results/Reruns/',
 	segmentationFile = '../../TargetClone/InternalData/pq_segmentation.txt',
 	simulationProbabilityFile = "../../TargetClone/InternalData/lossGainProbabilityFile.txt",
 	targetCloneInstance = '../../TargetClone/InternalData/targetClone.pkl'
@@ -21,8 +21,9 @@ general = dict(
 
 runType = dict(
 	randomMeasurements = False, #Do we want random LAF and random SNVs to be assigned to each sample? 
-	horizontalShuffle = True, #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
+	horizontalShuffle = False, #Do we shuffle the LAF measurements randomly within a sample? (To test the influence of the horizontal dependency)
 	segmentation = False, #do we wish to run with segmentation on the SNP measurements? 
-	mixedSamples = False,
-	randomTree = False
+	mixedSamples = False, #mix additional subclones into the samples?
+	randomTree = False, #Should the tree be made with random precursors
+	reRun = True #Re-run the simulation on the same data? 
 )

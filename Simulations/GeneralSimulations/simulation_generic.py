@@ -315,12 +315,14 @@ class Simulator:
 		#Write the results to a different folder but with the same UUIDs
 		if simulationSettings.runType['horizontalShuffle'] == True:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID + '_horizontalShuffle'
+		elif simulationSettings.runType['reRun'] == True:
+			newDir = simulationSettings.files['outputDir'] + self.uniqueID + '_' + uuid.uuid4() #Add random UUID for each re-run
 		else:
 			newDir = simulationSettings.files['outputDir'] + self.uniqueID
 		
 		os.makedirs(newDir)
 		
-		if simulationSettings.runType['horizontalShuffle'] == False:
+		if simulationSettings.runType['horizontalShuffle'] == False and simulationSettings.runType['reRun'] == False:
 			
 			if simulationSettings.runType['mixedSamples'] == False:
 				[samples, finalClones, realTree, savedMu] = self.generateSamples()
@@ -374,7 +376,7 @@ class Simulator:
 			
 			with open(newDir + '/simulationData.pkl', 'wb') as handle:
 				pickle.dump(simulationDataHandler, handle, protocol=pickle.HIGHEST_PROTOCOL)
-		else:
+		elif simulationSettings.runType['horizontalShuffle'] == True:
 			
 			#Load the data from the pkl file
 			[simulationData, savedMu] = self.parseSimulationData(self.uniqueID)
@@ -420,8 +422,18 @@ class Simulator:
 			for cloneInd in range(0, len(samples)):
 				measurements = samples[cloneInd].measurements.measurements
 				lafMeasurementsMatrix[:,cloneInd] = measurements
-		
-		
+		else:
+			#In this case, just load the re-runs
+			[simulationData, savedMu] = self.parseSimulationData(self.uniqueID)
+			
+			cMatrix = simulationData.cMatrix
+			aMatrix = simulationData.aMatrix
+			realTree = simulationData.realTree
+			samples = simulationData.samples
+			measurementsMatrix = simulationData.afMatrix
+			lafMeasurementsMatrix = simulationData.lafMatrix
+			
+			somVarMatrix = simulationData.snvMatrix
 			
 		#Run TC	
 		[eCMatrix, eAMatrix, eSamples, trees, iterationMu, iterationMessages] = targetClone.run(samples)
