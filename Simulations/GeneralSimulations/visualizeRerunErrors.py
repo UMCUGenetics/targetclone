@@ -68,7 +68,6 @@ for subdir in subdirs:
 	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile('RealTrees_1.txt', subdir)[0]
 	tree = eval(stringDict)
 	realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
-	treeSizes.append(len(realTree.edgeList))
 	
 	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile("EstimatedTrees_1.txt", subdir)[0]
 	tree = eval(stringDict)
@@ -78,9 +77,9 @@ for subdir in subdirs:
 	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
 
 	summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
-	ancestrySwapErrors.append(summedError / float(noOfSamplePairs))
+	ancestrySwapError = summedError / float(noOfSamplePairs)
 	
-	treeErrors.append(ancestrySwapErrors)
+	treeErrors.append(ancestrySwapError)
 
 #Compute the pairwise error for each simulation
 cErrorDifferences = []
