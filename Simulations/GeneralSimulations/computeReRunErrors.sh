@@ -24,5 +24,8 @@ find "$folder" -maxdepth 1 -type d -not -name "*_*" | while read d; do
 
 	uuid="$(basename "$d")"
 	echo "$uuid"
+	
+	#Call the error computation script for this simulation set
+	qsub computeReRunError_pythonCall.sh "$folder" "$uuid"
 
 done
