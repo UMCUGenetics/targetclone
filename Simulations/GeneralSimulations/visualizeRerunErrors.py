@@ -87,6 +87,8 @@ aErrorDifferences = []
 muErrorDifferences = []
 treeErrorDifferences = []
 
+print treeErrorDifferences
+
 for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
 	for simulationInd2 in range(simulationInd, len(cErrors)):
 		#Within that simulation dataset, do a pairwise comparison	
