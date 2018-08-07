@@ -102,13 +102,16 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 		aDifference = abs(aErrors[simulationInd] - aErrors[simulationInd2])
 		aErrorDifferences.append(aDifference)
 		
+		if muErrors[simulationInd] is not muErrors[simulationInd2]:
+			print "diff: "
+			print muErrors[simulationInd]
+			print muErrors[simulationInd2]
+		
 		muDifference = abs(muErrors[simulationInd] - muErrors[simulationInd2])
 		muErrorDifferences.append(muDifference)
 	
 	
 #Show the average difference
-
-print muErrorDifferences
 
 averageCDifference = sum(cErrorDifferences) / float(len(cErrors))
 averageADifference = sum(aErrorDifferences) / float(len(aErrors))
