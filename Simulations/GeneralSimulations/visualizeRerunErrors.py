@@ -110,9 +110,9 @@ averageCDifference = sum(cErrorDifferences) / float(len(cErrors))
 averageADifference = sum(aErrorDifferences) / float(len(aErrors))
 averageMuDifference = sum(muErrorDifferences) / float(len(muErrors))
 		
-print averageCDiffference
-print averageADiffference
-print averageMuDiffference
+print averageCDifference
+print averageADifference
+print averageMuDifference
 	
 
 
