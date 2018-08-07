@@ -5,7 +5,7 @@
 """
 
 import sys
-
+from glob import glob
 
 mainDir = sys.argv[1] #where to read the reruns from
 
