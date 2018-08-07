@@ -108,6 +108,8 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 	
 #Show the average difference
 
+print muErrorDifferences
+
 averageCDifference = sum(cErrorDifferences) / float(len(cErrors))
 averageADifference = sum(aErrorDifferences) / float(len(aErrors))
 averageMuDifference = sum(muErrorDifferences) / float(len(muErrors))
