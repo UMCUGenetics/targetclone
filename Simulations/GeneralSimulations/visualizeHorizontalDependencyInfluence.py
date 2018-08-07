@@ -180,9 +180,8 @@ def averageData(dictionary, type):
 					newValues.append(value)
 		
 		average = sum(newValues)/float(len(newValues))
-		median = np.median(newValues)
-		#averagedData.append(average)
-		averagedData.append(median)
+		averagedData.append(average)
+		
 	
 	#Sort the averagedData
 	sortedNoiseLevels, sortedAveragedData = (list(t) for t in zip(*sorted(zip(noiseLevels, averagedData))))
@@ -301,8 +300,8 @@ def plotHorizontalDependencyInfluence(errors, pErrors, aboveStd, belowStd, above
 	offset = 0.03
 	xPositionsOffset = [i - offset for i in xPositions]
 	print xPositions
-	p = ax.errorbar(xPositionsOffset, pErrors, yerr=[correctedBelowStdP, correctedAboveStdP], label='Shuffled LAF', color=colors[colInd+1], linewidth=2)
-	legendLines.append(p[0])
+	# p = ax.errorbar(xPositionsOffset, pErrors, yerr=[correctedBelowStdP, correctedAboveStdP], label='Shuffled LAF', color=colors[colInd+1], linewidth=2)
+	# legendLines.append(p[0])
 	
 	
 	ax.set_ylim(lim[0],lim[1])
