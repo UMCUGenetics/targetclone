@@ -23,15 +23,19 @@ def collectErrorsFromFile(file, subdir): #subdir
 	return floatLines
 
 
-subdirs = glob(mainDir + "/*/")
+cErrors = dict()
+aErrors = dict()
+muErrors = dict()
 
+subdirs = glob(mainDir + "/*/")
 for subdir in subdirs:
 	
 	#Check if the prefix is different. The errors for every prefix can be in a dictionary with the correct key.
 	print subdir
-	exit()
 	
-	
+	splitSubdir = subdir.split("_")
+	prefix = splitSubdir[0] #the first element always matches the name of the intial run
+
 	cErrorFiles = glob(subdir + "/cError.txt")
 	aErrorFiles = glob(subdir + "/aError.txt")
 	muErrorFiles = glob(subdir + "/muError.txt")
@@ -49,25 +53,41 @@ for subdir in subdirs:
 	aError = collectErrorsFromFile(aErrorFile, subdir)
 	muError = collectErrorsFromFile(muErrorFile, subdir)
 	
-	
-	
-	
-	if re.match('RealTrees', file): #read the file and obtain the error
-		stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
-		tree = eval(stringDict)
-		realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
-		treeSizes.append(len(realTree.edgeList))
-	
-	if re.match('EstimatedTrees', file): #read the file and obtain the error
-		stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
-		tree = eval(stringDict)
-		inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+	if prefix not in cErrors:
+		cErrors[prefix] = []
+	if prefix not in aErrors:
+		aErrors[prefix] = []
+	if prefix not in muErrors:
+		muErrors[prefix] = []
 		
+	cErrors[prefix].append(cError)
+	aErrors[prefix].append(aError)
+	muErrors[prefix].append(muError)
 	
-	#Compute the ancestry swap error
-	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
 	
-	summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
-	ancestrySwapErrors.append(summedError / float(noOfSamplePairs))	
+	# 
+	# 	
+	# 	
+	# 
+	# 
+	# if re.match('RealTrees', file): #read the file and obtain the error
+	# 	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+	# 	tree = eval(stringDict)
+	# 	realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+	# 	treeSizes.append(len(realTree.edgeList))
+	# 
+	# if re.match('EstimatedTrees', file): #read the file and obtain the error
+	# 	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+	# 	tree = eval(stringDict)
+	# 	inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+	# 	
+	# 
+	# #Compute the ancestry swap error
+	# [ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+	# 
+	# summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+	# ancestrySwapErrors.append(summedError / float(noOfSamplePairs))	
 
+#Compute the pairwise error for each simulation
+print cErrors
 
