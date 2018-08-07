@@ -53,8 +53,9 @@ bp = boxplot(muDifferences, positions = [5], widths = 0.6)
 bp = boxplot(treeDifferences, positions = [7], widths = 0.6)
 
 xlim(0,8)
-ax.set_xticklabels(['A', 'B', 'C', 'D'])
+ax.set_xticklabels(['C', 'A', 'Mu', 'Trees'])
 ax.set_xticks([1, 3, 5, 7])
+ax.set_ylabel('Average difference')
 
 show()		
 			
