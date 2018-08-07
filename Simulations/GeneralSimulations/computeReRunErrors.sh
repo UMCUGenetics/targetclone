@@ -17,14 +17,16 @@ simulationDirs=`find "$folder" -maxdepth 1 -type d -not -name "*_*"`
 
 echo "$simulationDirs"
 
+for d in "simulationDirs" ; do
+	
+	if [ "$d" == "$folder" ]
+	then
+		continue
+	fi
 
-#
-#
-#counter=1
-#for d in "$folder"/*/ ; do
-#    
-#	uuid="$(basename "$d")"
-#	qsub -t 1-101:1 runReRuns_pythonCall.sh "$mu" "$uuid"
-#
-#
-#done
+	uuid="$(basename "$d")"
+	echo "$uuid"
+	
+	
+
+done
