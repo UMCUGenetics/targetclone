@@ -11,15 +11,40 @@ from glob import glob
 mainDir = sys.argv[1] #where to read the reruns from
 
 
-cErrors = []
-aErrors = []
-muErrors = []
-treeErrors = []
+cDifferences = []
+aDifferences = []
+muDifferences = []
+treeDifferences = []
 
 differenceFiles = glob(mainDir + "/*_differences.txt")
 
 for differenceFile in differenceFiles:
 
 	#Read the errors from these files
-	print differenceFile
+	
+	with open(differenceFile, 'r') as inF:
+		lineCount = 0
+		for line in inF:
+			line = line.strip()
+			if lineCount == 0:
+				cDifferences.append(line)
+			if lineCount == 1:
+				aDifferences.append(line)
+			if lineCount == 2:
+				muDifferences.append(line)
+			if lineCount == 3:
+				treeDifferences.append(line)
+				
+			lineCount += 1
+			
+	
+
+#Make a boxplot of the results
+print cDifferences
+print treeDifferences
+	
+		
+			
+			
+		
 
