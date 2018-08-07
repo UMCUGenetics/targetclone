@@ -25,9 +25,9 @@ def collectErrorsFromFile(file): #subdir
 	return floatLines
 
 
-cErrors = dict()
-aErrors = dict()
-muErrors = dict()
+cErrors = []
+aErrors = []
+muErrors = []
 
 subdirs = glob(mainDir + "/" + prefix + "*")
 for subdir in subdirs:
@@ -55,16 +55,9 @@ for subdir in subdirs:
 	aError = collectErrorsFromFile(aErrorFile)
 	muError = collectErrorsFromFile(muErrorFile)
 	
-	if prefix not in cErrors:
-		cErrors[prefix] = []
-	if prefix not in aErrors:
-		aErrors[prefix] = []
-	if prefix not in muErrors:
-		muErrors[prefix] = []
-		
-	cErrors[prefix].append(cError)
-	aErrors[prefix].append(aError)
-	muErrors[prefix].append(muError)
+	cErrors.append(cError)
+	aErrors.append(aError)
+	muErrors.append(muError)
 	
 	
 	# 
@@ -92,14 +85,14 @@ for subdir in subdirs:
 
 #Compute the pairwise error for each simulation
 print cErrors
-
+print len(cErrors)
 #Store the errors per data type separately
 allCErrors = []
 allAErrors = []
 allMuErrors = []
 
 for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
-	1+1
+	
 	#Within that simulation dataset, do a pairwise comparison
 	
 	
