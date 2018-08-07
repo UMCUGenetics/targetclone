@@ -51,9 +51,9 @@ for subdir in subdirs:
 	aErrorFile = aErrorFiles[0]
 	muErrorFile = muErrorFiles[0]
 	
-	cError = collectErrorsFromFile(cErrorFile)
-	aError = collectErrorsFromFile(aErrorFile)
-	muError = collectErrorsFromFile(muErrorFile)
+	cError = collectErrorsFromFile(cErrorFile)[0]
+	aError = collectErrorsFromFile(aErrorFile)[0]
+	muError = collectErrorsFromFile(muErrorFile)[0]
 	
 	cErrors.append(cError)
 	aErrors.append(aError)
