@@ -87,7 +87,7 @@ aErrorDifferences = []
 muErrorDifferences = []
 treeErrorDifferences = []
 
-print treeErrorDifferences
+
 
 for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
 	for simulationInd2 in range(simulationInd, len(cErrors)):
@@ -104,7 +104,7 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 		treeDifference = abs(treeErrors[simulationInd] - treeErrors[simulationInd2])
 		treeErrorDifferences.append(treeDifference)
 	
-	
+print treeErrorDifferences	
 #Show the average difference
 
 averageCDifference = sum(cErrorDifferences) / float(len(cErrors))
