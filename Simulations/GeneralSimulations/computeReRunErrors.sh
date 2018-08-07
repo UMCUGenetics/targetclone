@@ -15,8 +15,7 @@ folder="$1"
 
 simulationDirs=`find "$folder" -maxdepth 1 -type d -not -name "*_*"`
 
-
-for d in "$simulationDirs"/*/ ; do
+find "$folder" -maxdepth 1 -type d -not -name "*_*" | while read d; do
 	
 	if [ "$d" == "$folder" ]
 	then
@@ -25,7 +24,5 @@ for d in "$simulationDirs"/*/ ; do
 
 	uuid="$(basename "$d")"
 	echo "$uuid"
-	
-	
 
 done
