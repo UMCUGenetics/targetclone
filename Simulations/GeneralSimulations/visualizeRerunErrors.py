@@ -82,14 +82,11 @@ for subdir in subdirs:
 	treeErrors.append(ancestrySwapError)
 
 
-print treeErrors
 #Compute the pairwise error for each simulation
 cErrorDifferences = []
 aErrorDifferences = []
 muErrorDifferences = []
 treeErrorDifferences = []
-
-
 
 for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
 	for simulationInd2 in range(simulationInd, len(cErrors)):
@@ -114,11 +111,24 @@ averageADifference = sum(aErrorDifferences) / float(len(aErrors))
 averageMuDifference = sum(muErrorDifferences) / float(len(muErrors))
 averageTreeDifference = sum(treeErrorDifferences) / float(len(treeErrors))
 
-
-
 #Keep the average differences stored somewhere (pkl?)
 
 #then we need a collector script that goes through all these pkl files, and then combines everything into a figure
+
+differenceFile = mainDir + "/" + prefix + "_differences.txt"
+
+with open(differenceFile, 'w') as outF:
+	
+	outF.write(averageCDifference)
+	outF.write("\n")
+	outF.write(averageADifference)
+	outF.write("\n")
+	outF.write(averageMuDifference)
+	outF.write("\n")
+	outF.write(averageTreeDifference)
+	
+	
+#A final script can then collect all of these difference files. 
 
 
 
