@@ -81,6 +81,8 @@ for subdir in subdirs:
 	
 	treeErrors.append(ancestrySwapError)
 
+
+print treeErrors
 #Compute the pairwise error for each simulation
 cErrorDifferences = []
 aErrorDifferences = []
@@ -104,7 +106,7 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 		treeDifference = abs(treeErrors[simulationInd] - treeErrors[simulationInd2])
 		treeErrorDifferences.append(treeDifference)
 	
-print treeErrorDifferences	
+
 #Show the average difference
 
 averageCDifference = sum(cErrorDifferences) / float(len(cErrors))
@@ -112,7 +114,7 @@ averageADifference = sum(aErrorDifferences) / float(len(aErrors))
 averageMuDifference = sum(muErrorDifferences) / float(len(muErrors))
 averageTreeDifference = sum(treeErrorDifferences) / float(len(treeErrors))
 
-print averageTreeDifference
+
 
 #Keep the average differences stored somewhere (pkl?)
 
