@@ -7,7 +7,7 @@
 
 import sys
 from glob import glob
-from pylab import plot, figure, hold, boxplot, show
+from pylab import plot, figure, hold, boxplot, show, axes, xlim
 
 mainDir = sys.argv[1] #where to read the reruns from
 
@@ -43,6 +43,7 @@ for differenceFile in differenceFiles:
 #Make a boxplot of the results
 
 fig = figure()
+ax = axes()
 hold(True)
 
 #Plot the boxplots
@@ -50,6 +51,9 @@ bp = boxplot(cDifferences, positions = [1], widths = 0.6)
 bp = boxplot(aDifferences, positions = [2], widths = 0.6)
 bp = boxplot(muDifferences, positions = [3], widths = 0.6)
 bp = boxplot(treeDifferences, positions = [4], widths = 0.6)
+
+xlim(0,9)
+ax.set_xticklabels(['A', 'B', 'C', 'D'])
 
 show()		
 			
