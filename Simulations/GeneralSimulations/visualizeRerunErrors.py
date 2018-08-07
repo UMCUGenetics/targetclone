@@ -86,19 +86,33 @@ for subdir in subdirs:
 #Compute the pairwise error for each simulation
 print cErrors
 print len(cErrors)
-#Store the errors per data type separately
-allCErrors = []
-allAErrors = []
-allMuErrors = []
+
+cErrorDifferences = []
+aErrorDifferences = []
+muErrorDifferences = []
 
 for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
-	1+1
-	#Within that simulation dataset, do a pairwise comparison
-	
-	
-	
-	
+	for simulationInd2 in range(simulationInd, len(cErrors)):
+		#Within that simulation dataset, do a pairwise comparison	
+		cDifference = abs(cErrors[simulationInd] - cErrors[simulationInd2])
+		cErrorDifferences.append(cDifference)
 		
+		aDifference = abs(aErrors[simulationInd] - aErrors[simulationInd2])
+		aErrorDifferences.append(aDifference)
+		
+		muDifference = abs(muErrors[simulationInd] - muErrors[simulationInd2])
+		muErrorDifferences.append(muDifference)
+	
+	
+#Show the average difference
+
+averageCDifference = sum(cErrorDifference) / float(len(cErrors))
+averageADifference = sum(aErrorDifference) / float(len(aErrors))
+averageMuDifference = sum(muErrorDifference) / float(len(muErrors))
+		
+print averageCDiffference
+print averageADiffference
+print averageMuDiffference
 	
 
 
