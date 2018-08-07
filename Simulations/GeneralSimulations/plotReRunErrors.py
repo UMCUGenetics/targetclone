@@ -47,14 +47,14 @@ ax = axes()
 hold(True)
 
 #Plot the boxplots
-bp = boxplot(cDifferences, positions = [1])
-bp = boxplot(aDifferences, positions = [3])
-bp = boxplot(muDifferences, positions = [5])
-bp = boxplot(treeDifferences, positions = [7])
+bp = boxplot(cDifferences, positions = [1], widths = 0.6)
+bp = boxplot(aDifferences, positions = [3], widths = 0.6)
+bp = boxplot(muDifferences, positions = [5], widths = 0.6)
+bp = boxplot(treeDifferences, positions = [7], widths = 0.6)
 
-xlim(0,11)
+xlim(0,6)
 ax.set_xticklabels(['A', 'B', 'C', 'D'])
-ax.set_xticks([1.5, 4.5, 7.5, 10.5])
+ax.set_xticks([0.6, 1.2, 2.8, 4.4])
 
 show()		
 			
