@@ -87,6 +87,7 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 		#Within that simulation dataset, do a pairwise comparison	
 		cDifference = abs(cErrors[simulationInd] - cErrors[simulationInd2])
 		cErrorDifferences.append(cDifference)
+
 		
 		aDifference = abs(aErrors[simulationInd] - aErrors[simulationInd2])
 		aErrorDifferences.append(aDifference)
@@ -100,10 +101,10 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 
 #Show the average difference
 
-averageCDifference = sum(cErrorDifferences) / float(len(cErrors))
-averageADifference = sum(aErrorDifferences) / float(len(aErrors))
-averageMuDifference = sum(muErrorDifferences) / float(len(muErrors))
-averageTreeDifference = sum(treeErrorDifferences) / float(len(treeErrors))
+averageCDifference = sum(cErrorDifferences) / float(len(cErrorDifferences))
+averageADifference = sum(aErrorDifferences) / float(len(aErrorDifferences))
+averageMuDifference = sum(muErrorDifferences) / float(len(muErrorDifferences))
+averageTreeDifference = sum(treeErrorDifferences) / float(len(treeErrorDifferences))
 
 #Keep the average differences stored somewhere (pkl?)
 
