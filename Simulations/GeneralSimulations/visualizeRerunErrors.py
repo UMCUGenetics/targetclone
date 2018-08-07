@@ -102,7 +102,7 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 		aDifference = abs(aErrors[simulationInd] - aErrors[simulationInd2])
 		aErrorDifferences.append(aDifference)
 		
-		if muErrors[simulationInd] is not muErrors[simulationInd2]:
+		if muErrors[simulationInd] != muErrors[simulationInd2]:
 			print "diff: "
 			print muErrors[simulationInd]
 			print muErrors[simulationInd2]
