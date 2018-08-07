@@ -62,8 +62,8 @@ for subdir in subdirs:
 	aErrors.append(aError)
 	muErrors.append(muError)
 	
-	realTreeFile = glob(subdir + "/RealTrees_1.txt")
-	inferredTreeFile = glob(subdir + "/EstimatedTrees_1.txt")
+	realTreeFile = glob(subdir + "/RealTrees_1.txt")[0]
+	inferredTreeFile = glob(subdir + "/EstimatedTrees_1.txt")[0]
 	
 	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(realTreeFile, '')[0]
 	tree = eval(stringDict)
