@@ -85,6 +85,8 @@ for subdir in subdirs:
 
 #Compute the pairwise error for each simulation
 print cErrors
+print aErrors
+print muErrors
 print len(cErrors)
 
 cErrorDifferences = []
