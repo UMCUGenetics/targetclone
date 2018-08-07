@@ -65,12 +65,12 @@ for subdir in subdirs:
 	realTreeFile = glob(subdir + "/RealTrees_1.txt")[0]
 	inferredTreeFile = glob(subdir + "/EstimatedTrees_1.txt")[0]
 	
-	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(realTreeFile, '')[0]
+	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile('RealTrees_1.txt', subdir)[0]
 	tree = eval(stringDict)
 	realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
 	treeSizes.append(len(realTree.edgeList))
 	
-	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(inferredTreeFile, '')[0]
+	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile("EstimatedTrees_1.txt", subdir)[0]
 	tree = eval(stringDict)
 	inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
 
