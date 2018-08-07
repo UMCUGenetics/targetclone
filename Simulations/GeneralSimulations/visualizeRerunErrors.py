@@ -2,13 +2,15 @@
 	Show the average differences between the re-runs. We compute the error pairwise from each run to every other run of the same simulation data.
 	Then we can take the average of all those differences. This can be done for C, A, mu and T. We can plot these averages in boxplots. 
 
+	It may be better to do this in parallel. Then we have 100 jobs, each running on a different node. 
+
 """
 
 import sys
 from glob import glob
 
 mainDir = sys.argv[1] #where to read the reruns from
-
+prefix = sys.argv[2]
 
 def collectErrorsFromFile(file): #subdir
 	text_file = open(file, "r")
@@ -27,7 +29,7 @@ cErrors = dict()
 aErrors = dict()
 muErrors = dict()
 
-subdirs = glob(mainDir + "/*/")
+subdirs = glob(mainDir + "/" + prefix + "*")
 for subdir in subdirs:
 	
 	#Check if the prefix is different. The errors for every prefix can be in a dictionary with the correct key.
@@ -90,4 +92,22 @@ for subdir in subdirs:
 
 #Compute the pairwise error for each simulation
 print cErrors
+
+#Store the errors per data type separately
+allCErrors = []
+allAErrors = []
+allMuErrors = []
+
+for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
+	1+1
+	#Within that simulation dataset, do a pairwise comparison
+	
+	
+	
+	
+		
+	
+
+
+
 
