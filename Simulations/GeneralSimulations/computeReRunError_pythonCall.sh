@@ -12,4 +12,4 @@
 folder="$1"
 prefix="$2"
 
-python visualizeRerunError.py "$folder" "$prefix"
+python visualizeRerunErrors.py "$folder" "$prefix"
