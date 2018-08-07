@@ -10,8 +10,8 @@ from glob import glob
 mainDir = sys.argv[1] #where to read the reruns from
 
 
-def collectErrorsFromFile(file, subdir): #subdir
-	text_file = open(subdir + '/' + file, "r")
+def collectErrorsFromFile(file): #subdir
+	text_file = open(file, "r")
 	lines = text_file.read()
 	floatLines = []
 	
@@ -49,9 +49,9 @@ for subdir in subdirs:
 	aErrorFile = aErrorFiles[0]
 	muErrorFile = muErrorFiles[0]
 	
-	cError = collectErrorsFromFile(cErrorFile, subdir)
-	aError = collectErrorsFromFile(aErrorFile, subdir)
-	muError = collectErrorsFromFile(muErrorFile, subdir)
+	cError = collectErrorsFromFile(cErrorFile)
+	aError = collectErrorsFromFile(aErrorFile)
+	muError = collectErrorsFromFile(muErrorFile)
 	
 	if prefix not in cErrors:
 		cErrors[prefix] = []
