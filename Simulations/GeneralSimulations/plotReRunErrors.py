@@ -54,7 +54,7 @@ bp = boxplot(treeDifferences, positions = [7], widths = 0.6)
 
 xlim(0,10)
 ax.set_xticklabels(['A', 'B', 'C', 'D'])
-ax.set_xticks([1.2, 2.8, 4.4, 6.0])
+ax.set_xticks([1, 2, 3, 4])
 
 show()		
 			
