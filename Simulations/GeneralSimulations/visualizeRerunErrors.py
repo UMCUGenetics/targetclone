@@ -8,6 +8,8 @@
 
 import sys
 from glob import glob
+import computeTreeErrorOtherMetrics
+from tree import Graph
 
 mainDir = sys.argv[1] #where to read the reruns from
 prefix = sys.argv[2]
@@ -28,6 +30,7 @@ def collectErrorsFromFile(file): #subdir
 cErrors = []
 aErrors = []
 muErrors = []
+treeErrors = []
 
 subdirs = glob(mainDir + "/" + prefix + "*")
 for subdir in subdirs:
@@ -59,39 +62,31 @@ for subdir in subdirs:
 	aErrors.append(aError)
 	muErrors.append(muError)
 	
+	realTreeFile = glob(subdir + "/RealTrees_1.txt")
+	inferredTreeFile = glob(subdir + "/EstimatedTrees_1.txt")
 	
-	# 
-	# 	
-	# 	
-	# 
-	# 
-	# if re.match('RealTrees', file): #read the file and obtain the error
-	# 	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
-	# 	tree = eval(stringDict)
-	# 	realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
-	# 	treeSizes.append(len(realTree.edgeList))
-	# 
-	# if re.match('EstimatedTrees', file): #read the file and obtain the error
-	# 	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
-	# 	tree = eval(stringDict)
-	# 	inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
-	# 	
-	# 
-	# #Compute the ancestry swap error
-	# [ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
-	# 
-	# summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
-	# ancestrySwapErrors.append(summedError / float(noOfSamplePairs))	
+	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+	tree = eval(stringDict)
+	realTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+	treeSizes.append(len(realTree.edgeList))
+	
+	stringDict = computeTreeErrorOtherMetrics.collectErrorsFromFile(file, subdir)[0]
+	tree = eval(stringDict)
+	inferredTree = Graph(tree['vertices'], set(tree['edges']), tree['edges'])
+
+	#Compute the ancestry swap error
+	[ancestrySwapErrorAbsentInInferred, ancestrySwapErrorPresentInInferred, noOfSamplePairs] = computeTreeErrorOtherMetrics.computeAncestrySwapError(realTree, inferredTree)
+
+	summedError = (ancestrySwapErrorAbsentInInferred + ancestrySwapErrorPresentInInferred)
+	ancestrySwapErrors.append(summedError / float(noOfSamplePairs))
+	
+	treeErrors.append(ancestrySwapErrors)
 
 #Compute the pairwise error for each simulation
-print cErrors
-print aErrors
-print muErrors
-print len(cErrors)
-
 cErrorDifferences = []
 aErrorDifferences = []
 muErrorDifferences = []
+treeErrorDifferences = []
 
 for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
 	for simulationInd2 in range(simulationInd, len(cErrors)):
@@ -102,13 +97,11 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 		aDifference = abs(aErrors[simulationInd] - aErrors[simulationInd2])
 		aErrorDifferences.append(aDifference)
 		
-		if muErrors[simulationInd] != muErrors[simulationInd2]:
-			print "diff: "
-			print muErrors[simulationInd]
-			print muErrors[simulationInd2]
-		
 		muDifference = abs(muErrors[simulationInd] - muErrors[simulationInd2])
 		muErrorDifferences.append(muDifference)
+	
+		treeDifference = abs(treeErrors[simulationInd] - treeErrors[simulationInd2])
+		treeErrorDifferences.append(treeDifference)
 	
 	
 #Show the average difference
@@ -116,11 +109,13 @@ for simulationInd in range(0, len(cErrors)): #should have the same number of key
 averageCDifference = sum(cErrorDifferences) / float(len(cErrors))
 averageADifference = sum(aErrorDifferences) / float(len(aErrors))
 averageMuDifference = sum(muErrorDifferences) / float(len(muErrors))
-		
-print averageCDifference
-print averageADifference
-print averageMuDifference
-	
+averageTreeDifference = sum(treeErrorDifferences) / float(len(treeErrors))
+
+print averageTreeDifference
+
+#Keep the average differences stored somewhere (pkl?)
+
+#then we need a collector script that goes through all these pkl files, and then combines everything into a figure
 
 
 
