@@ -34,6 +34,9 @@ treeErrors = []
 
 subdirs = glob(mainDir + "/" + prefix + "*")
 for subdir in subdirs:
+	
+	if len(cErrors) > 100: #accidentally ran more than 100 iterations, we need just 100. 
+		continue
 
 	cErrorFiles = glob(subdir + "/cError.txt")
 	aErrorFiles = glob(subdir + "/aError.txt")
@@ -82,21 +85,38 @@ aErrorDifferences = []
 muErrorDifferences = []
 treeErrorDifferences = []
 
+cErrorDifferenceCounts = 0
+aErrorDifferenceCounts = 0
+muErrorDifferenceCounts = 0
+treeErrorDifferenceCounts = 0
+
 for simulationInd in range(0, len(cErrors)): #should have the same number of keys as the other dictionaries
 	for simulationInd2 in range(simulationInd, len(cErrors)):
 		#Within that simulation dataset, do a pairwise comparison	
 		cDifference = abs(cErrors[simulationInd] - cErrors[simulationInd2])
 		cErrorDifferences.append(cDifference)
+		
+		if cDifference > 0:
+			cErrorDifferenceCounts += 1
 
 		
 		aDifference = abs(aErrors[simulationInd] - aErrors[simulationInd2])
 		aErrorDifferences.append(aDifference)
 		
+		if aDifference > 0:
+			aErrorDifferenceCounts += 1
+		
 		muDifference = abs(muErrors[simulationInd] - muErrors[simulationInd2])
 		muErrorDifferences.append(muDifference)
+		
+		if muDifference > 0:
+			muErrorDifferenceCounts += 1
 	
 		treeDifference = abs(treeErrors[simulationInd] - treeErrors[simulationInd2])
 		treeErrorDifferences.append(treeDifference)
+		
+		if treeDifference > 0:
+			treeErrorDifferenceCounts += 1
 	
 
 #Show the average difference
@@ -105,6 +125,10 @@ averageCDifference = sum(cErrorDifferences) / float(len(cErrorDifferences))
 averageADifference = sum(aErrorDifferences) / float(len(aErrorDifferences))
 averageMuDifference = sum(muErrorDifferences) / float(len(muErrorDifferences))
 averageTreeDifference = sum(treeErrorDifferences) / float(len(treeErrorDifferences))
+
+##ALTERNATIVE of just reporting how many repeats are different. 
+
+#Not implemented
 
 #Keep the average differences stored somewhere (pkl?)
 
