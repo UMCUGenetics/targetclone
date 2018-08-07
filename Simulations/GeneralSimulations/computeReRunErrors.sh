@@ -15,9 +15,8 @@ folder="$1"
 
 simulationDirs=`find "$folder" -maxdepth 1 -type d -not -name "*_*"`
 
-echo "$simulationDirs"
 
-for d in "simulationDirs" ; do
+for d in "$simulationDirs" ; do
 	
 	if [ "$d" == "$folder" ]
 	then
