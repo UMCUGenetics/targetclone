@@ -34,12 +34,6 @@ treeErrors = []
 
 subdirs = glob(mainDir + "/" + prefix + "*")
 for subdir in subdirs:
-	
-	#Check if the prefix is different. The errors for every prefix can be in a dictionary with the correct key.
-	print subdir
-	
-	splitSubdir = subdir.split("_")
-	prefix = splitSubdir[0] #the first element always matches the name of the intial run
 
 	cErrorFiles = glob(subdir + "/cError.txt")
 	aErrorFiles = glob(subdir + "/aError.txt")
