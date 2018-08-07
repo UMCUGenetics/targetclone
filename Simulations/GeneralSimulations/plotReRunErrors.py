@@ -7,7 +7,7 @@
 
 import sys
 from glob import glob
-from pylab import plot, figure, hold, boxplot, show, axes, xlim
+from pylab import plot, figure, hold, boxplot, show, axes, xlim, savefig
 
 mainDir = sys.argv[1] #where to read the reruns from
 
@@ -57,7 +57,8 @@ ax.set_xticklabels(['C', 'A', 'Mu', 'Trees'])
 ax.set_xticks([1, 3, 5, 7])
 ax.set_ylabel('Average difference')
 
-show()		
+#show()
+savefig('rerun.svg')
 			
 			
 		
