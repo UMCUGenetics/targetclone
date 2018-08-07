@@ -52,9 +52,9 @@ bp = boxplot(aDifferences, positions = [3], widths = 0.6)
 bp = boxplot(muDifferences, positions = [5], widths = 0.6)
 bp = boxplot(treeDifferences, positions = [7], widths = 0.6)
 
-xlim(0,10)
+xlim(0,8)
 ax.set_xticklabels(['A', 'B', 'C', 'D'])
-ax.set_xticks([1, 2, 3, 4])
+ax.set_xticks([1, 3, 5, 7])
 
 show()		
 			
