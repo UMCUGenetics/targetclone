@@ -7,7 +7,7 @@
 
 import sys
 from glob import glob
-from pylab import plot, figure
+from pylab import plot, figure, hold
 
 mainDir = sys.argv[1] #where to read the reruns from
 
