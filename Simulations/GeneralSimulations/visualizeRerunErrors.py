@@ -113,13 +113,13 @@ differenceFile = mainDir + "/" + prefix + "_differences.txt"
 
 with open(differenceFile, 'w') as outF:
 	
-	outF.write(averageCDifference)
+	outF.write(str(averageCDifference))
 	outF.write("\n")
-	outF.write(averageADifference)
+	outF.write(str(averageADifference))
 	outF.write("\n")
-	outF.write(averageMuDifference)
+	outF.write(str(averageMuDifference))
 	outF.write("\n")
-	outF.write(averageTreeDifference)
+	outF.write(str(averageTreeDifference))
 	
 	
 #A final script can then collect all of these difference files. 
