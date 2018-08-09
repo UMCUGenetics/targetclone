@@ -36,6 +36,7 @@ with open(outFile, 'w') as outF:
 			splitFormatField = formatField.split(":")
 			splitSampleData = sampleData.split(":")
 			
+			dpInd = splitFormatField.index("DP")
 			auInd = splitFormatField.index("AU")
 			tuInd = splitFormatField.index("TU")
 			cuInd = splitFormatField.index("CU")
@@ -58,9 +59,27 @@ with open(outFile, 'w') as outF:
 				varCounts = splitSampleData[cuInd]
 			if alt == "G":
 				varCounts = splitSampleData[guInd]
-				
+			
 			refCount = refCounts.split(",")[0]
-			varCount = varCounts.split(",")[0]
+			
+			#The samtools output does not have the ALT base. So in that case we obtain the var counts differently.
+			if alt == ".":
+				depth = int(splitSampleData[dpInd])
+				varCount = depth - int(refCount)
+			else:
+				varCount = varCounts.split(",")[0]
+			
+			if ref == ".":
+				depth = int(splitSampleData[dpInd])
+				refCount = depth - int(varCount)
+			else:
+				refCount = refCounts.split(",")[0]	
+			
+			if ref == "." and var == ".":
+				continue 
+			
+			if refCount == "." or varCount == ".":
+				continue #skip samples with NA as depth. 
 				
 			#Overlap with the right CN, get the copy number (make sure that there is always overlap)
 			majorCn = None
@@ -109,6 +128,6 @@ with open(outFile, 'w') as outF:
 				
 				#Write the PyClone input file
 				
-				outF.write(mutationId + "\t" + refCount + "\t" + varCount + "\t2\t" + str(minorCn) + "\t" + str(majorCn) + "\n")
+				outF.write(mutationId + "\t" + str(refCount) + "\t" + str(varCount) + "\t2\t" + str(minorCn) + "\t" + str(majorCn) + "\n")
 					
 			

@@ -6,6 +6,7 @@ folder="$1"
 normalDir="$2" #directory with the reference samples
 targetFile="$3" #place to find the targets
 refFastaFile="$4"
+thetaPath="$5"
 
 #1.2 Obtain the fie locations of the normal files
 normalBamFile=`ls "$normalDir"*.bam`
@@ -14,6 +15,7 @@ normalVcfFile=`ls "$normalDir"*.vcf`
 #2. For each folder, run the pipeline (can be in parallel if necessary, but it seems very fast so far)
 
 for d in "$folder"/*/ ; do
+	
 	bamFile=`ls "$d"*.bam`
 	vcfFile=`ls "$d"*.snp.vcf`
 	
@@ -21,13 +23,7 @@ for d in "$folder"/*/ ; do
 	filename=$(basename -- "$bamFile")
 	tumorFileName="${filename%.*}"
 	
-	echo "Tumor file: $tumorFileName"
-	if [ "$tumorFileName" = "T618_NS30" ]
-	then
-		continue
-	fi
-	
-	if [ "$tumorFileName" = "T618_NS48" ]
+	if [ "$tumorFileName" != "T6107_YST53" ] #only run on this sample for now
 	then
 		continue
 	fi
@@ -58,7 +54,7 @@ for d in "$folder"/*/ ; do
 	echo "interval file: $intervalCountFile"
 	
 	
-	THetA/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$tumorSnpFile" --NORMAL_FILE "$d"/normal.snp_formatted.txt --BAF --NUM_PROCESSES 2 --FORCE -n 2
+	"$thetaPath"/bin/RunTHetA "$intervalCountFile" --TUMOR_FILE "$tumorSnpFile" --NORMAL_FILE "$d"/normal.snp_formatted.txt --BAF --NUM_PROCESSES 2 --FORCE -n 2
 	#
 	##Theta also does not seem to want to output to a specific directory (you shitty tools >:( ) so I move them after they have been created.
 	mv "$tumorFileName"* "$d"/output

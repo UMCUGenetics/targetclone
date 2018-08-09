@@ -15,7 +15,7 @@ for d in "$folder"/*/ ; do
 		continue
 	fi
 	
-	#2. Get the cns.call file
+	#2. Get the cns.call file (these should not exist for the runs for which there is no theta results)
 	cnFile=`ls "$d"/output/*.cns.call`
 	if [ ! -f "$cnFile" ]; then
 		echo "File not found!"

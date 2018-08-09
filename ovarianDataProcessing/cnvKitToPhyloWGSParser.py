@@ -35,12 +35,13 @@ hg19coordinates = np.array(coordinates)
 subdirs = glob(mainDir + "/*/")
 
 for subdir in subdirs:
-	cnFiles = glob(subdir + "/output/*.cns.call")
+	cnFiles = glob(subdir + "/*.cns.call")
 	if len(cnFiles) < 1:
 		continue
 	
 	cnFile = cnFiles[0]
-	phylowgsOut = subdir + "/output/phylowgs.txt"
+	print "cns file: ", cnFile
+	phylowgsOut = subdir + "/phylowgs.txt"
 	print phylowgsOut
 	with open(phylowgsOut, 'w') as outF:
 		outF.write("x\tChrom\tStart\tEnd\tx\tPval\tx\tx\tmajor_cn\tminor_cn\tcp\n")
@@ -74,7 +75,9 @@ for subdir in subdirs:
 							outLine = "x\t" + chrom + "\t" + end + "\t" + coordinate[2] + "\tx\t1\tx\tx\t" + str(1) + "\t" + str(1) + "\t" + cp + "\n"
 							outF.write(outLine)
 
-					
+				
+				if splitLine[7] == "" or splitLine[8] == "": #some segments miss copy numbers, skip these regions. 
+					continue 
 				
 				cn1 = int(splitLine[7])
 				cn2 = int(splitLine[8])

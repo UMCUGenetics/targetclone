@@ -1,5 +1,6 @@
 #First create the input for all samples in the given folder
 
+#This script assumes that cnvKitToPhyloWGS parser has already been run on the data. 
 
 folder="$1" #tumor folder
 phylowgsPath="$2"

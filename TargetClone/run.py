@@ -673,6 +673,10 @@ class TargetClone:
 			
 			#Return this tree without further updating.
 			message = ''
+			
+			print "made graph: ", newGraph.edgeList
+			
+			
 			return [newGraph, message]
 		
 		

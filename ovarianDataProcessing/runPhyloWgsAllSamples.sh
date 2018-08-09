@@ -1,5 +1,6 @@
 #First create the input for all samples in the given folder
 
+#This script assumes that cnvKitToPhyloWGS parser has already been run on the data. 
 
 folder="$1" #tumor folder
 phylowgsPath="$2"
@@ -19,7 +20,7 @@ for d in "$folder"/*/ ; do
 	fi
 	
 	#1. Get the snv vcf file
-	vcfFile=`ls "$d"/*.snv.phylowgs.vcf`
+	vcfFile=`ls "$d"/*.snvs.filtered.vcf`
 	
 	if [ ! -f "$vcfFile" ]; then
 		echo "File not found!"
@@ -27,10 +28,10 @@ for d in "$folder"/*/ ; do
 	fi
 	
 	#2. Get the cnv file
-	cnvFile=`ls "$d"/output/phylowgs.txt`
+	cnvFile=`ls "$d"/phylowgs.txt`
 	
 	#get the purity of the sample
-	thetaOutFile=`ls "$d"/output/*.n2.results`
+	thetaOutFile=`ls "$d"/*.n2.results`
 	
 	if [ ! -f "$thetaOutFile" ]; then
 		echo "File not found!"
@@ -55,9 +56,9 @@ for d in "$folder"/*/ ; do
 	
 
 	#3. Run the PhyloWGS input parser
-	python "$phylowgsPath"/parser/parse_cnvs.py -f battenberg -c "$tumorMu" "$cnvFile" --cnv-output "$d"/output/cnvs.txt
+	python "$phylowgsPath"/parser/parse_cnvs.py -f battenberg -c "$tumorMu" "$cnvFile" --cnv-output "$d"/cnvs.txt
 	
-	cnvPaths="$cnvPaths --cnvs sample$sampleCounter=$d/output/cnvs.txt"
+	cnvPaths="$cnvPaths --cnvs sample$sampleCounter=$d/cnvs.txt"
 	snvPaths="$snvPaths sample$sampleCounter=$vcfFile"
 	snvTypes="$snvTypes --vcf-type sample$sampleCounter=strelka"
 	sampleCounter=$((sampleCounter+1))

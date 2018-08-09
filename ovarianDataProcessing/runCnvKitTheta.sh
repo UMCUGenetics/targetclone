@@ -29,6 +29,8 @@ for d in "$folder"/*/ ; do
 	bamFile=`ls "$d"*.bam`
 	vcfFile=`ls "$d"*_filtered.vcf`
 	
+	echo "bam file: $bamFile"
+	
 	if [ ! -f "$vcfFile" ]; then
 		echo "File not found!"
 		continue

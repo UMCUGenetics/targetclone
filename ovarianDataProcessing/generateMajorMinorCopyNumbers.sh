@@ -7,7 +7,7 @@ folder="$1" #tumor folder
 for d in "$folder"/*/ ; do
 	
 	#1. First get the cns file
-	cnsFile=`ls "$d"/cnvKit/*.cns`
+	cnsFile=`ls "$d"/*.cns`
 	
 	echo "cns file: $cnsFile"
 	
@@ -16,9 +16,16 @@ for d in "$folder"/*/ ; do
 	echo "vcf file: $vcfFile"
 	
 	#3. Get the purity from the theta output
-	thetaOutFile=`ls "$d"/cnvKit/*.n2.results`
-	echo "$thetaOutFile"
+	thetaOutFile=`ls "$d"/*.n2.results`
+	
+	if [ ! -f "$thetaOutFile" ]; then
+		echo "No theta file, skipping"
+		continue
+	fi
+		
+	echo "theta file: $thetaOutFile"
 	lineCount=0
+	tumorMu=''
 	while IFS='' read -r line || [[ -n "$line" ]]; do
 		if [ "$lineCount" -lt 1 ]
 		then
@@ -28,16 +35,15 @@ for d in "$folder"/*/ ; do
 		echo "Text read from file: $line"
 		mu=`awk -F "\t" '{print $2}' <<< "$line"`
 		tumorMu=`awk -F "," '{print $2}' <<< "$mu"`
-		echo "$tumorMu"
+		echo "tumor mu: $tumorMu"
 		#Split the line and get the mu information 
 		
 	done < "$thetaOutFile"
 	
 	#4. Then call cnvkit
-	
+	echo "call: cnvkit.py call "$cnsFile" -v "$vcfFile" --purity "$tumorMu" -x female -m clonal -o "$cnsFile".call"
 	cnvkit.py call "$cnsFile" -v "$vcfFile" --purity "$tumorMu" -x female -m clonal -o "$cnsFile".call
 	
-	break
 	
 done
 

@@ -8,15 +8,15 @@ fileNum=0
 for d in "$folder"/*/ ; do
 	
 	#1. Get the snv vcf file
-	vcfFile=`ls "$d"/*.pyclone.vcf`
+	vcfFile=`ls "$d"/*.snvs.filtered.vcf`
 	
 	if [ ! -f "$vcfFile" ]; then
 		echo "File not found!"
 		continue
 	fi
 	
-	#2. Get the cns.call file
-	cnFile=`ls "$d"/output/*.cns.call`
+	#2. Get the cns.call file (these should not exist for the runs for which there is no theta results)
+	cnFile=`ls "$d"/*.cns.call`
 	if [ ! -f "$cnFile" ]; then
 		echo "File not found!"
 		continue
@@ -48,11 +48,11 @@ done
 echo "$pyCloneInputFiles"
 echo "$folder/pycloneResults"
 #Why is running this command from here not working??? I for now echo it then I can run itn the terminal myself
-echo "Run: PyClone run_analysis_pipeline --in_files "$pyCloneInputFiles" --working_dir "$folder/pycloneResults""
+echo "Run: PyClone run_analysis_pipeline --in_files "$pyCloneInputFiles" --working_dir "$folder/Results/pycloneResults""
 #PyClone run_analysis_pipeline --in_files "$pyCloneInputFiles" --working_dir "$folder/pycloneResults"
 
 #3. When all samples have been run with PyClone, parse the data to LICHeE input format
-echo "Run: python parsePyCloneOutputToLICHeEInput.py $folder/pycloneResults/tables/loci.tsv $folder/licheeInput.txt"
+echo "Run: python parsePyCloneOutputToLICHeEInput.py $folder/Results/pycloneResults/tables/loci.tsv $folder/Results/licheeInput.txt"
 #python parsePyCloneOutputToLICHeEInput.py "$folder/pycloneResults/tables/loci.tsv" "$folder/licheeInput.txt"
 
 #4. Run LICHeE

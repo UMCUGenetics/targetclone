@@ -86,6 +86,11 @@ with open(outFile, 'wb') as out:
 				refCount = '0'
 				varCount = '0'
 			
+			if refCount == '.': #the fields must be the same in both files, so the best choice is to set the values to 0. 
+				refCount = '0'
+			if varCount == '.':
+				varCount = '0'
+			
 			#Write the data to a new file
 			
 			out.write(chromosome + "\t" + position + "\t" + refCount + "\t" + varCount + "\n")
