@@ -1,0 +1,1 @@
+{'edges': set([(146.0, 'Healthy', '369bc4b8-844f-4383-b5a3-4be6ab4d37c8'), (140.0, 'Healthy', 'f2f551c1-087d-4f4b-baec-33cf5c1f951d'), (114.0, 'Healthy', 'a95a70e4-3c27-49fa-b4c6-196302db90c1')]), 'vertices': ['Healthy', '369bc4b8-844f-4383-b5a3-4be6ab4d37c8', 'a95a70e4-3c27-49fa-b4c6-196302db90c1', 'f2f551c1-087d-4f4b-baec-33cf5c1f951d', 4]}
